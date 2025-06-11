@@ -9,6 +9,14 @@ You’ll need:
 
 *Ensure both datasets are aligned in time (same start/end dates, same temporal resolution — monthly is ideal)*
 
+
+### Python script template that:
+- Loads your DMI and drought index data
+- Aligns the time series
+- Performs both Pearson and Spearman correlation
+- Includes lagged analysis
+- Visualizes the results
+
 ```python
 # -*- coding: utf-8 -*-
 import pandas as pd
