@@ -7,4 +7,4 @@ You’ll need:
 - DMI dataset: Monthly or seasonal DMI values (usually from agencies like JMA or NOAA)
 - Drought index dataset: e.g., SPI/SPEI at a specific time scale (e.g., SPI-3, SPI-6, SPI-12)
 
-*Ensure both datasets are aligned in time (same start/end dates, same temporal resolution — monthly is ideal*
+*Ensure both datasets are aligned in time (same start/end dates, same temporal resolution — monthly is ideal)*
