@@ -2057,3 +2057,1245 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+---
+
+## ```ensemble_forecast_visualization```
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Ensemble Forecast Visualization Script
+
+This script visualizes ensemble drought forecasts for Southern Africa,
+focusing on uncertainty quantification, probability mapping, and
+forecast verification. It supports the hierarchical model results
+presented in the PhD thesis.
+
+Author: [Your Name]
+Date: June 2025
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import seaborn as sns
+import xarray as xr
+from scipy import stats
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import r2_score, explained_variance_score
+import os
+from matplotlib.animation import FuncAnimation
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.patches import Patch
+
+# Set plotting style
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_context("paper", font_scale=1.5)
+
+# Create output directory for figures
+os.makedirs("figures", exist_ok=True)
+
+# ============================================================================
+# Data Loading Functions
+# ============================================================================
+
+def load_ensemble_forecast_data(file_path=None, n_members=20, n_lead_times=6):
+    """
+    Load ensemble forecast data for multiple lead times.
+    
+    If file_path is None, generates synthetic data for demonstration.
+    
+    Args:
+        file_path (str, optional): Path to data file
+        n_members (int): Number of ensemble members
+        n_lead_times (int): Number of lead times
+        
+    Returns:
+        xr.Dataset: Ensemble forecast data
+    """
+    if file_path and os.path.exists(file_path):
+        # Load actual data if file exists
+        ensemble_data = xr.open_dataset(file_path)
+        return ensemble_data
+    else:
+        # Generate synthetic ensemble forecast data for demonstration
+        print("Generating synthetic ensemble forecast data for demonstration")
+        
+        # Define grid for Southern Africa
+        lats = np.linspace(-35, -10, 30)
+        lons = np.linspace(10, 40, 30)
+        lead_times = np.arange(1, n_lead_times + 1)
+        
+        # Create lat/lon meshgrid
+        lon_grid, lat_grid = np.meshgrid(lons, lats)
+        
+        # Generate base spatial pattern (more drought-prone in southeast)
+        base_pattern = ((lat_grid + 35) / 25) * ((lon_grid - 10) / 30)
+        
+        # Initialize arrays for ensemble data
+        ensemble_members = np.zeros((n_lead_times, n_members, len(lats), len(lons)))
+        
+        # Generate ensemble members for each lead time
+        for t in range(n_lead_times):
+            # Base forecast degrades with lead time
+            lead_factor = 1.0 - 0.1 * t
+            
+            # Generate base forecast for this lead time
+            base_forecast = -1.0 * base_pattern * lead_factor - 0.3
+            
+            # Add random variation for each ensemble member
+            for m in range(n_members):
+                # Uncertainty increases with lead time
+                uncertainty = 0.3 + 0.1 * t
+                ensemble_members[t, m] = base_forecast + uncertainty * np.random.randn(*base_pattern.shape)
+        
+        # Calculate ensemble statistics for each lead time
+        ensemble_mean = np.mean(ensemble_members, axis=1)
+        ensemble_std = np.std(ensemble_members, axis=1)
+        
+        # Calculate drought probability (SPI < -1) for each lead time
+        drought_prob = np.zeros((n_lead_times, len(lats), len(lons)))
+        for t in range(n_lead_times):
+            for i in range(len(lats)):
+                for j in range(len(lons)):
+                    # Assuming normal distribution of ensemble members
+                    drought_prob[t, i, j] = stats.norm.cdf(-1, 
+                                                         loc=ensemble_mean[t, i, j], 
+                                                         scale=ensemble_std[t, i, j])
+        
+        # Create xarray dataset
+        ensemble_data = xr.Dataset(
+            data_vars={
+                'ensemble_mean': (['lead_time', 'lat', 'lon'], ensemble_mean),
+                'ensemble_std': (['lead_time', 'lat', 'lon'], ensemble_std),
+                'drought_prob': (['lead_time', 'lat', 'lon'], drought_prob),
+            },
+            coords={
+                'lat': lats,
+                'lon': lons,
+                'lead_time': lead_times,
+            }
+        )
+        
+        # Add ensemble members
+        for m in range(n_members):
+            ensemble_data[f'member_{m+1}'] = (['lead_time', 'lat', 'lon'], 
+                                             ensemble_members[:, m, :, :])
+        
+        return ensemble_data
+
+def load_verification_data(file_path=None, n_lead_times=6):
+    """
+    Load verification data for ensemble forecast evaluation.
+    
+    If file_path is None, generates synthetic data for demonstration.
+    
+    Args:
+        file_path (str, optional): Path to data file
+        n_lead_times (int): Number of lead times
+        
+    Returns:
+        xr.Dataset: Verification data
+    """
+    if file_path and os.path.exists(file_path):
+        # Load actual data if file exists
+        verification_data = xr.open_dataset(file_path)
+        return verification_data
+    else:
+        # Generate synthetic verification data for demonstration
+        print("Generating synthetic verification data for demonstration")
+        
+        # Define grid for Southern Africa
+        lats = np.linspace(-35, -10, 30)
+        lons = np.linspace(10, 40, 30)
+        lead_times = np.arange(1, n_lead_times + 1)
+        
+        # Create lat/lon meshgrid
+        lon_grid, lat_grid = np.meshgrid(lons, lats)
+        
+        # Generate base spatial pattern (more drought-prone in southeast)
+        base_pattern = ((lat_grid + 35) / 25) * ((lon_grid - 10) / 30)
+        
+        # Initialize arrays for verification data
+        observed = np.zeros((n_lead_times, len(lats), len(lons)))
+        
+        # Generate observed data for each lead time
+        for t in range(n_lead_times):
+            # Base pattern with random variation
+            observed[t] = -1.0 * base_pattern - 0.3 + 0.4 * np.random.randn(*base_pattern.shape)
+        
+        # Create xarray dataset
+        verification_data = xr.Dataset(
+            data_vars={
+                'observed': (['lead_time', 'lat', 'lon'], observed),
+            },
+            coords={
+                'lat': lats,
+                'lon': lons,
+                'lead_time': lead_times,
+            }
+        )
+        
+        return verification_data
+
+def load_regional_forecast_data(file_path=None, n_members=20, n_lead_times=6):
+    """
+    Load regional forecast data for time series analysis.
+    
+    If file_path is None, generates synthetic data for demonstration.
+    
+    Args:
+        file_path (str, optional): Path to data file
+        n_members (int): Number of ensemble members
+        n_lead_times (int): Number of lead times
+        
+    Returns:
+        pd.DataFrame: Regional forecast data
+    """
+    if file_path and os.path.exists(file_path):
+        # Load actual data if file exists
+        regional_data = pd.read_csv(file_path)
+        return regional_data
+    else:
+        # Generate synthetic regional forecast data for demonstration
+        print("Generating synthetic regional forecast data for demonstration")
+        
+        # Define regions
+        regions = ['Southeastern', 'Central', 'Northwestern', 'Southwestern']
+        lead_times = np.arange(1, n_lead_times + 1)
+        
+        # Initialize data list
+        data = []
+        
+        # Generate data for each region
+        for region in regions:
+            # Base forecast varies by region
+            if region == 'Southeastern':
+                base_forecast = -1.5  # More severe drought
+            elif region == 'Central':
+                base_forecast = -1.0
+            elif region == 'Northwestern':
+                base_forecast = -0.5
+            else:  # Southwestern
+                base_forecast = -0.8
+            
+            # Generate observed values
+            for t in lead_times:
+                # Observed value with random variation
+                observed = base_forecast + 0.4 * np.random.randn()
+                
+                # Generate ensemble members
+                for m in range(1, n_members + 1):
+                    # Forecast degrades with lead time
+                    lead_factor = 1.0 - 0.1 * (t - 1)
+                    
+                    # Uncertainty increases with lead time
+                    uncertainty = 0.3 + 0.1 * (t - 1)
+                    
+                    # Generate forecast
+                    forecast = base_forecast * lead_factor + uncertainty * np.random.randn()
+                    
+                    # Add to data list
+                    data.append({
+                        'Region': region,
+                        'Lead_Time': t,
+                        'Member': m,
+                        'Forecast': forecast,
+                        'Observed': observed
+                    })
+        
+        # Convert to DataFrame
+        regional_df = pd.DataFrame(data)
+        
+        return regional_df
+
+# ============================================================================
+# Analysis Functions
+# ============================================================================
+
+def calculate_verification_metrics(ensemble_data, verification_data, lead_time=1):
+    """
+    Calculate verification metrics for ensemble forecast.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        verification_data (xr.Dataset): Verification data
+        lead_time (int): Lead time to analyze
+        
+    Returns:
+        dict: Dictionary of verification metrics
+    """
+    # Extract data for the specified lead time
+    ensemble_mean = ensemble_data['ensemble_mean'].sel(lead_time=lead_time).values
+    observed = verification_data['observed'].sel(lead_time=lead_time).values
+    
+    # Flatten arrays and remove NaN values
+    ens_flat = ensemble_mean.flatten()
+    obs_flat = observed.flatten()
+    
+    mask = ~np.isnan(ens_flat) & ~np.isnan(obs_flat)
+    ens_clean = ens_flat[mask]
+    obs_clean = obs_flat[mask]
+    
+    # Calculate metrics
+    rmse = np.sqrt(mean_squared_error(obs_clean, ens_clean))
+    mae = mean_absolute_error(obs_clean, ens_clean)
+    r2 = r2_score(obs_clean, ens_clean)
+    corr, p_value = stats.pearsonr(obs_clean, ens_clean)
+    bias = np.mean(ens_clean - obs_clean)
+    
+    return {
+        'RMSE': rmse,
+        'MAE': mae,
+        'R²': r2,
+        'Correlation': corr,
+        'Bias': bias,
+        'Lead_Time': lead_time
+    }
+
+def calculate_reliability_data(ensemble_data, verification_data, lead_time=1):
+    """
+    Calculate reliability diagram data for ensemble forecast.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        verification_data (xr.Dataset): Verification data
+        lead_time (int): Lead time to analyze
+        
+    Returns:
+        tuple: (forecast_probs, observed_freqs, bin_counts)
+    """
+    # Extract data for the specified lead time
+    drought_prob = ensemble_data['drought_prob'].sel(lead_time=lead_time).values
+    observed = verification_data['observed'].sel(lead_time=lead_time).values
+    
+    # Define drought threshold
+    drought_threshold = -1.0
+    
+    # Convert observed to binary drought/no-drought
+    observed_drought = observed < drought_threshold
+    
+    # Flatten arrays and remove NaN values
+    prob_flat = drought_prob.flatten()
+    obs_flat = observed_drought.flatten()
+    
+    mask = ~np.isnan(prob_flat) & ~np.isnan(obs_flat)
+    prob_clean = prob_flat[mask]
+    obs_clean = obs_flat[mask]
+    
+    # Define probability bins
+    bins = np.linspace(0, 1, 11)  # 0.0, 0.1, 0.2, ..., 1.0
+    bin_indices = np.digitize(prob_clean, bins) - 1
+    bin_indices = np.clip(bin_indices, 0, len(bins) - 2)
+    
+    # Calculate observed frequency in each bin
+    forecast_probs = []
+    observed_freqs = []
+    bin_counts = []
+    
+    for i in range(len(bins) - 1):
+        mask = bin_indices == i
+        if np.sum(mask) > 0:
+            forecast_probs.append((bins[i] + bins[i+1]) / 2)
+            observed_freqs.append(np.mean(obs_clean[mask]))
+            bin_counts.append(np.sum(mask))
+    
+    return forecast_probs, observed_freqs, bin_counts
+
+def calculate_rank_histogram_data(ensemble_data, verification_data, lead_time=1):
+    """
+    Calculate rank histogram data for ensemble forecast.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        verification_data (xr.Dataset): Verification data
+        lead_time (int): Lead time to analyze
+        
+    Returns:
+        np.ndarray: Rank histogram counts
+    """
+    # Extract data for the specified lead time
+    observed = verification_data['observed'].sel(lead_time=lead_time).values
+    
+    # Get number of ensemble members
+    member_vars = [var for var in ensemble_data.data_vars if 'member_' in var]
+    n_members = len(member_vars)
+    
+    # Initialize rank counts
+    rank_counts = np.zeros(n_members + 1)
+    
+    # Iterate over grid points
+    for i in range(len(ensemble_data.lat)):
+        for j in range(len(ensemble_data.lon)):
+            # Extract observed value
+            obs_value = observed[i, j]
+            
+            # Skip if NaN
+            if np.isnan(obs_value):
+                continue
+            
+            # Extract ensemble forecasts for this point
+            ensemble_values = np.array([
+                ensemble_data[f'member_{m+1}'].sel(lead_time=lead_time).values[i, j]
+                for m in range(n_members)
+            ])
+            
+            # Skip if any NaN
+            if np.any(np.isnan(ensemble_values)):
+                continue
+            
+            # Count members less than observed
+            rank = np.sum(ensemble_values < obs_value)
+            
+            # Increment rank count
+            rank_counts[rank] += 1
+    
+    return rank_counts
+
+def calculate_spread_skill_data(ensemble_data, verification_data):
+    """
+    Calculate spread-skill relationship data.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        verification_data (xr.Dataset): Verification data
+        
+    Returns:
+        pd.DataFrame: Spread-skill data
+    """
+    # Initialize data list
+    data = []
+    
+    # Iterate over lead times
+    for lead_time in ensemble_data.lead_time.values:
+        # Extract data for this lead time
+        ensemble_mean = ensemble_data['ensemble_mean'].sel(lead_time=lead_time).values
+        ensemble_std = ensemble_data['ensemble_std'].sel(lead_time=lead_time).values
+        observed = verification_data['observed'].sel(lead_time=lead_time).values
+        
+        # Calculate error
+        error = ensemble_mean - observed
+        
+        # Flatten arrays and remove NaN values
+        spread_flat = ensemble_std.flatten()
+        error_flat = error.flatten()
+        
+        mask = ~np.isnan(spread_flat) & ~np.isnan(error_flat)
+        spread_clean = spread_flat[mask]
+        error_clean = error_flat[mask]
+        
+        # Calculate RMSE
+        rmse = np.sqrt(np.mean(error_clean**2))
+        
+        # Calculate mean spread
+        mean_spread = np.mean(spread_clean)
+        
+        # Add to data list
+        data.append({
+            'Lead_Time': lead_time,
+            'RMSE': rmse,
+            'Spread': mean_spread,
+            'Ratio': rmse / mean_spread if mean_spread > 0 else np.nan
+        })
+    
+    # Convert to DataFrame
+    spread_skill_df = pd.DataFrame(data)
+    
+    return spread_skill_df
+
+def calculate_regional_forecast_statistics(regional_data, region='Southeastern'):
+    """
+    Calculate statistics for regional forecast.
+    
+    Args:
+        regional_data (pd.DataFrame): Regional forecast data
+        region (str): Region to analyze
+        
+    Returns:
+        pd.DataFrame: Regional forecast statistics
+    """
+    # Filter for specified region
+    region_data = regional_data[regional_data['Region'] == region]
+    
+    # Initialize data list
+    data = []
+    
+    # Iterate over lead times
+    for lead_time in sorted(region_data['Lead_Time'].unique()):
+        # Filter for this lead time
+        lead_data = region_data[region_data['Lead_Time'] == lead_time]
+        
+        # Get observed value (should be the same for all members)
+        observed = lead_data['Observed'].iloc[0]
+        
+        # Get ensemble forecasts
+        forecasts = lead_data['Forecast'].values
+        
+        # Calculate statistics
+        mean_forecast = np.mean(forecasts)
+        median_forecast = np.median(forecasts)
+        std_forecast = np.std(forecasts)
+        q10 = np.percentile(forecasts, 10)
+        q90 = np.percentile(forecasts, 90)
+        
+        # Calculate error
+        error = mean_forecast - observed
+        
+        # Add to data list
+        data.append({
+            'Lead_Time': lead_time,
+            'Observed': observed,
+            'Mean_Forecast': mean_forecast,
+            'Median_Forecast': median_forecast,
+            'Std_Forecast': std_forecast,
+            'Q10': q10,
+            'Q90': q90,
+            'Error': error,
+            'RMSE': np.sqrt(error**2)
+        })
+    
+    # Convert to DataFrame
+    stats_df = pd.DataFrame(data)
+    
+    return stats_df
+
+# ============================================================================
+# Visualization Functions
+# ============================================================================
+
+def plot_ensemble_forecast_maps(ensemble_data, lead_time=1, output_file=None):
+    """
+    Plot ensemble forecast maps for a specific lead time.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        lead_time (int): Lead time to plot
+        output_file (str, optional): Path to save figure
+    """
+    # Extract data for the specified lead time
+    ensemble_mean = ensemble_data['ensemble_mean'].sel(lead_time=lead_time).values
+    ensemble_std = ensemble_data['ensemble_std'].sel(lead_time=lead_time).values
+    drought_prob = ensemble_data['drought_prob'].sel(lead_time=lead_time).values
+    
+    # Create figure with subplots
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6),
+                           subplot_kw={'projection': ccrs.PlateCarree()})
+    
+    # Plot ensemble mean
+    ax = axes[0]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    im1 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        ensemble_mean,
+        cmap=plt.cm.RdBu_r, 
+        vmin=-3, 
+        vmax=3,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    ax.set_title('Ensemble Mean Forecast')
+    
+    cbar1 = plt.colorbar(im1, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar1.set_label('Drought Index')
+    
+    # Plot ensemble standard deviation
+    ax = axes[1]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    im2 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        ensemble_std,
+        cmap='viridis', 
+        vmin=0, 
+        vmax=1.5,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    gl.left_labels = False
+    
+    ax.set_title('Forecast Uncertainty (Standard Deviation)')
+    
+    cbar2 = plt.colorbar(im2, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar2.set_label('Standard Deviation')
+    
+    # Plot drought probability
+    ax = axes[2]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    # Create custom colormap for probability
+    colors = [(1, 1, 1), (1, 0.8, 0.8), (1, 0.6, 0.6), (1, 0.4, 0.4), 
+             (1, 0.2, 0.2), (0.8, 0, 0)]
+    cmap_prob = LinearSegmentedColormap.from_list('prob_cmap', colors)
+    
+    im3 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        drought_prob,
+        cmap=cmap_prob, 
+        vmin=0, 
+        vmax=1,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    gl.left_labels = False
+    
+    ax.set_title('Drought Probability (SPI < -1)')
+    
+    cbar3 = plt.colorbar(im3, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar3.set_label('Probability')
+    
+    # Add overall title
+    plt.suptitle(f'Ensemble Drought Forecast (Lead Time: {lead_time} month{"s" if lead_time > 1 else ""})', 
+                fontsize=16, y=1.05)
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def create_forecast_animation(ensemble_data, output_file=None):
+    """
+    Create animation of ensemble forecast across lead times.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        output_file (str, optional): Path to save animation
+    """
+    # Create figure with subplots
+    fig, ax = plt.subplots(figsize=(10, 8),
+                         subplot_kw={'projection': ccrs.PlateCarree()})
+    
+    # Add map features
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    # Add gridlines
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    # Create custom colormap for probability
+    colors = [(1, 1, 1), (1, 0.8, 0.8), (1, 0.6, 0.6), (1, 0.4, 0.4), 
+             (1, 0.2, 0.2), (0.8, 0, 0)]
+    cmap_prob = LinearSegmentedColormap.from_list('prob_cmap', colors)
+    
+    # Initial plot
+    lead_time = ensemble_data.lead_time.values[0]
+    drought_prob = ensemble_data['drought_prob'].sel(lead_time=lead_time).values
+    
+    # Create mesh plot
+    mesh = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        drought_prob,
+        cmap=cmap_prob, 
+        vmin=0, 
+        vmax=1,
+        transform=ccrs.PlateCarree()
+    )
+    
+    # Add colorbar
+    cbar = plt.colorbar(mesh, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar.set_label('Drought Probability (SPI < -1)')
+    
+    # Add title
+    title = ax.set_title(f'Lead Time: {lead_time} month{"s" if lead_time > 1 else ""}', 
+                        fontsize=14)
+    
+    # Animation update function
+    def update(frame):
+        lead_time = ensemble_data.lead_time.values[frame]
+        drought_prob = ensemble_data['drought_prob'].sel(lead_time=lead_time).values
+        
+        # Update mesh data
+        mesh.set_array(drought_prob.flatten())
+        
+        # Update title
+        title.set_text(f'Lead Time: {lead_time} month{"s" if lead_time > 1 else ""}')
+        
+        return mesh, title
+    
+    # Create animation
+    anim = FuncAnimation(
+        fig, update, frames=len(ensemble_data.lead_time),
+        interval=1000, blit=False
+    )
+    
+    # Save animation if output file is specified
+    if output_file:
+        anim.save(output_file, writer='pillow', fps=1, dpi=100)
+        print(f"Animation saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return anim
+
+def plot_verification_metrics(verification_metrics, output_file=None):
+    """
+    Plot verification metrics across lead times.
+    
+    Args:
+        verification_metrics (list): List of dictionaries with verification metrics
+        output_file (str, optional): Path to save figure
+    """
+    # Convert to DataFrame
+    metrics_df = pd.DataFrame(verification_metrics)
+    
+    # Create figure with subplots
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Flatten axes for easier iteration
+    axes = axes.flatten()
+    
+    # Define metrics to plot
+    plot_metrics = ['RMSE', 'MAE', 'Correlation', 'Bias']
+    
+    # Plot each metric
+    for i, metric in enumerate(plot_metrics):
+        ax = axes[i]
+        
+        # Create line plot
+        sns.lineplot(
+            data=metrics_df,
+            x='Lead_Time',
+            y=metric,
+            marker='o',
+            markersize=8,
+            linewidth=2,
+            ax=ax
+        )
+        
+        # Set title and labels
+        ax.set_title(metric)
+        ax.set_xlabel('Lead Time (months)')
+        ax.set_ylabel(metric)
+        
+        # Add grid
+        ax.grid(True, linestyle='--', alpha=0.7)
+    
+    # Add overall title
+    plt.suptitle('Forecast Verification Metrics', fontsize=16, y=0.98)
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    plt.show()
+
+def plot_reliability_diagram(forecast_probs, observed_freqs, bin_counts, 
+                           lead_time=1, output_file=None):
+    """
+    Plot reliability diagram for ensemble forecast.
+    
+    Args:
+        forecast_probs (list): Forecast probabilities
+        observed_freqs (list): Observed frequencies
+        bin_counts (list): Bin counts
+        lead_time (int): Lead time
+        output_file (str, optional): Path to save figure
+    """
+    # Create figure with subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6), 
+                                 gridspec_kw={'width_ratios': [3, 1]})
+    
+    # Plot reliability diagram
+    ax1.plot([0, 1], [0, 1], 'k--', label='Perfect reliability')
+    
+    # Plot no-skill line
+    climo = np.mean(observed_freqs)
+    ax1.plot([0, 1], [climo, climo], 'k:', label='No skill')
+    ax1.plot([climo, climo], [0, 1], 'k:')
+    
+    # Plot reliability curve
+    ax1.plot(forecast_probs, observed_freqs, 'o-', linewidth=2, markersize=8,
+            label='Forecast')
+    
+    # Set title and labels
+    ax1.set_title(f'Reliability Diagram (Lead Time: {lead_time} month{"s" if lead_time > 1 else ""})')
+    ax1.set_xlabel('Forecast Probability')
+    ax1.set_ylabel('Observed Frequency')
+    
+    # Add grid and legend
+    ax1.grid(True, linestyle='--', alpha=0.7)
+    ax1.legend(loc='upper left')
+    
+    # Set axis limits
+    ax1.set_xlim([0, 1])
+    ax1.set_ylim([0, 1])
+    
+    # Plot histogram of forecast probabilities
+    ax2.bar(forecast_probs, bin_counts, width=0.1, alpha=0.7)
+    
+    # Set title and labels
+    ax2.set_title('Forecast Probability Histogram')
+    ax2.set_xlabel('Forecast Probability')
+    ax2.set_ylabel('Count')
+    
+    # Set x-axis limits
+    ax2.set_xlim([0, 1])
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_rank_histogram(rank_counts, lead_time=1, output_file=None):
+    """
+    Plot rank histogram for ensemble forecast.
+    
+    Args:
+        rank_counts (np.ndarray): Rank histogram counts
+        lead_time (int): Lead time
+        output_file (str, optional): Path to save figure
+    """
+    # Create figure
+    plt.figure(figsize=(10, 6))
+    
+    # Plot rank histogram
+    plt.bar(np.arange(len(rank_counts)), rank_counts, width=0.8, alpha=0.7)
+    
+    # Add reference line for uniform distribution
+    uniform_height = np.sum(rank_counts) / len(rank_counts)
+    plt.axhline(y=uniform_height, color='r', linestyle='--', 
+               label='Uniform distribution')
+    
+    # Set title and labels
+    plt.title(f'Rank Histogram (Lead Time: {lead_time} month{"s" if lead_time > 1 else ""})')
+    plt.xlabel('Rank')
+    plt.ylabel('Count')
+    
+    # Add grid and legend
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend()
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_spread_skill_relationship(spread_skill_data, output_file=None):
+    """
+    Plot spread-skill relationship.
+    
+    Args:
+        spread_skill_data (pd.DataFrame): Spread-skill data
+        output_file (str, optional): Path to save figure
+    """
+    # Create figure with subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+    
+    # Plot RMSE and spread vs. lead time
+    ax1.plot(spread_skill_data['Lead_Time'], spread_skill_data['RMSE'], 
+            'o-', linewidth=2, markersize=8, label='RMSE')
+    ax1.plot(spread_skill_data['Lead_Time'], spread_skill_data['Spread'], 
+            'o--', linewidth=2, markersize=8, label='Spread')
+    
+    # Set title and labels
+    ax1.set_title('RMSE and Spread vs. Lead Time')
+    ax1.set_xlabel('Lead Time (months)')
+    ax1.set_ylabel('RMSE / Spread')
+    
+    # Add grid and legend
+    ax1.grid(True, linestyle='--', alpha=0.7)
+    ax1.legend()
+    
+    # Plot spread-skill ratio vs. lead time
+    ax2.plot(spread_skill_data['Lead_Time'], spread_skill_data['Ratio'], 
+            'o-', linewidth=2, markersize=8, color='darkgreen')
+    
+    # Add reference line for perfect spread-skill relationship
+    ax2.axhline(y=1.0, color='r', linestyle='--', 
+               label='Perfect spread-skill')
+    
+    # Set title and labels
+    ax2.set_title('Spread-Skill Ratio vs. Lead Time')
+    ax2.set_xlabel('Lead Time (months)')
+    ax2.set_ylabel('RMSE / Spread Ratio')
+    
+    # Add grid and legend
+    ax2.grid(True, linestyle='--', alpha=0.7)
+    ax2.legend()
+    
+    # Add overall title
+    plt.suptitle('Spread-Skill Relationship', fontsize=16, y=1.05)
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_regional_forecast(regional_stats, region='Southeastern', output_file=None):
+    """
+    Plot regional forecast with uncertainty.
+    
+    Args:
+        regional_stats (pd.DataFrame): Regional forecast statistics
+        region (str): Region name
+        output_file (str, optional): Path to save figure
+    """
+    # Create figure
+    plt.figure(figsize=(10, 6))
+    
+    # Plot observed values
+    plt.plot(regional_stats['Lead_Time'], regional_stats['Observed'], 
+            'o-', linewidth=2, markersize=8, color='black', label='Observed')
+    
+    # Plot mean forecast
+    plt.plot(regional_stats['Lead_Time'], regional_stats['Mean_Forecast'], 
+            'o--', linewidth=2, markersize=8, color='darkblue', label='Mean Forecast')
+    
+    # Plot uncertainty range
+    plt.fill_between(regional_stats['Lead_Time'], 
+                    regional_stats['Q10'], regional_stats['Q90'], 
+                    color='lightblue', alpha=0.5, label='10-90% Range')
+    
+    # Set title and labels
+    plt.title(f'Regional Forecast for {region}')
+    plt.xlabel('Lead Time (months)')
+    plt.ylabel('Drought Index')
+    
+    # Add grid and legend
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend()
+    
+    # Add drought threshold line
+    plt.axhline(y=-1.0, color='r', linestyle='--', 
+               label='Drought Threshold (SPI < -1)')
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_regional_comparison(regional_data, lead_time=3, output_file=None):
+    """
+    Plot comparison of forecasts across regions.
+    
+    Args:
+        regional_data (pd.DataFrame): Regional forecast data
+        lead_time (int): Lead time to analyze
+        output_file (str, optional): Path to save figure
+    """
+    # Filter for specified lead time
+    lead_data = regional_data[regional_data['Lead_Time'] == lead_time]
+    
+    # Get unique regions
+    regions = sorted(lead_data['Region'].unique())
+    
+    # Create figure
+    plt.figure(figsize=(12, 8))
+    
+    # Create violin plots for each region
+    sns.violinplot(
+        data=lead_data,
+        x='Region',
+        y='Forecast',
+        inner='quartile',
+        palette='Set3'
+    )
+    
+    # Add observed values as points
+    for i, region in enumerate(regions):
+        region_data = lead_data[lead_data['Region'] == region]
+        observed = region_data['Observed'].iloc[0]
+        plt.scatter(i, observed, color='red', s=100, marker='*', 
+                   label='Observed' if i == 0 else '')
+    
+    # Set title and labels
+    plt.title(f'Regional Forecast Comparison (Lead Time: {lead_time} month{"s" if lead_time > 1 else ""})')
+    plt.xlabel('Region')
+    plt.ylabel('Drought Index')
+    
+    # Add drought threshold line
+    plt.axhline(y=-1.0, color='r', linestyle='--', 
+               label='Drought Threshold (SPI < -1)')
+    
+    # Add legend
+    handles, labels = plt.gca().get_legend_handles_labels()
+    handles.append(plt.Line2D([0], [0], color='r', linestyle='--'))
+    labels.append('Drought Threshold (SPI < -1)')
+    plt.legend(handles, labels, loc='lower right')
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+def plot_forecast_verification_map(ensemble_data, verification_data, 
+                                 lead_time=1, output_file=None):
+    """
+    Plot forecast verification map.
+    
+    Args:
+        ensemble_data (xr.Dataset): Ensemble forecast data
+        verification_data (xr.Dataset): Verification data
+        lead_time (int): Lead time to analyze
+        output_file (str, optional): Path to save figure
+    """
+    # Extract data for the specified lead time
+    ensemble_mean = ensemble_data['ensemble_mean'].sel(lead_time=lead_time).values
+    observed = verification_data['observed'].sel(lead_time=lead_time).values
+    
+    # Calculate error
+    error = ensemble_mean - observed
+    
+    # Create figure with subplots
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6),
+                           subplot_kw={'projection': ccrs.PlateCarree()})
+    
+    # Plot ensemble mean
+    ax = axes[0]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    im1 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        ensemble_mean,
+        cmap=plt.cm.RdBu_r, 
+        vmin=-3, 
+        vmax=3,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    ax.set_title('Ensemble Mean Forecast')
+    
+    cbar1 = plt.colorbar(im1, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar1.set_label('Drought Index')
+    
+    # Plot observed
+    ax = axes[1]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    im2 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        observed,
+        cmap=plt.cm.RdBu_r, 
+        vmin=-3, 
+        vmax=3,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    gl.left_labels = False
+    
+    ax.set_title('Observed')
+    
+    cbar2 = plt.colorbar(im2, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar2.set_label('Drought Index')
+    
+    # Plot error
+    ax = axes[2]
+    ax.add_feature(cfeature.COASTLINE)
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    ax.set_extent([10, 40, -35, -10], crs=ccrs.PlateCarree())
+    
+    im3 = ax.pcolormesh(
+        ensemble_data.lon, 
+        ensemble_data.lat, 
+        error,
+        cmap=plt.cm.RdBu, 
+        vmin=-2, 
+        vmax=2,
+        transform=ccrs.PlateCarree()
+    )
+    
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                     linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    gl.left_labels = False
+    
+    ax.set_title('Forecast Error')
+    
+    cbar3 = plt.colorbar(im3, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar3.set_label('Error (Forecast - Observed)')
+    
+    # Add overall title
+    plt.suptitle(f'Forecast Verification (Lead Time: {lead_time} month{"s" if lead_time > 1 else ""})', 
+                fontsize=16, y=1.05)
+    
+    # Save figure if output file is specified
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    plt.tight_layout()
+    plt.show()
+
+# ============================================================================
+# Main Analysis
+# ============================================================================
+
+def main():
+    """
+    Main analysis function.
+    """
+    print("Starting Ensemble Forecast Visualization")
+    
+    # Load data
+    print("Loading data...")
+    ensemble_data = load_ensemble_forecast_data()
+    verification_data = load_verification_data()
+    regional_data = load_regional_forecast_data()
+    
+    # 1. Plot ensemble forecast maps for different lead times
+    print("\nPlotting ensemble forecast maps...")
+    for lead_time in ensemble_data.lead_time.values:
+        print(f"  Processing lead time {lead_time}...")
+        
+        output_file = f"figures/ensemble_forecast_lead{lead_time}.png"
+        plot_ensemble_forecast_maps(
+            ensemble_data, lead_time=lead_time, output_file=output_file)
+    
+    # 2. Create forecast animation
+    print("\nCreating forecast animation...")
+    output_file = "figures/forecast_animation.gif"
+    create_forecast_animation(ensemble_data, output_file=output_file)
+    
+    # 3. Calculate and plot verification metrics
+    print("\nCalculating verification metrics...")
+    verification_metrics = []
+    
+    for lead_time in ensemble_data.lead_time.values:
+        print(f"  Processing lead time {lead_time}...")
+        
+        metrics = calculate_verification_metrics(
+            ensemble_data, verification_data, lead_time=lead_time)
+        verification_metrics.append(metrics)
+    
+    output_file = "figures/verification_metrics.png"
+    plot_verification_metrics(verification_metrics, output_file=output_file)
+    
+    # 4. Calculate and plot reliability diagrams
+    print("\nCalculating reliability diagrams...")
+    for lead_time in [1, 3, 6]:  # Selected lead times
+        if lead_time in ensemble_data.lead_time.values:
+            print(f"  Processing lead time {lead_time}...")
+            
+            forecast_probs, observed_freqs, bin_counts = calculate_reliability_data(
+                ensemble_data, verification_data, lead_time=lead_time)
+            
+            output_file = f"figures/reliability_diagram_lead{lead_time}.png"
+            plot_reliability_diagram(
+                forecast_probs, observed_freqs, bin_counts, 
+                lead_time=lead_time, output_file=output_file)
+    
+    # 5. Calculate and plot rank histograms
+    print("\nCalculating rank histograms...")
+    for lead_time in [1, 3, 6]:  # Selected lead times
+        if lead_time in ensemble_data.lead_time.values:
+            print(f"  Processing lead time {lead_time}...")
+            
+            rank_counts = calculate_rank_histogram_data(
+                ensemble_data, verification_data, lead_time=lead_time)
+            
+            output_file = f"figures/rank_histogram_lead{lead_time}.png"
+            plot_rank_histogram(
+                rank_counts, lead_time=lead_time, output_file=output_file)
+    
+    # 6. Calculate and plot spread-skill relationship
+    print("\nCalculating spread-skill relationship...")
+    spread_skill_data = calculate_spread_skill_data(ensemble_data, verification_data)
+    
+    output_file = "figures/spread_skill_relationship.png"
+    plot_spread_skill_relationship(spread_skill_data, output_file=output_file)
+    
+    # 7. Calculate and plot regional forecasts
+    print("\nCalculating regional forecasts...")
+    for region in ['Southeastern', 'Central', 'Northwestern', 'Southwestern']:
+        print(f"  Processing {region} region...")
+        
+        regional_stats = calculate_regional_forecast_statistics(
+            regional_data, region=region)
+        
+        output_file = f"figures/regional_forecast_{region.lower()}.png"
+        plot_regional_forecast(
+            regional_stats, region=region, output_file=output_file)
+    
+    # 8. Plot regional comparison
+    print("\nPlotting regional comparison...")
+    for lead_time in [1, 3, 6]:  # Selected lead times
+        if lead_time in regional_data['Lead_Time'].unique():
+            print(f"  Processing lead time {lead_time}...")
+            
+            output_file = f"figures/regional_comparison_lead{lead_time}.png"
+            plot_regional_comparison(
+                regional_data, lead_time=lead_time, output_file=output_file)
+    
+    # 9. Plot forecast verification maps
+    print("\nPlotting forecast verification maps...")
+    for lead_time in ensemble_data.lead_time.values:
+        print(f"  Processing lead time {lead_time}...")
+        
+        output_file = f"figures/forecast_verification_lead{lead_time}.png"
+        plot_forecast_verification_map(
+            ensemble_data, verification_data, 
+            lead_time=lead_time, output_file=output_file)
+    
+    print("\nAnalysis complete. All figures saved to 'figures/' directory.")
+
+if __name__ == "__main__":
+    main()
+```
