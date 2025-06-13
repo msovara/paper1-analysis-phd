@@ -1467,16 +1467,584 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
 
+## 4. 04_partial_correlation_analysis.py
+###    - Isolates IOD's independent influence by controlling for ENSO effects
+###    - Compares raw and partial correlations to quantify IOD's unique contribution
+###    - Analyzes regional variations in IOD's independent influence
+
+```python
+"""
+IOD-Drought Partial Correlation Analysis Script
+
+This script performs partial correlation analysis between the Indian Ocean Dipole (IOD)
+and drought indices across Southern Africa while controlling for ENSO effects, as described 
+in the paper: "The Indian Ocean Dipole as a Predictor of Drought in Southern Africa: A Statistical Analysis"
+
+The script includes functions for:
+1. Loading and preprocessing IOD, ENSO, and drought indices data
+2. Computing partial correlations controlling for ENSO influence
+3. Comparing raw and partial correlations to isolate IOD-specific effects
+4. Visualizing spatial patterns of IOD's independent influence on drought
+
+Author: [Your Name]
+Date: June 2025
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import xarray as xr
+import scipy.stats as stats
+from statsmodels.stats.multitest import multipletests
+import os
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import common functions from correlation analysis script
+# Assuming the correlation_analysis.py script is in the same directory
+from correlation_analysis import (load_iod_data, load_drought_indices, 
+                                compute_regional_average, SUBREGIONS, SEASONS,
+                                SOUTHERN_AFRICA_BOUNDS)
+
+def load_enso_data(file_path=None):
+    """
+    Load ENSO (Niño 3.4) data from file or generate synthetic data if file not provided
+    
+    Parameters:
+    -----------
+    file_path : str, optional
+        Path to the ENSO data file (CSV format expected)
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing ENSO data with datetime index
+    """
+    if file_path and os.path.exists(file_path):
+        print(f"Loading ENSO data from {file_path}")
+        enso_data = pd.read_csv(file_path, parse_dates=['time'])
+        enso_data.set_index('time', inplace=True)
+        return enso_data
+    else:
+        print("No ENSO data file provided or file not found. Generating synthetic data.")
+        # Generate synthetic ENSO data
+        date_range = pd.date_range(start='1980-01-01', end='2020-12-31', freq='MS')
+        
+        # Create seasonal cycle with some interannual variability
+        n_months = len(date_range)
+        seasonal_cycle = 0.2 * np.sin(2 * np.pi * np.arange(n_months) / 12)
+        
+        # Add some ENSO events (El Niño and La Niña)
+        enso_events = np.zeros(n_months)
+        
+        # Add some known strong El Niño events
+        # 1982-83 El Niño
+        enso_events[33:45] = 1.5
+        # 1997-98 El Niño
+        enso_events[213:225] = 2.0
+        # 2015-16 El Niño
+        enso_events[431:443] = 1.8
+        
+        # Add some known strong La Niña events
+        # 1988-89 La Niña
+        enso_events[108:120] = -1.2
+        # 1999-2000 La Niña
+        enso_events[240:252] = -1.5
+        # 2010-11 La Niña
+        enso_events[372:384] = -1.4
+        
+        # Add random noise
+        noise = np.random.normal(0, 0.3, n_months)
+        
+        # Combine components
+        nino34 = seasonal_cycle + enso_events + noise
+        
+        # Create DataFrame
+        enso_data = pd.DataFrame({'Nino3.4': nino34}, index=date_range)
+        
+        return enso_data
+
+def compute_partial_correlation_map(iod_data, enso_data, drought_data, drought_index='SPI-3', 
+                                  time_period=None, season=None):
+    """
+    Compute partial correlation map between IOD and drought index controlling for ENSO
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    enso_data : pd.DataFrame
+        DataFrame containing ENSO data with datetime index
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    time_period : tuple, optional
+        Start and end years for analysis (e.g., (1980, 2020))
+    season : str, optional
+        Season for analysis ('DJF', 'MAM', 'JJA', 'SON')
+        
+    Returns:
+    --------
+    xr.Dataset
+        Dataset containing raw and partial correlation coefficients and p-values
+    """
+    # Extract the drought index data
+    drought_var = drought_data[drought_index]
+    
+    # Filter by time period if specified
+    if time_period:
+        start_year, end_year = time_period
+        iod_data = iod_data.loc[f'{start_year}-01-01':f'{end_year}-12-31']
+        enso_data = enso_data.loc[f'{start_year}-01-01':f'{end_year}-12-31']
+        drought_var = drought_var.sel(time=slice(f'{start_year}-01-01', f'{end_year}-12-31'))
+    
+    # Filter by season if specified
+    if season:
+        season_months = SEASONS[season]
+        iod_season = iod_data[iod_data.index.month.isin(season_months)]
+        enso_season = enso_data[enso_data.index.month.isin(season_months)]
+        drought_season = drought_var.sel(time=drought_var['time.month'].isin(season_months))
+    else:
+        iod_season = iod_data
+        enso_season = enso_data
+        drought_season = drought_var
+    
+    # Ensure time alignment
+    common_times = [t for t in drought_season.time.values 
+                   if pd.Timestamp(t) in iod_season.index and pd.Timestamp(t) in enso_season.index]
+    drought_season = drought_season.sel(time=common_times)
+    iod_season = iod_season.loc[[pd.Timestamp(t) for t in common_times]]
+    enso_season = enso_season.loc[[pd.Timestamp(t) for t in common_times]]
+    
+    # Initialize arrays for correlation and p-values
+    raw_corr = np.zeros((len(drought_season.lat), len(drought_season.lon)))
+    raw_pvals = np.zeros_like(raw_corr)
+    partial_corr = np.zeros_like(raw_corr)
+    partial_pvals = np.zeros_like(raw_corr)
+    
+    # Compute correlation for each grid point
+    for i, lat in enumerate(drought_season.lat.values):
+        for j, lon in enumerate(drought_season.lon.values):
+            drought_ts = drought_season.sel(lat=lat, lon=lon).values
+            
+            # Check for NaN values
+            valid_idx = ~np.isnan(drought_ts)
+            if np.sum(valid_idx) > 10:  # Require at least 10 valid data points
+                iod_ts = iod_season['DMI'].values[valid_idx]
+                enso_ts = enso_season['Nino3.4'].values[valid_idx]
+                drought_ts = drought_ts[valid_idx]
+                
+                # Compute raw correlation
+                r_raw, p_raw = stats.pearsonr(iod_ts, drought_ts)
+                raw_corr[i, j] = r_raw
+                raw_pvals[i, j] = p_raw
+                
+                # Compute partial correlation
+                # Formula: r_xy.z = (r_xy - r_xz * r_yz) / sqrt((1 - r_xz^2) * (1 - r_yz^2))
+                r_iod_enso, _ = stats.pearsonr(iod_ts, enso_ts)
+                r_drought_enso, _ = stats.pearsonr(drought_ts, enso_ts)
+                
+                # Check for perfect correlation between IOD and ENSO
+                if abs(r_iod_enso) < 0.9999:
+                    r_partial = (r_raw - r_iod_enso * r_drought_enso) / (
+                        np.sqrt((1 - r_iod_enso**2) * (1 - r_drought_enso**2))
+                    )
+                    
+                    # Compute t-statistic for partial correlation
+                    n = len(drought_ts)
+                    dof = n - 3  # Degrees of freedom for partial correlation
+                    t_stat = r_partial * np.sqrt(dof / (1 - r_partial**2))
+                    p_partial = 2 * (1 - stats.t.cdf(abs(t_stat), dof))
+                    
+                    partial_corr[i, j] = r_partial
+                    partial_pvals[i, j] = p_partial
+                else:
+                    partial_corr[i, j] = np.nan
+                    partial_pvals[i, j] = np.nan
+            else:
+                raw_corr[i, j] = np.nan
+                raw_pvals[i, j] = np.nan
+                partial_corr[i, j] = np.nan
+                partial_pvals[i, j] = np.nan
+    
+    # Apply FDR correction to p-values
+    valid_mask_raw = ~np.isnan(raw_pvals)
+    valid_mask_partial = ~np.isnan(partial_pvals)
+    
+    if np.sum(valid_mask_raw) > 0:
+        flat_pvals_raw = raw_pvals[valid_mask_raw].flatten()
+        _, pvals_fdr_raw, _, _ = multipletests(flat_pvals_raw, alpha=0.05, method='fdr_bh')
+        
+        # Put the corrected p-values back
+        raw_pvals_corrected = np.full_like(raw_pvals, np.nan)
+        raw_pvals_corrected[valid_mask_raw] = pvals_fdr_raw
+    else:
+        raw_pvals_corrected = raw_pvals
+    
+    if np.sum(valid_mask_partial) > 0:
+        flat_pvals_partial = partial_pvals[valid_mask_partial].flatten()
+        _, pvals_fdr_partial, _, _ = multipletests(flat_pvals_partial, alpha=0.05, method='fdr_bh')
+        
+        # Put the corrected p-values back
+        partial_pvals_corrected = np.full_like(partial_pvals, np.nan)
+        partial_pvals_corrected[valid_mask_partial] = pvals_fdr_partial
+    else:
+        partial_pvals_corrected = partial_pvals
+    
+    # Create output dataset
+    result = xr.Dataset(
+        data_vars={
+            'raw_correlation': (('lat', 'lon'), raw_corr),
+            'raw_pvalue': (('lat', 'lon'), raw_pvals),
+            'raw_pvalue_fdr': (('lat', 'lon'), raw_pvals_corrected),
+            'partial_correlation': (('lat', 'lon'), partial_corr),
+            'partial_pvalue': (('lat', 'lon'), partial_pvals),
+            'partial_pvalue_fdr': (('lat', 'lon'), partial_pvals_corrected)
+        },
+        coords={
+            'lat': drought_season.lat,
+            'lon': drought_season.lon
+        }
+    )
+    
+    # Add metadata
+    result.attrs['drought_index'] = drought_index
+    if season:
+        result.attrs['season'] = season
+    if time_period:
+        result.attrs['time_period'] = f"{time_period[0]}-{time_period[1]}"
+    
+    return result
+
+def plot_correlation_comparison(correlation_data, output_file=None, title=None):
+    """
+    Plot comparison of raw and partial correlation maps
+    
+    Parameters:
+    -----------
+    correlation_data : xr.Dataset
+        Dataset containing raw and partial correlation coefficients and p-values
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6), 
+                           subplot_kw={'projection': ccrs.PlateCarree()})
+    
+    # Set up colormap
+    cmap = plt.cm.RdBu_r
+    norm = colors.Normalize(vmin=-0.8, vmax=0.8)
+    
+    # Plot raw correlation
+    ax = axes[0]
+    im = ax.pcolormesh(correlation_data.lon, correlation_data.lat, 
+                     correlation_data.raw_correlation, 
+                     cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
+    
+    # Add stippling for significance
+    significant = correlation_data.raw_pvalue_fdr < 0.05
+    lons, lats = np.meshgrid(correlation_data.lon, correlation_data.lat)
+    ax.scatter(lons[significant], lats[significant], color='black', s=1, 
+             alpha=0.5, transform=ccrs.PlateCarree())
+    
+    # Add coastlines and borders
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    
+    # Add gridlines
+    gl = ax.gridlines(draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    ax.set_title('Raw Correlation (IOD-Drought)')
+    
+    # Plot partial correlation
+    ax = axes[1]
+    im = ax.pcolormesh(correlation_data.lon, correlation_data.lat, 
+                     correlation_data.partial_correlation, 
+                     cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
+    
+    # Add stippling for significance
+    significant = correlation_data.partial_pvalue_fdr < 0.05
+    ax.scatter(lons[significant], lats[significant], color='black', s=1, 
+             alpha=0.5, transform=ccrs.PlateCarree())
+    
+    # Add coastlines and borders
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    
+    # Add gridlines
+    gl = ax.gridlines(draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    ax.set_title('Partial Correlation (Controlling for ENSO)')
+    
+    # Plot difference (partial - raw)
+    ax = axes[2]
+    diff = correlation_data.partial_correlation - correlation_data.raw_correlation
+    im = ax.pcolormesh(correlation_data.lon, correlation_data.lat, 
+                     diff, 
+                     cmap=cmap, norm=colors.Normalize(vmin=-0.4, vmax=0.4), 
+                     transform=ccrs.PlateCarree())
+    
+    # Add coastlines and borders
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    
+    # Add gridlines
+    gl = ax.gridlines(draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    ax.set_title('Difference (Partial - Raw)')
+    
+    # Add colorbar
+    cbar_ax = fig.add_axes([0.92, 0.2, 0.02, 0.6])
+    cbar = plt.colorbar(im, cax=cbar_ax)
+    cbar.set_label('Correlation Coefficient')
+    
+    # Add title
+    if title:
+        fig.suptitle(title, fontsize=16, y=0.98)
+    else:
+        drought_index = correlation_data.attrs.get('drought_index', '')
+        season = correlation_data.attrs.get('season', 'Annual')
+        time_period = correlation_data.attrs.get('time_period', '')
+        fig.suptitle(f'IOD-{drought_index} Correlation: Raw vs. Partial (Controlling for ENSO)\n{season} {time_period}', 
+                   fontsize=16, y=0.98)
+    
+    # Adjust layout
+    plt.tight_layout(rect=[0, 0, 0.9, 0.95])
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def compute_regional_partial_correlations(iod_data, enso_data, drought_data, drought_index='SPI-3'):
+    """
+    Compute regional raw and partial correlations
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    enso_data : pd.DataFrame
+        DataFrame containing ENSO data with datetime index
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing regional raw and partial correlations
+    """
+    results = []
+    
+    # Extract IOD and ENSO series
+    iod_series = iod_data['DMI']
+    enso_series = enso_data['Nino3.4']
+    
+    # Compute correlation between IOD and ENSO
+    r_iod_enso, p_iod_enso = stats.pearsonr(iod_series, enso_series)
+    print(f"Correlation between IOD and ENSO: r = {r_iod_enso:.3f}, p = {p_iod_enso:.3f}")
+    
+    # Compute regional correlations
+    for region_name in SUBREGIONS:
+        # Compute regional average of drought index
+        region_avg = compute_regional_average(drought_data[drought_index], region_name)
+        
+        # Ensure time alignment
+        common_times = [t for t in region_avg.index 
+                       if t in iod_series.index and t in enso_series.index]
+        region_avg = region_avg.loc[common_times]
+        iod_aligned = iod_series.loc[common_times]
+        enso_aligned = enso_series.loc[common_times]
+        
+        # Compute raw correlations
+        r_iod_drought, p_iod_drought = stats.pearsonr(iod_aligned, region_avg)
+        r_enso_drought, p_enso_drought = stats.pearsonr(enso_aligned, region_avg)
+        
+        # Compute partial correlation (IOD-Drought controlling for ENSO)
+        r_partial = (r_iod_drought - r_iod_enso * r_enso_drought) / (
+            np.sqrt((1 - r_iod_enso**2) * (1 - r_enso_drought**2))
+        )
+        
+        # Compute t-statistic for partial correlation
+        n = len(region_avg)
+        dof = n - 3  # Degrees of freedom for partial correlation
+        t_stat = r_partial * np.sqrt(dof / (1 - r_partial**2))
+        p_partial = 2 * (1 - stats.t.cdf(abs(t_stat), dof))
+        
+        # Calculate percentage of correlation that is independent of ENSO
+        if abs(r_iod_drought) > 0.01:  # Avoid division by zero
+            pct_independent = (abs(r_partial) / abs(r_iod_drought)) * 100
+        else:
+            pct_independent = np.nan
+        
+        results.append({
+            'Region': region_name,
+            'Raw_Correlation_IOD': r_iod_drought,
+            'Raw_P_value_IOD': p_iod_drought,
+            'Raw_Correlation_ENSO': r_enso_drought,
+            'Raw_P_value_ENSO': p_enso_drought,
+            'Partial_Correlation': r_partial,
+            'Partial_P_value': p_partial,
+            'Percent_Independent': pct_independent,
+            'N': n
+        })
+    
+    return pd.DataFrame(results)
+
+def plot_regional_partial_correlations(regional_correlations, output_file=None, title=None):
+    """
+    Plot comparison of regional raw and partial correlations
+    
+    Parameters:
+    -----------
+    regional_correlations : pd.DataFrame
+        DataFrame containing regional raw and partial correlations
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # Set width of bars
+    bar_width = 0.35
+    
+    # Set positions of bars on x-axis
+    regions = regional_correlations['Region']
+    x = np.arange(len(regions))
+    
+    # Create bars
+    ax.bar(x - bar_width/2, regional_correlations['Raw_Correlation_IOD'], 
+         width=bar_width, label='Raw Correlation', color='darkblue')
+    ax.bar(x + bar_width/2, regional_correlations['Partial_Correlation'], 
+         width=bar_width, label='Partial Correlation', color='darkred')
+    
+    # Add significance markers
+    for i, row in regional_correlations.iterrows():
+        if row['Raw_P_value_IOD'] < 0.05:
+            ax.text(i - bar_width/2, row['Raw_Correlation_IOD'] + 0.03, '*', 
+                  ha='center', va='bottom', fontsize=12)
+        if row['Partial_P_value'] < 0.05:
+            ax.text(i + bar_width/2, row['Partial_Correlation'] + 0.03, '*', 
+                  ha='center', va='bottom', fontsize=12)
+    
+    # Add labels and title
+    ax.set_xlabel('Region', fontsize=12)
+    ax.set_ylabel('Correlation Coefficient', fontsize=12)
+    
+    if title:
+        ax.set_title(title, fontsize=14)
+    else:
+        ax.set_title('Regional IOD-Drought Correlations: Raw vs. Partial (Controlling for ENSO)', 
+                   fontsize=14)
+    
+    # Add xticks
+    ax.set_xticks(x)
+    ax.set_xticklabels(regions)
+    
+    # Add reference line at zero
+    ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
+    
+    # Add grid
+    ax.grid(True, linestyle=':', alpha=0.6, axis='y')
+    
+    # Add legend
+    ax.legend()
+    
+    # Add text explaining significance
+    ax.text(0.02, 0.02, '* p < 0.05', transform=ax.transAxes, fontsize=10)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def main():
+    """
+    Main function to run the partial correlation analysis
+    """
+    print("IOD-Drought Partial Correlation Analysis")
+    print("=======================================")
+    
+    # Create output directory
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Load data
+    iod_data = load_iod_data()
+    enso_data = load_enso_data()
+    drought_data = load_drought_indices(index_type='SPI-3')
+    
+    print("\n1. Computing partial correlation map")
+    corr_map = compute_partial_correlation_map(iod_data, enso_data, drought_data)
+    plot_correlation_comparison(
+        corr_map, 
+        output_file=os.path.join(output_dir, "iod_spi3_partial_correlation_map.png")
+    )
+    
+    print("\n2. Computing seasonal partial correlation maps")
+    for season in SEASONS:
+        print(f"  Processing {season} season")
+        season_corr = compute_partial_correlation_map(
+            iod_data, enso_data, drought_data, season=season
+        )
+        plot_correlation_comparison(
+            season_corr,
+            output_file=os.path.join(output_dir, f"iod_spi3_partial_correlation_{season}.png"),
+            title=f"IOD-SPI-3 Correlation: Raw vs. Partial - {season} (1980-2020)"
+        )
+    
+    print("\n3. Computing regional partial correlations")
+    regional_corr = compute_regional_partial_correlations(iod_data, enso_data, drought_data)
+    print(regional_corr)
+    regional_corr.to_csv(os.path.join(output_dir, "regional_partial_correlations.csv"), index=False)
+    
+    # Plot regional partial correlations
+    plot_regional_partial_correlations(
+        regional_corr,
+        output_file=os.path.join(output_dir, "regional_partial_correlations.png")
+    )
+    
+    print("\nAnalysis complete. Results saved to the 'output' directory.")
+
+if __name__ == "__main__":
+    main()
 ```
 
 
 
-# 4. 04_partial_correlation_analysis.py
-#    - Isolates IOD's independent influence by controlling for ENSO effects
-#    - Compares raw and partial correlations to quantify IOD's unique contribution
-#    - Analyzes regional variations in IOD's independent influence
-#
 # 5. 05_wavelet_coherence_analysis.py
 #    - Examines time-frequency relationships between IOD and drought indices
 #    - Identifies periods of significant coherence
