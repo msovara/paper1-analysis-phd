@@ -889,11 +889,591 @@ if __name__ == "__main__":
 
 ```
 
-# 3. 03_composite_analysis.py
-#    - Classifies IOD events into positive, negative, and neutral phases
-#    - Computes composite drought conditions during different IOD phases
-#    - Tests statistical significance of composite anomalies
-#
+## 3. 03_composite_analysis.py
+###    - Classifies IOD events into positive, negative, and neutral phases
+###    - Computes composite drought conditions during different IOD phases
+###    - Tests the statistical significance of composite anomalies
+
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+IOD-Drought Composite Analysis Script
+
+This script performs composite analysis of drought conditions during different
+Indian Ocean Dipole (IOD) phases across Southern Africa, as described in the paper:
+"The Indian Ocean Dipole as a Predictor of Drought in Southern Africa: A Statistical Analysis"
+
+The script includes functions for:
+1. Classifying IOD events into positive, negative, and neutral phases
+2. Computing composite means of drought indices during different IOD phases
+3. Testing statistical significance of composite anomalies
+4. Visualizing spatial patterns of drought conditions during IOD events
+
+Author: [Your Name]
+Date: June 2025
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import xarray as xr
+import scipy.stats as stats
+import os
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import common functions from correlation analysis script
+# Assuming the correlation_analysis.py script is in the same directory
+from correlation_analysis import (load_iod_data, load_drought_indices, 
+                                SOUTHERN_AFRICA_BOUNDS, SUBREGIONS, SEASONS)
+
+def classify_iod_events(iod_data, threshold=0.5, peak_season='SON'):
+    """
+    Classify IOD events into positive, negative, and neutral phases
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    threshold : float, optional
+        Threshold in standard deviations for classifying events
+    peak_season : str, optional
+        Season when IOD events typically peak ('SON' for Sep-Oct-Nov)
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame with IOD events classification
+    """
+    # Extract IOD index
+    dmi = iod_data['DMI']
+    
+    # Standardize DMI
+    dmi_std = (dmi - dmi.mean()) / dmi.std()
+    
+    # Initialize classification
+    iod_class = pd.DataFrame(index=dmi.index)
+    iod_class['DMI'] = dmi
+    iod_class['DMI_std'] = dmi_std
+    iod_class['Phase'] = 'neutral'
+    
+    # Classify based on standardized DMI
+    iod_class.loc[dmi_std > threshold, 'Phase'] = 'positive'
+    iod_class.loc[dmi_std < -threshold, 'Phase'] = 'negative'
+    
+    # Add year and month columns
+    iod_class['Year'] = iod_class.index.year
+    iod_class['Month'] = iod_class.index.month
+    
+    # Identify peak season months
+    if peak_season == 'SON':
+        peak_months = [9, 10, 11]  # Sep, Oct, Nov
+    elif peak_season == 'JJA':
+        peak_months = [6, 7, 8]    # Jun, Jul, Aug
+    elif peak_season == 'DJF':
+        peak_months = [12, 1, 2]   # Dec, Jan, Feb
+    elif peak_season == 'MAM':
+        peak_months = [3, 4, 5]    # Mar, Apr, May
+    else:
+        raise ValueError(f"Unknown season: {peak_season}")
+    
+    # Filter for peak season
+    peak_season_data = iod_class[iod_class['Month'].isin(peak_months)]
+    
+    # Group by year and get the dominant phase
+    yearly_phase = peak_season_data.groupby('Year')['Phase'].agg(
+        lambda x: pd.Series.mode(x)[0] if not pd.Series.mode(x).empty else 'neutral'
+    )
+    
+    # Create a dictionary of years and their IOD phase
+    year_to_phase = yearly_phase.to_dict()
+    
+    # Add yearly phase to the original dataframe
+    iod_class['Yearly_Phase'] = iod_class['Year'].map(year_to_phase)
+    
+    return iod_class
+
+def compute_drought_composites(iod_class, drought_data, drought_index='SPI-3', 
+                             lag_months=0):
+    """
+    Compute composite means of drought indices during different IOD phases
+    
+    Parameters:
+    -----------
+    iod_class : pd.DataFrame
+        DataFrame with IOD events classification
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    lag_months : int, optional
+        Lag in months between IOD and drought response (positive = IOD leads)
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing composite means for each IOD phase
+    """
+    # Extract drought index
+    drought_var = drought_data[drought_index]
+    
+    # Create composites for each phase
+    composites = {}
+    
+    for phase in ['positive', 'negative', 'neutral']:
+        # Get months with the specified phase
+        phase_months = iod_class[iod_class['Yearly_Phase'] == phase].index
+        
+        if lag_months != 0:
+            # Apply lag: shift the drought index forward in time
+            lagged_months = [pd.Timestamp(m) + pd.DateOffset(months=lag_months) for m in phase_months]
+            # Filter out dates outside the available range
+            lagged_months = [m for m in lagged_months if m in drought_var.time.values]
+        else:
+            lagged_months = phase_months
+        
+        # Select drought data for these months
+        if lagged_months:
+            phase_data = drought_var.sel(time=lagged_months)
+            
+            # Compute mean
+            phase_mean = phase_data.mean(dim='time')
+            
+            composites[phase] = phase_mean
+    
+    # Compute difference between positive and negative phases
+    if 'positive' in composites and 'negative' in composites:
+        composites['difference'] = composites['positive'] - composites['negative']
+    
+    return composites
+
+def test_composite_significance(iod_class, drought_data, drought_index='SPI-3', 
+                              lag_months=0, n_bootstrap=1000):
+    """
+    Test statistical significance of composite anomalies using bootstrap resampling
+    
+    Parameters:
+    -----------
+    iod_class : pd.DataFrame
+        DataFrame with IOD events classification
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    lag_months : int, optional
+        Lag in months between IOD and drought response (positive = IOD leads)
+    n_bootstrap : int, optional
+        Number of bootstrap samples
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing p-values for each grid point and phase
+    """
+    # Extract drought index
+    drought_var = drought_data[drought_index]
+    
+    # Initialize p-value arrays
+    p_values = {}
+    for phase in ['positive', 'negative', 'difference']:
+        p_values[phase] = xr.zeros_like(drought_var.isel(time=0))
+    
+    # Get months for each phase
+    positive_months = iod_class[iod_class['Yearly_Phase'] == 'positive'].index
+    negative_months = iod_class[iod_class['Yearly_Phase'] == 'negative'].index
+    
+    # Apply lag if specified
+    if lag_months != 0:
+        positive_months = [pd.Timestamp(m) + pd.DateOffset(months=lag_months) for m in positive_months]
+        negative_months = [pd.Timestamp(m) + pd.DateOffset(months=lag_months) for m in negative_months]
+        
+        # Filter out dates outside the available range
+        positive_months = [m for m in positive_months if m in drought_var.time.values]
+        negative_months = [m for m in negative_months if m in drought_var.time.values]
+    
+    # Select drought data for these months
+    if positive_months:
+        positive_data = drought_var.sel(time=positive_months)
+    else:
+        return p_values
+    
+    if negative_months:
+        negative_data = drought_var.sel(time=negative_months)
+    else:
+        return p_values
+    
+    # Compute observed differences
+    positive_mean = positive_data.mean(dim='time')
+    negative_mean = negative_data.mean(dim='time')
+    observed_diff = positive_mean - negative_mean
+    
+    # Combine all months for bootstrapping
+    all_months = list(positive_months) + list(negative_months)
+    all_data = drought_var.sel(time=all_months)
+    
+    # Bootstrap resampling
+    n_positive = len(positive_months)
+    n_negative = len(negative_months)
+    
+    # For each grid point
+    for lat_idx, lat in enumerate(drought_var.lat):
+        for lon_idx, lon in enumerate(drought_var.lon):
+            # Extract time series for this grid point
+            grid_data = all_data.sel(lat=lat, lon=lon).values
+            
+            # Skip if all values are NaN
+            if np.all(np.isnan(grid_data)):
+                continue
+            
+            # Observed values
+            obs_pos_mean = positive_mean.sel(lat=lat, lon=lon).values
+            obs_neg_mean = negative_mean.sel(lat=lat, lon=lon).values
+            obs_diff = observed_diff.sel(lat=lat, lon=lon).values
+            
+            # Bootstrap distribution
+            boot_pos_means = []
+            boot_neg_means = []
+            boot_diffs = []
+            
+            for _ in range(n_bootstrap):
+                # Resample with replacement
+                boot_indices = np.random.choice(len(grid_data), len(grid_data), replace=True)
+                boot_data = grid_data[boot_indices]
+                
+                # Split into pseudo-positive and pseudo-negative groups
+                boot_pos = boot_data[:n_positive]
+                boot_neg = boot_data[n_positive:]
+                
+                # Compute means and difference
+                if not np.all(np.isnan(boot_pos)) and not np.all(np.isnan(boot_neg)):
+                    boot_pos_mean = np.nanmean(boot_pos)
+                    boot_neg_mean = np.nanmean(boot_neg)
+                    boot_diff = boot_pos_mean - boot_neg_mean
+                    
+                    boot_pos_means.append(boot_pos_mean)
+                    boot_neg_means.append(boot_neg_mean)
+                    boot_diffs.append(boot_diff)
+            
+            # Compute p-values (two-tailed test)
+            if boot_pos_means:
+                # For positive phase
+                p_pos = np.mean(np.abs(np.array(boot_pos_means) - np.nanmean(grid_data)) >= 
+                              np.abs(obs_pos_mean - np.nanmean(grid_data)))
+                p_values['positive'][lat_idx, lon_idx] = p_pos
+                
+                # For negative phase
+                p_neg = np.mean(np.abs(np.array(boot_neg_means) - np.nanmean(grid_data)) >= 
+                              np.abs(obs_neg_mean - np.nanmean(grid_data)))
+                p_values['negative'][lat_idx, lon_idx] = p_neg
+                
+                # For difference
+                p_diff = np.mean(np.abs(np.array(boot_diffs)) >= np.abs(obs_diff))
+                p_values['difference'][lat_idx, lon_idx] = p_diff
+    
+    return p_values
+
+def plot_composite_map(composite_data, p_values=None, phase='positive', 
+                     output_file=None, title=None):
+    """
+    Plot composite map of drought conditions during IOD events
+    
+    Parameters:
+    -----------
+    composite_data : dict
+        Dictionary containing composite means for each IOD phase
+    p_values : dict, optional
+        Dictionary containing p-values for each grid point and phase
+    phase : str, optional
+        IOD phase to plot ('positive', 'negative', or 'difference')
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    if phase not in composite_data:
+        raise ValueError(f"Unknown phase: {phase}")
+    
+    fig = plt.figure(figsize=(12, 10))
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    
+    # Set up colormap
+    if phase == 'difference':
+        cmap = plt.cm.RdBu_r
+        vmin, vmax = -1.5, 1.5
+    else:
+        cmap = plt.cm.BrBG
+        vmin, vmax = -2, 2
+    
+    norm = colors.Normalize(vmin=vmin, vmax=vmax)
+    
+    # Plot composite
+    im = ax.pcolormesh(composite_data[phase].lon, composite_data[phase].lat, 
+                     composite_data[phase], 
+                     cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
+    
+    # Add stippling for significance if p-values are provided
+    if p_values is not None and phase in p_values:
+        significant = p_values[phase] < 0.05
+        lons, lats = np.meshgrid(composite_data[phase].lon, composite_data[phase].lat)
+        ax.scatter(lons[significant], lats[significant], color='black', s=1, 
+                 alpha=0.5, transform=ccrs.PlateCarree())
+    
+    # Add coastlines and borders
+    ax.coastlines()
+    ax.add_feature(cfeature.BORDERS, linestyle=':')
+    
+    # Add gridlines
+    gl = ax.gridlines(draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
+    gl.top_labels = False
+    gl.right_labels = False
+    
+    # Add colorbar
+    cbar = plt.colorbar(im, ax=ax, orientation='horizontal', pad=0.05, shrink=0.8)
+    cbar.set_label('Drought Index Anomaly')
+    
+    # Add title
+    if title:
+        plt.title(title)
+    else:
+        phase_name = phase.capitalize()
+        plt.title(f'Composite Drought Conditions during {phase_name} IOD Events')
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def compute_regional_composites(iod_class, drought_data, drought_index='SPI-3', 
+                              lag_months=0):
+    """
+    Compute regional composite means of drought indices during different IOD phases
+    
+    Parameters:
+    -----------
+    iod_class : pd.DataFrame
+        DataFrame with IOD events classification
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    lag_months : int, optional
+        Lag in months between IOD and drought response (positive = IOD leads)
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing regional composite means for each IOD phase
+    """
+    # Extract drought index
+    drought_var = drought_data[drought_index]
+    
+    results = []
+    
+    for region_name, region_bounds in SUBREGIONS.items():
+        # Extract data for the region
+        region_data = drought_var.sel(
+            lat=slice(region_bounds['lat_min'], region_bounds['lat_max']),
+            lon=slice(region_bounds['lon_min'], region_bounds['lon_max'])
+        )
+        
+        for phase in ['positive', 'negative', 'neutral']:
+            # Get months with the specified phase
+            phase_months = iod_class[iod_class['Yearly_Phase'] == phase].index
+            
+            if lag_months != 0:
+                # Apply lag: shift the drought index forward in time
+                lagged_months = [pd.Timestamp(m) + pd.DateOffset(months=lag_months) for m in phase_months]
+                # Filter out dates outside the available range
+                lagged_months = [m for m in lagged_months if m in drought_var.time.values]
+            else:
+                lagged_months = phase_months
+            
+            # Select drought data for these months
+            if lagged_months:
+                phase_data = region_data.sel(time=lagged_months)
+                
+                # Compute regional mean
+                phase_mean = phase_data.mean(dim=['time', 'lat', 'lon']).values
+                
+                # Compute standard error
+                phase_std = phase_data.mean(dim=['lat', 'lon']).std(dim='time').values
+                phase_se = phase_std / np.sqrt(len(lagged_months))
+                
+                results.append({
+                    'Region': region_name,
+                    'Phase': phase,
+                    'Mean': float(phase_mean),
+                    'SE': float(phase_se),
+                    'N': len(lagged_months)
+                })
+    
+    return pd.DataFrame(results)
+
+def plot_regional_composites(regional_composites, output_file=None, title=None):
+    """
+    Plot regional composite means of drought indices during different IOD phases
+    
+    Parameters:
+    -----------
+    regional_composites : pd.DataFrame
+        DataFrame containing regional composite means for each IOD phase
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    # Get unique regions
+    regions = regional_composites['Region'].unique()
+    
+    # Set up figure
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # Set width of bars
+    bar_width = 0.25
+    
+    # Set positions of bars on x-axis
+    r1 = np.arange(len(regions))
+    r2 = [x + bar_width for x in r1]
+    r3 = [x + bar_width for x in r2]
+    
+    # Create bars
+    positive = regional_composites[regional_composites['Phase'] == 'positive']
+    negative = regional_composites[regional_composites['Phase'] == 'negative']
+    neutral = regional_composites[regional_composites['Phase'] == 'neutral']
+    
+    # Ensure data is in the same order as regions
+    positive = positive.set_index('Region').loc[regions].reset_index()
+    negative = negative.set_index('Region').loc[regions].reset_index()
+    neutral = neutral.set_index('Region').loc[regions].reset_index()
+    
+    # Plot bars
+    ax.bar(r1, positive['Mean'], width=bar_width, color='darkred', 
+         yerr=positive['SE'], capsize=5, label='Positive IOD')
+    ax.bar(r2, neutral['Mean'], width=bar_width, color='gray', 
+         yerr=neutral['SE'], capsize=5, label='Neutral')
+    ax.bar(r3, negative['Mean'], width=bar_width, color='darkblue', 
+         yerr=negative['SE'], capsize=5, label='Negative IOD')
+    
+    # Add labels and title
+    ax.set_xlabel('Region', fontsize=12)
+    ax.set_ylabel('Drought Index Anomaly', fontsize=12)
+    
+    if title:
+        ax.set_title(title, fontsize=14)
+    else:
+        ax.set_title('Regional Drought Conditions during Different IOD Phases', fontsize=14)
+    
+    # Add xticks on the middle of the group bars
+    ax.set_xticks([r + bar_width for r in range(len(regions))])
+    ax.set_xticklabels(regions)
+    
+    # Add reference line at zero
+    ax.axhline(y=0, color='black', linestyle='-', alpha=0.3)
+    
+    # Add grid
+    ax.grid(True, linestyle=':', alpha=0.6, axis='y')
+    
+    # Add legend
+    ax.legend()
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def main():
+    """
+    Main function to run the composite analysis
+    """
+    print("IOD-Drought Composite Analysis")
+    print("==============================")
+    
+    # Create output directory
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Load data
+    iod_data = load_iod_data()
+    drought_data = load_drought_indices(index_type='SPI-3')
+    
+    print("\n1. Classifying IOD events")
+    iod_class = classify_iod_events(iod_data, threshold=0.5, peak_season='SON')
+    
+    # Count events by phase
+    event_counts = iod_class['Yearly_Phase'].value_counts()
+    print(f"Positive IOD events: {event_counts.get('positive', 0)}")
+    print(f"Negative IOD events: {event_counts.get('negative', 0)}")
+    print(f"Neutral periods: {event_counts.get('neutral', 0)}")
+    
+    # Save classification
+    iod_class.to_csv(os.path.join(output_dir, "iod_classification.csv"))
+    
+    print("\n2. Computing drought composites")
+    # Use optimal lag from lag correlation analysis (assuming 3 months)
+    lag_months = 3
+    composites = compute_drought_composites(
+        iod_class, drought_data, drought_index='SPI-3', lag_months=lag_months
+    )
+    
+    print("\n3. Testing statistical significance")
+    p_values = test_composite_significance(
+        iod_class, drought_data, drought_index='SPI-3', 
+        lag_months=lag_months, n_bootstrap=1000
+    )
+    
+    print("\n4. Plotting composite maps")
+    for phase in ['positive', 'negative', 'difference']:
+        plot_composite_map(
+            composites, p_values, phase=phase,
+            output_file=os.path.join(output_dir, f"iod_spi3_composite_{phase}.png"),
+            title=f"Composite SPI-3 during {phase.capitalize()} IOD Events (lag={lag_months} months)"
+        )
+    
+    print("\n5. Computing regional composites")
+    regional_composites = compute_regional_composites(
+        iod_class, drought_data, drought_index='SPI-3', lag_months=lag_months
+    )
+    
+    # Save regional composites
+    regional_composites.to_csv(os.path.join(output_dir, "regional_composites.csv"), index=False)
+    
+    # Plot regional composites
+    plot_regional_composites(
+        regional_composites,
+        output_file=os.path.join(output_dir, "regional_composites.png"),
+        title=f"Regional SPI-3 during Different IOD Phases (lag={lag_months} months)"
+    )
+    
+    print("\nAnalysis complete. Results saved to the 'output' directory.")
+
+if __name__ == "__main__":
+    main()
+
+```
+
+
+
 # 4. 04_partial_correlation_analysis.py
 #    - Isolates IOD's independent influence by controlling for ENSO effects
 #    - Compares raw and partial correlations to quantify IOD's unique contribution
