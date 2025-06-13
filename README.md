@@ -2662,35 +2662,40 @@ If these files are not available, the scripts will generate synthetic data for d
 ### 1. Ensure all dependencies are installed:
    ```pip install numpy pandas matplotlib cartopy xarray scipy statsmodels```
    
-2. Run the scripts in sequence:
-   python 01_correlation_analysis.py
-   python 02_lag_correlation_analysis.py
-   python 03_composite_analysis.py
-   python 04_partial_correlation_analysis.py
-   python 05_wavelet_coherence_analysis.py
+### 2. Run the scripts in sequence:
 
-# 3. Results will be saved to an 'output' directory created by each script
+   ```python 01_correlation_analysis.py``` 
 
-# Key Findings
-# ----------
-# The scripts will reproduce the key findings from the paper:
-# - Strong negative correlation between positive IOD events and precipitation in southeastern Southern Africa
-# - Optimal prediction lead time of 2-4 months for drought conditions
-# - Significant differences in drought patterns between positive and negative IOD phases
-# - IOD's influence on drought is partially independent of ENSO
-# - Coherent IOD-drought relationships at interannual (2-7 year) timescales
+   ```python 02_lag_correlation_analysis.py```
+   
+   ```python 03_composite_analysis.py```
+   
+   ```python 04_partial_correlation_analysis.py```
 
-# Customization
-# -----------
-# Each script contains parameters that can be modified to customize the analysis:
-# - Time period for analysis
-# - Drought index type (SPI-3, SPI-6, SPEI, etc.)
-# - Significance thresholds
-# - Regional definitions
-# - Visualization parameters
+   ```python 05_wavelet_coherence_analysis.py```
 
-# Contact
-# ------
-# For questions or issues, please contact:
-# [Your Email]
-"""
+### 3. Results will be saved to an 'output' directory created by each script
+
+## Key Findings
+
+ The scripts will reproduce the key findings from the paper:
+ - Strong negative correlation between positive IOD events and precipitation in southeastern Southern Africa
+ - Optimal prediction lead time of 2-4 months for drought conditions
+ - Significant differences in drought patterns between positive and negative IOD phases
+ - IOD's influence on drought is partially independent of ENSO
+ - Coherent IOD-drought relationships at interannual (2-7 year) timescales
+
+## Customization
+
+## Each script contains parameters that can be modified to customize the analysis:
+ - Time period for analysis
+ - Drought index type (SPI-3, SPI-6, SPEI, etc.)
+ - Significance thresholds
+ - Regional definitions
+ - Visualization parameters
+
+## Contact
+### ------
+#### For questions or issues, please contact:
+#### MSovara@csir.co.za
+
