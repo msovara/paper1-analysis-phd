@@ -895,8 +895,6 @@ if __name__ == "__main__":
 ###    - Tests the statistical significance of composite anomalies
 
 ```python
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 IOD-Drought Composite Analysis Script
 
@@ -910,7 +908,7 @@ The script includes functions for:
 3. Testing statistical significance of composite anomalies
 4. Visualizing spatial patterns of drought conditions during IOD events
 
-Author: [Your Name]
+Author: Mthetho Sovara
 Date: June 2025
 """
 
