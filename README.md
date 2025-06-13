@@ -32,7 +32,7 @@ The script includes functions for:
 3. Performing seasonal correlation analysis
 4. Visualizing correlation maps with statistical significance
 
-Author: [Your Name]
+Author: Mthetho Sovara
 Date: June 2025
 """
 
