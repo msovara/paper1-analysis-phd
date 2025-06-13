@@ -2045,10 +2045,597 @@ if __name__ == "__main__":
 
 
 
-# 5. 05_wavelet_coherence_analysis.py
-#    - Examines time-frequency relationships between IOD and drought indices
-#    - Identifies periods of significant coherence
-#    - Analyzes phase relationships and lead-lag patterns
+## 5. 05_wavelet_coherence_analysis.py
+###    - Examines time-frequency relationships between IOD and drought indices
+###    - Identifies periods of significant coherence
+###    - Analyzes phase relationships and lead-lag patterns
+
+```python
+"""
+IOD-Drought Wavelet Coherence Analysis Script
+
+This script performs wavelet coherence analysis between the Indian Ocean Dipole (IOD)
+and drought indices across Southern Africa, as described in the paper:
+"The Indian Ocean Dipole as a Predictor of Drought in Southern Africa: A Statistical Analysis"
+
+The script includes functions for:
+1. Computing wavelet transforms of time series
+2. Calculating wavelet coherence between IOD and drought indices
+3. Testing statistical significance using Monte Carlo methods
+4. Visualizing time-frequency relationships and phase differences
+
+Author: [Your Name]
+Date: June 2025
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib.gridspec import GridSpec
+import xarray as xr
+import scipy.signal as signal
+import scipy.stats as stats
+import os
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import common functions from correlation analysis script
+# Assuming the correlation_analysis.py script is in the same directory
+from correlation_analysis import (load_iod_data, load_drought_indices, 
+                                compute_regional_average, SUBREGIONS, SEASONS)
+
+def compute_wavelet_transform(time_series, dt=1.0, dj=1/12, s0=2*dt, J=None, wavelet='morlet'):
+    """
+    Compute the wavelet transform of a time series
+    
+    Parameters:
+    -----------
+    time_series : array_like
+        Time series data
+    dt : float, optional
+        Time step between consecutive samples
+    dj : float, optional
+        Scale resolution (smaller values = finer resolution)
+    s0 : float, optional
+        Smallest scale of the wavelet
+    J : int, optional
+        Number of scales
+    wavelet : str, optional
+        Wavelet function to use ('morlet', 'paul', 'dog')
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing wavelet transform results
+    """
+    # Remove NaN values
+    valid_idx = ~np.isnan(time_series)
+    data = time_series[valid_idx]
+    
+    # Normalize the time series
+    data = (data - np.mean(data)) / np.std(data)
+    
+    # Determine number of scales if not provided
+    if J is None:
+        J = int(np.log2(len(data) * dt / s0) / dj)
+    
+    # Create scales
+    scales = s0 * 2 ** (np.arange(0, J + 1) * dj)
+    
+    # Create frequencies
+    frequencies = 1 / scales
+    periods = 1 / frequencies
+    
+    # Initialize wavelet transform array
+    W = np.zeros((len(scales), len(data)), dtype=complex)
+    
+    # Compute wavelet transform for each scale
+    for i, scale in enumerate(scales):
+        # Create wavelet function
+        if wavelet == 'morlet':
+            # Morlet wavelet parameters
+            omega0 = 6  # Wavenumber (non-dimensional frequency)
+            
+            # Create wavelet in time domain
+            t = np.arange(-4*scale, 4*scale + dt, dt)
+            norm = np.pi**(-0.25) * np.sqrt(2/scale)
+            wavelet_func = norm * np.exp(1j * omega0 * t / scale) * np.exp(-t**2 / (2 * scale**2))
+            
+            # Normalize to unit energy
+            wavelet_func = wavelet_func / np.sqrt(np.sum(np.abs(wavelet_func)**2))
+        
+        elif wavelet == 'paul':
+            # Paul wavelet parameters
+            m = 4  # Order
+            
+            # Create wavelet in time domain
+            t = np.arange(-4*scale, 4*scale + dt, dt)
+            norm = 2**m * np.math.factorial(2*m-1) / np.sqrt(np.math.factorial(2*m) * np.pi)
+            wavelet_func = norm * (1 - 1j*t/scale)**(-m-1)
+            
+            # Normalize to unit energy
+            wavelet_func = wavelet_func / np.sqrt(np.sum(np.abs(wavelet_func)**2))
+        
+        elif wavelet == 'dog':
+            # DOG (Derivative of Gaussian) wavelet parameters
+            m = 2  # Order (m=2 is Mexican hat)
+            
+            # Create wavelet in time domain
+            t = np.arange(-4*scale, 4*scale + dt, dt)
+            norm = (-1)**m / np.sqrt(np.math.gamma(m+0.5)) * np.sqrt(2)
+            wavelet_func = norm * (t/scale)**m * np.exp(-t**2 / (2*scale**2))
+            
+            # Normalize to unit energy
+            wavelet_func = wavelet_func / np.sqrt(np.sum(np.abs(wavelet_func)**2))
+        
+        else:
+            raise ValueError(f"Unknown wavelet type: {wavelet}")
+        
+        # Compute convolution using FFT
+        data_fft = np.fft.fft(data)
+        wavelet_fft = np.fft.fft(wavelet_func, len(data))
+        convolution = np.fft.ifft(data_fft * wavelet_fft)
+        
+        # Store result
+        W[i, :] = convolution
+    
+    # Create output dictionary
+    result = {
+        'W': W,
+        'scales': scales,
+        'frequencies': frequencies,
+        'periods': periods,
+        'dt': dt,
+        'dj': dj,
+        'wavelet': wavelet
+    }
+    
+    return result
+
+def compute_wavelet_coherence(x, y, dt=1.0, dj=1/12, s0=2*dt, J=None, wavelet='morlet'):
+    """
+    Compute wavelet coherence between two time series
+    
+    Parameters:
+    -----------
+    x : array_like
+        First time series
+    y : array_like
+        Second time series
+    dt : float, optional
+        Time step between consecutive samples
+    dj : float, optional
+        Scale resolution (smaller values = finer resolution)
+    s0 : float, optional
+        Smallest scale of the wavelet
+    J : int, optional
+        Number of scales
+    wavelet : str, optional
+        Wavelet function to use ('morlet', 'paul', 'dog')
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing wavelet coherence results
+    """
+    # Ensure both time series have the same length
+    if len(x) != len(y):
+        raise ValueError("Time series must have the same length")
+    
+    # Remove NaN values
+    valid_idx = ~(np.isnan(x) | np.isnan(y))
+    x_valid = x[valid_idx]
+    y_valid = y[valid_idx]
+    
+    # Compute wavelet transforms
+    Wx = compute_wavelet_transform(x_valid, dt, dj, s0, J, wavelet)
+    Wy = compute_wavelet_transform(y_valid, dt, dj, s0, J, wavelet)
+    
+    # Extract wavelet transforms
+    W1 = Wx['W']
+    W2 = Wy['W']
+    
+    # Compute cross-wavelet transform
+    W12 = W1 * np.conj(W2)
+    
+    # Smooth in time and scale
+    def smooth(W, dt, scales):
+        # Smoothing in time
+        k = 0.6  # Smoothing parameter
+        smoothed = np.zeros_like(W)
+        
+        for i, scale in enumerate(scales):
+            # Create smoothing window
+            t_width = k * scale
+            t_smooth = np.exp(-np.arange(-3*t_width, 3*t_width + dt, dt)**2 / (2 * t_width**2))
+            t_smooth = t_smooth / np.sum(t_smooth)
+            
+            # Apply smoothing in time
+            smoothed[i, :] = np.convolve(np.abs(W[i, :])**2, t_smooth, mode='same')
+        
+        # Smoothing in scale
+        for j in range(W.shape[1]):
+            # Create smoothing window
+            s_width = 0.6
+            s_smooth = np.exp(-np.arange(-3*s_width, 3*s_width + dj, dj)**2 / (2 * s_width**2))
+            s_smooth = s_smooth / np.sum(s_smooth)
+            
+            # Apply smoothing in scale
+            temp = np.convolve(smoothed[:, j], s_smooth, mode='same')
+            smoothed[:, j] = temp
+        
+        return smoothed
+    
+    # Smooth power spectra
+    S1 = smooth(W1, dt, Wx['scales'])
+    S2 = smooth(W2, dt, Wy['scales'])
+    S12 = smooth(W12, dt, Wx['scales'])
+    
+    # Compute wavelet coherence
+    coherence = np.abs(S12)**2 / (S1 * S2)
+    
+    # Compute phase difference
+    phase_diff = np.angle(W12)
+    
+    # Create output dictionary
+    result = {
+        'coherence': coherence,
+        'phase_diff': phase_diff,
+        'scales': Wx['scales'],
+        'frequencies': Wx['frequencies'],
+        'periods': Wx['periods'],
+        'dt': dt,
+        'dj': dj,
+        'wavelet': wavelet
+    }
+    
+    return result
+
+def monte_carlo_significance(coherence, n_surrogates=1000, alpha=0.05):
+    """
+    Compute statistical significance of wavelet coherence using Monte Carlo methods
+    
+    Parameters:
+    -----------
+    coherence : dict
+        Dictionary containing wavelet coherence results
+    n_surrogates : int, optional
+        Number of surrogate time series pairs
+    alpha : float, optional
+        Significance level
+        
+    Returns:
+    --------
+    array_like
+        Binary mask indicating significant coherence
+    """
+    # Extract coherence values
+    coh = coherence['coherence']
+    scales = coherence['scales']
+    dt = coherence['dt']
+    
+    # Initialize array for surrogate coherence values
+    surrogate_max = np.zeros(n_surrogates)
+    
+    # Generate surrogate time series and compute coherence
+    for i in range(n_surrogates):
+        # Generate random phases
+        n = coh.shape[1]
+        phases1 = np.random.uniform(0, 2*np.pi, n)
+        phases2 = np.random.uniform(0, 2*np.pi, n)
+        
+        # Create surrogate time series with random phases but same power spectrum
+        surrogate1 = np.fft.ifft(np.exp(1j * phases1)).real
+        surrogate2 = np.fft.ifft(np.exp(1j * phases2)).real
+        
+        # Compute wavelet coherence
+        surr_coh = compute_wavelet_coherence(surrogate1, surrogate2, dt=dt)
+        
+        # Store maximum coherence value
+        surrogate_max[i] = np.max(surr_coh['coherence'])
+    
+    # Compute significance threshold
+    threshold = np.percentile(surrogate_max, (1 - alpha) * 100)
+    
+    # Create significance mask
+    significance = coh > threshold
+    
+    return significance
+
+def plot_wavelet_coherence(coherence, significance=None, time_index=None, 
+                         output_file=None, title=None):
+    """
+    Plot wavelet coherence results
+    
+    Parameters:
+    -----------
+    coherence : dict
+        Dictionary containing wavelet coherence results
+    significance : array_like, optional
+        Binary mask indicating significant coherence
+    time_index : array_like, optional
+        Time index for x-axis
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    # Extract coherence values
+    coh = coherence['coherence']
+    phase = coherence['phase_diff']
+    scales = coherence['scales']
+    periods = coherence['periods']
+    
+    # Create time index if not provided
+    if time_index is None:
+        time_index = np.arange(coh.shape[1])
+    
+    # Create figure
+    fig = plt.figure(figsize=(12, 8))
+    gs = GridSpec(2, 1, height_ratios=[4, 1])
+    
+    # Plot coherence
+    ax1 = fig.add_subplot(gs[0])
+    
+    # Set up colormap
+    cmap = plt.cm.jet
+    
+    # Plot coherence
+    im = ax1.pcolormesh(time_index, np.log2(periods), coh, 
+                      cmap=cmap, vmin=0, vmax=1)
+    
+    # Add contour for significance
+    if significance is not None:
+        ax1.contour(time_index, np.log2(periods), significance, 
+                  levels=[0.5], colors='k', linewidths=2)
+    
+    # Add phase arrows
+    if significance is not None:
+        # Only plot arrows in significant regions
+        arrow_density = 20  # Lower value = more arrows
+        time_step = max(1, coh.shape[1] // arrow_density)
+        scale_step = max(1, coh.shape[0] // arrow_density)
+        
+        for i in range(0, coh.shape[0], scale_step):
+            for j in range(0, coh.shape[1], time_step):
+                if significance[i, j]:
+                    # Convert phase to arrow direction
+                    angle = phase[i, j]
+                    dx = np.cos(angle)
+                    dy = np.sin(angle)
+                    
+                    # Plot arrow
+                    ax1.arrow(time_index[j], np.log2(periods[i]), dx*0.3, dy*0.3, 
+                            head_width=0.1, head_length=0.1, fc='k', ec='k', alpha=0.8)
+    
+    # Set y-axis ticks to represent periods
+    yticks = np.array([1, 3, 6, 12, 24, 48, 96])
+    ax1.set_yticks(np.log2(yticks))
+    ax1.set_yticklabels(yticks)
+    
+    # Set axis labels
+    ax1.set_ylabel('Period (months)', fontsize=12)
+    
+    # Add colorbar
+    cbar = plt.colorbar(im, ax=ax1, orientation='vertical', pad=0.02)
+    cbar.set_label('Wavelet Coherence', fontsize=12)
+    
+    # Add cone of influence
+    # The cone of influence represents the region where edge effects are important
+    t = np.arange(coh.shape[1])
+    coi = scales[-1] * np.sqrt(2)
+    coi_line = coi * np.sqrt(1 + (t/(coi/1.4))**2)
+    coi_line = np.log2(np.minimum(coi_line, periods[-1]))
+    ax1.fill_between(time_index, np.log2(periods[-1])*np.ones_like(t), coi_line, 
+                   color='white', alpha=0.5)
+    ax1.plot(time_index, coi_line, 'k--')
+    
+    # Add title
+    if title:
+        ax1.set_title(title, fontsize=14)
+    else:
+        ax1.set_title('Wavelet Coherence Analysis', fontsize=14)
+    
+    # Format x-axis if time_index contains datetime objects
+    if isinstance(time_index[0], (pd.Timestamp, np.datetime64)):
+        ax1.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y'))
+        plt.setp(ax1.get_xticklabels(), rotation=30, ha='right')
+    
+    # Add legend for arrows
+    arrow_legend = plt.matplotlib.patches.FancyArrowPatch(
+        (0, 0), (0.5, 0), color='k', 
+        arrowstyle='->', mutation_scale=15
+    )
+    ax1.legend([arrow_legend], ['Phase relationship (right: in-phase, left: anti-phase, down: IOD leads by 90°)'], 
+             loc='upper center', bbox_to_anchor=(0.5, -0.05))
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def analyze_regional_wavelet_coherence(iod_data, drought_data, drought_index='SPI-3', 
+                                     region_name='southeastern'):
+    """
+    Analyze wavelet coherence between IOD and regional drought index
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    region_name : str, optional
+        Name of the region to analyze
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing wavelet coherence results
+    """
+    # Extract IOD series
+    iod_series = iod_data['DMI'].values
+    
+    # Compute regional average of drought index
+    region_avg = compute_regional_average(drought_data[drought_index], region_name)
+    drought_series = region_avg.values
+    
+    # Ensure both series have the same length
+    min_len = min(len(iod_series), len(drought_series))
+    iod_series = iod_series[:min_len]
+    drought_series = drought_series[:min_len]
+    
+    # Compute wavelet coherence
+    coherence = compute_wavelet_coherence(iod_series, drought_series, dt=1.0)
+    
+    # Compute significance
+    significance = monte_carlo_significance(coherence, n_surrogates=100)
+    
+    # Add time index to results
+    coherence['time_index'] = region_avg.index[:min_len]
+    
+    # Add significance to results
+    coherence['significance'] = significance
+    
+    return coherence
+
+def identify_coherent_periods(coherence, min_period=6, max_period=48, min_duration=12):
+    """
+    Identify periods of significant coherence
+    
+    Parameters:
+    -----------
+    coherence : dict
+        Dictionary containing wavelet coherence results
+    min_period : float, optional
+        Minimum period (in months) to consider
+    max_period : float, optional
+        Maximum period (in months) to consider
+    min_duration : int, optional
+        Minimum duration (in months) of coherent periods
+        
+    Returns:
+    --------
+    list
+        List of coherent periods with start time, end time, and average period
+    """
+    # Extract coherence values
+    coh = coherence['coherence']
+    sig = coherence['significance']
+    periods = coherence['periods']
+    time_index = coherence['time_index']
+    
+    # Filter by period range
+    period_mask = (periods >= min_period) & (periods <= max_period)
+    period_indices = np.where(period_mask)[0]
+    
+    # Initialize list for coherent periods
+    coherent_periods = []
+    
+    # Scan through time
+    for i in period_indices:
+        # Find continuous segments of significant coherence
+        sig_segments = np.where(sig[i, :])[0]
+        
+        if len(sig_segments) > 0:
+            # Group into continuous segments
+            breaks = np.where(np.diff(sig_segments) > 1)[0]
+            segment_starts = np.concatenate([[0], breaks + 1])
+            segment_ends = np.concatenate([breaks, [len(sig_segments) - 1]])
+            
+            # Check each segment
+            for start_idx, end_idx in zip(segment_starts, segment_ends):
+                segment = sig_segments[start_idx:end_idx + 1]
+                
+                # Check if segment is long enough
+                if len(segment) >= min_duration:
+                    # Get start and end times
+                    start_time = time_index[segment[0]]
+                    end_time = time_index[segment[-1]]
+                    
+                    # Get average coherence and period
+                    avg_coherence = np.mean(coh[i, segment])
+                    avg_period = periods[i]
+                    
+                    # Get average phase difference
+                    phase_diff = coherence['phase_diff'][i, segment]
+                    avg_phase = np.angle(np.mean(np.exp(1j * phase_diff)))
+                    
+                    # Add to list
+                    coherent_periods.append({
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'duration': len(segment),
+                        'period': avg_period,
+                        'coherence': avg_coherence,
+                        'phase': avg_phase
+                    })
+    
+    return coherent_periods
+
+def main():
+    """
+    Main function to run the wavelet coherence analysis
+    """
+    print("IOD-Drought Wavelet Coherence Analysis")
+    print("=====================================")
+    
+    # Create output directory
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Load data
+    iod_data = load_iod_data()
+    drought_data = load_drought_indices(index_type='SPI-3')
+    
+    # Analyze each region
+    for region_name in SUBREGIONS:
+        print(f"\nAnalyzing {region_name} region")
+        
+        # Compute wavelet coherence
+        coherence = analyze_regional_wavelet_coherence(
+            iod_data, drought_data, drought_index='SPI-3', region_name=region_name
+        )
+        
+        # Plot wavelet coherence
+        plot_wavelet_coherence(
+            coherence, significance=coherence['significance'], 
+            time_index=coherence['time_index'],
+            output_file=os.path.join(output_dir, f"iod_spi3_wavelet_coherence_{region_name}.png"),
+            title=f"IOD-SPI-3 Wavelet Coherence: {region_name.capitalize()} Region"
+        )
+        
+        # Identify coherent periods
+        coherent_periods = identify_coherent_periods(coherence)
+        
+        # Print coherent periods
+        if coherent_periods:
+            print(f"  Identified {len(coherent_periods)} periods of significant coherence:")
+            for i, period in enumerate(coherent_periods):
+                start = period['start_time'].strftime('%Y-%m') if hasattr(period['start_time'], 'strftime') else period['start_time']
+                end = period['end_time'].strftime('%Y-%m') if hasattr(period['end_time'], 'strftime') else period['end_time']
+                print(f"  {i+1}. {start} to {end}: {period['period']:.1f} months period, coherence = {period['coherence']:.2f}")
+        else:
+            print("  No significant coherent periods identified")
+    
+    print("\nAnalysis complete. Results saved to the 'output' directory.")
+
+if __name__ == "__main__":
+    main()
+```
 
 # Dependencies
 # -----------
