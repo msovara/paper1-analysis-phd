@@ -532,12 +532,363 @@ if __name__ == "__main__":
 
 ```
 
-#
-# 2. 02_lag_correlation_analysis.py
-#    - Examines lead-lag relationships between IOD and drought indices
-#    - Identifies optimal prediction lead times
-#    - Analyzes regional variations in lag response
-#
+
+## 2. 02_lag_correlation_analysis.py
+###    - Examines lead-lag relationships between IOD and drought indices
+###    - Identifies optimal prediction lead times
+###    - Analyzes regional variations in lag response
+
+```python
+"""
+IOD-Drought Lag Correlation Analysis Script
+
+This script performs lag correlation analysis between the Indian Ocean Dipole (IOD)
+and drought indices across Southern Africa, as described in the paper:
+"The Indian Ocean Dipole as a Predictor of Drought in Southern Africa: A Statistical Analysis"
+
+The script includes functions for:
+1. Computing lag correlations between IOD and drought indices
+2. Identifying optimal lead times for prediction
+3. Visualizing lag correlation patterns for different regions
+4. Analyzing seasonal variations in lag relationships
+
+Author: [Your Name]
+Date: June 2025
+"""
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import xarray as xr
+import scipy.stats as stats
+import os
+import warnings
+warnings.filterwarnings('ignore')
+
+# Import common functions from correlation analysis script
+# Assuming the correlation_analysis.py script is in the same directory
+from correlation_analysis import (load_iod_data, load_drought_indices, 
+                                compute_regional_average, SUBREGIONS, SEASONS)
+
+def compute_lag_correlation(iod_series, drought_series, max_lag=12):
+    """
+    Compute lag correlation between IOD and drought index time series
+    
+    Parameters:
+    -----------
+    iod_series : pd.Series
+        Time series of IOD index
+    drought_series : pd.Series
+        Time series of drought index
+    max_lag : int, optional
+        Maximum lag to consider in months (both positive and negative)
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing lag correlation coefficients and p-values
+    """
+    results = []
+    
+    # Ensure both series have datetime index
+    iod_series = iod_series.copy()
+    drought_series = drought_series.copy()
+    
+    if not isinstance(iod_series.index, pd.DatetimeIndex):
+        raise ValueError("IOD series must have DatetimeIndex")
+    if not isinstance(drought_series.index, pd.DatetimeIndex):
+        raise ValueError("Drought series must have DatetimeIndex")
+    
+    # Compute correlations for different lags
+    for lag in range(-max_lag, max_lag + 1):
+        # Shift IOD series (positive lag means IOD leads drought)
+        if lag < 0:
+            # Negative lag: drought leads IOD
+            iod_shifted = iod_series.copy()
+            drought_shifted = drought_series.shift(periods=abs(lag), freq='MS')
+        else:
+            # Positive lag: IOD leads drought
+            iod_shifted = iod_series.copy()
+            drought_shifted = drought_series.shift(periods=-lag, freq='MS')
+        
+        # Align series
+        aligned_data = pd.concat([iod_shifted, drought_shifted], axis=1).dropna()
+        
+        if len(aligned_data) > 10:  # Require at least 10 data points
+            # Compute correlation
+            r, p = stats.pearsonr(aligned_data.iloc[:, 0], aligned_data.iloc[:, 1])
+            
+            results.append({
+                'Lag': lag,
+                'Correlation': r,
+                'P-value': p,
+                'Significant': p < 0.05,
+                'N': len(aligned_data)
+            })
+    
+    return pd.DataFrame(results)
+
+def compute_regional_lag_correlations(iod_data, drought_data, drought_index='SPI-3', 
+                                    max_lag=12, season=None):
+    """
+    Compute lag correlations for different regions
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    max_lag : int, optional
+        Maximum lag to consider in months (both positive and negative)
+    season : str, optional
+        Season for analysis ('DJF', 'MAM', 'JJA', 'SON')
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing lag correlation results for each region
+    """
+    results = {}
+    
+    # Extract IOD series
+    iod_series = iod_data['DMI']
+    
+    # Filter by season if specified
+    if season:
+        season_months = SEASONS[season]
+        iod_series = iod_series[iod_series.index.month.isin(season_months)]
+    
+    # Compute lag correlations for each region
+    for region_name in SUBREGIONS:
+        print(f"Computing lag correlations for {region_name} region")
+        
+        # Compute regional average of drought index
+        region_avg = compute_regional_average(drought_data[drought_index], region_name)
+        
+        # Filter by season if specified
+        if season:
+            region_avg = region_avg[region_avg.index.month.isin(season_months)]
+        
+        # Compute lag correlations
+        lag_corr = compute_lag_correlation(iod_series, region_avg, max_lag=max_lag)
+        
+        results[region_name] = lag_corr
+    
+    return results
+
+def plot_lag_correlations(lag_correlations, output_file=None, title=None):
+    """
+    Plot lag correlation results for different regions
+    
+    Parameters:
+    -----------
+    lag_correlations : dict
+        Dictionary containing lag correlation results for each region
+    output_file : str, optional
+        Path to save the figure
+    title : str, optional
+        Title for the plot
+        
+    Returns:
+    --------
+    matplotlib.figure.Figure
+        Figure object
+    """
+    fig, ax = plt.subplots(figsize=(12, 8))
+    
+    # Define colors and markers for different regions
+    region_styles = {
+        'southeastern': {'color': 'darkred', 'marker': 'o', 'label': 'Southeastern'},
+        'central': {'color': 'darkgreen', 'marker': 's', 'label': 'Central'},
+        'northwestern': {'color': 'darkblue', 'marker': '^', 'label': 'Northwestern'},
+        'southwestern': {'color': 'darkorange', 'marker': 'd', 'label': 'Southwestern'}
+    }
+    
+    # Plot lag correlations for each region
+    for region_name, lag_corr in lag_correlations.items():
+        if region_name in region_styles:
+            style = region_styles[region_name]
+            
+            # Plot correlation line
+            ax.plot(lag_corr['Lag'], lag_corr['Correlation'], 
+                   color=style['color'], marker=style['marker'], 
+                   label=style['label'], linewidth=2, markersize=8)
+            
+            # Highlight significant correlations
+            significant = lag_corr[lag_corr['Significant']]
+            if not significant.empty:
+                ax.scatter(significant['Lag'], significant['Correlation'], 
+                         color=style['color'], s=100, facecolors='none', 
+                         linewidth=2, zorder=10)
+    
+    # Add reference line at zero correlation
+    ax.axhline(y=0, color='gray', linestyle='--', alpha=0.7)
+    
+    # Add vertical line at zero lag
+    ax.axvline(x=0, color='gray', linestyle='--', alpha=0.7)
+    
+    # Add shading for positive lags (IOD leads drought)
+    ax.axvspan(0, max(lag_corr['Lag']), alpha=0.1, color='blue', label='IOD leads')
+    
+    # Add shading for negative lags (drought leads IOD)
+    ax.axvspan(min(lag_corr['Lag']), 0, alpha=0.1, color='red', label='Drought leads')
+    
+    # Set axis labels
+    ax.set_xlabel('Lag (months)', fontsize=12)
+    ax.set_ylabel('Correlation Coefficient', fontsize=12)
+    
+    # Set axis limits
+    ax.set_xlim(min(lag_corr['Lag']), max(lag_corr['Lag']))
+    ax.set_ylim(-0.8, 0.8)
+    
+    # Add grid
+    ax.grid(True, linestyle=':', alpha=0.6)
+    
+    # Add title
+    if title:
+        ax.set_title(title, fontsize=14)
+    else:
+        ax.set_title('Lag Correlation between IOD and Regional Drought Indices', fontsize=14)
+    
+    # Add legend
+    ax.legend(loc='best', fontsize=10)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    # Save figure if output file is provided
+    if output_file:
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        print(f"Figure saved to {output_file}")
+    
+    return fig
+
+def find_optimal_lead_time(lag_correlations):
+    """
+    Find optimal lead time for each region based on maximum absolute correlation
+    
+    Parameters:
+    -----------
+    lag_correlations : dict
+        Dictionary containing lag correlation results for each region
+        
+    Returns:
+    --------
+    pd.DataFrame
+        DataFrame containing optimal lead times and correlation values
+    """
+    results = []
+    
+    for region_name, lag_corr in lag_correlations.items():
+        # Filter for positive lags (IOD leads drought)
+        positive_lags = lag_corr[lag_corr['Lag'] > 0]
+        
+        if not positive_lags.empty:
+            # Find lag with maximum absolute correlation
+            max_corr_idx = positive_lags['Correlation'].abs().idxmax()
+            max_corr_row = positive_lags.loc[max_corr_idx]
+            
+            results.append({
+                'Region': region_name,
+                'Optimal_Lead_Time': max_corr_row['Lag'],
+                'Correlation': max_corr_row['Correlation'],
+                'P-value': max_corr_row['P-value'],
+                'Significant': max_corr_row['Significant']
+            })
+    
+    return pd.DataFrame(results)
+
+def seasonal_lag_correlation_analysis(iod_data, drought_data, drought_index='SPI-3', max_lag=12):
+    """
+    Perform seasonal lag correlation analysis
+    
+    Parameters:
+    -----------
+    iod_data : pd.DataFrame
+        DataFrame containing IOD data with datetime index
+    drought_data : xr.Dataset
+        Dataset containing drought index data
+    drought_index : str, optional
+        Name of the drought index variable in the dataset
+    max_lag : int, optional
+        Maximum lag to consider in months (both positive and negative)
+        
+    Returns:
+    --------
+    dict
+        Dictionary containing lag correlation results for each season
+    """
+    results = {}
+    
+    for season in SEASONS:
+        print(f"Computing lag correlations for {season} season")
+        
+        # Compute lag correlations for the season
+        season_results = compute_regional_lag_correlations(
+            iod_data, drought_data, drought_index=drought_index, 
+            max_lag=max_lag, season=season
+        )
+        
+        results[season] = season_results
+    
+    return results
+
+def main():
+    """
+    Main function to run the lag correlation analysis
+    """
+    print("IOD-Drought Lag Correlation Analysis")
+    print("===================================")
+    
+    # Create output directory
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Load data
+    iod_data = load_iod_data()
+    drought_data = load_drought_indices(index_type='SPI-3')
+    
+    print("\n1. Computing regional lag correlations")
+    lag_correlations = compute_regional_lag_correlations(
+        iod_data, drought_data, drought_index='SPI-3', max_lag=12
+    )
+    
+    # Plot lag correlations
+    plot_lag_correlations(
+        lag_correlations,
+        output_file=os.path.join(output_dir, "iod_spi3_lag_correlations.png"),
+        title="Lag Correlation between IOD and SPI-3 by Region (1980-2020)"
+    )
+    
+    # Find optimal lead times
+    print("\n2. Finding optimal lead times for prediction")
+    optimal_leads = find_optimal_lead_time(lag_correlations)
+    print(optimal_leads)
+    optimal_leads.to_csv(os.path.join(output_dir, "optimal_lead_times.csv"), index=False)
+    
+    print("\n3. Performing seasonal lag correlation analysis")
+    seasonal_lag_corr = seasonal_lag_correlation_analysis(
+        iod_data, drought_data, drought_index='SPI-3', max_lag=12
+    )
+    
+    # Plot seasonal lag correlations
+    for season, season_results in seasonal_lag_corr.items():
+        plot_lag_correlations(
+            season_results,
+            output_file=os.path.join(output_dir, f"iod_spi3_lag_correlations_{season}.png"),
+            title=f"Lag Correlation between IOD and SPI-3 by Region - {season} (1980-2020)"
+        )
+    
+    print("\nAnalysis complete. Results saved to the 'output' directory.")
+
+if __name__ == "__main__":
+    main()
+
+```
+
 # 3. 03_composite_analysis.py
 #    - Classifies IOD events into positive, negative, and neutral phases
 #    - Computes composite drought conditions during different IOD phases
