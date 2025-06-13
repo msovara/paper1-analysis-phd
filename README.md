@@ -2637,38 +2637,38 @@ if __name__ == "__main__":
     main()
 ```
 
-# Dependencies
-# -----------
-# The scripts require the following Python packages:
-# - numpy
-# - pandas
-# - matplotlib
-# - cartopy
-# - xarray
-# - scipy
-# - statsmodels
+## Dependencies
 
-# Data Requirements
-# ---------------
-# The scripts expect the following data files:
-# - IOD data: Monthly DMI (Dipole Mode Index) values
-# - Drought indices: SPI-3 (Standardized Precipitation Index, 3-month) gridded data
-# - ENSO data: Monthly Niño 3.4 index values (for partial correlation analysis)
-#
-# If these files are not available, the scripts will generate synthetic data for demonstration.
+### The scripts require the following Python packages:
+- numpy
+- pandas
+- matplotlib
+- cartopy
+- xarray
+- scipy
+- statsmodels
 
-# Usage Instructions
-# ----------------
-# 1. Ensure all dependencies are installed:
-#    pip install numpy pandas matplotlib cartopy xarray scipy statsmodels
-#
-# 2. Run the scripts in sequence:
-#    python 01_correlation_analysis.py
-#    python 02_lag_correlation_analysis.py
-#    python 03_composite_analysis.py
-#    python 04_partial_correlation_analysis.py
-#    python 05_wavelet_coherence_analysis.py
-#
+## Data Requirements
+
+###The scripts expect the following data files:
+- IOD data: Monthly DMI (Dipole Mode Index) values
+- Drought indices: SPI-3 (Standardized Precipitation Index, 3-month) gridded data
+- ENSO data: Monthly Niño 3.4 index values (for partial correlation analysis)
+
+If these files are not available, the scripts will generate synthetic data for demonstration.
+
+## Usage Instructions
+
+### 1. Ensure all dependencies are installed:
+   ```pip install numpy pandas matplotlib cartopy xarray scipy statsmodels```
+   
+2. Run the scripts in sequence:
+   python 01_correlation_analysis.py
+   python 02_lag_correlation_analysis.py
+   python 03_composite_analysis.py
+   python 04_partial_correlation_analysis.py
+   python 05_wavelet_coherence_analysis.py
+
 # 3. Results will be saved to an 'output' directory created by each script
 
 # Key Findings
