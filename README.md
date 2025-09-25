@@ -1488,7 +1488,7 @@ The script includes functions for:
 3. Comparing raw and partial correlations to isolate IOD-specific effects
 4. Visualizing spatial patterns of IOD's independent influence on drought
 
-Author: [Your Name]
+Author: Mthetho Sovara
 Date: June 2025
 """
 
@@ -2064,7 +2064,7 @@ The script includes functions for:
 3. Testing statistical significance using Monte Carlo methods
 4. Visualizing time-frequency relationships and phase differences
 
-Author: [Your Name]
+Author: Mthetho Sovara
 Date: June 2025
 """
 
