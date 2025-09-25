@@ -552,7 +552,7 @@ The script includes functions for:
 3. Visualizing lag correlation patterns for different regions
 4. Analyzing seasonal variations in lag relationships
 
-Author: [Your Name]
+Author: Mthetho Sovara
 Date: June 2025
 """
 
