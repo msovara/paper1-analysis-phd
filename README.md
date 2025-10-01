@@ -1,3 +1,6 @@
+## Recommended time period for DMI analysis
+### Standard Research Period (1980-2020): 40-year period provides robust statistical analysis and coveres major IOD events (1997-98, 2006-07, 2011-12, 2016). Sufficient for drought analysis (minimum 20 years required)
+
 ## 1. Correlation Analysis
 
 Performing a correlation analysis between DMI (Dipole Mode Index) and drought indices (e.g., SPI – Standardized Precipitation Index, SPEI – Standardized Precipitation Evapotranspiration Index) is a common approach in climate and environmental studies to understand how large-scale climate patterns like the Indian Ocean Dipole influence regional drought conditions.
