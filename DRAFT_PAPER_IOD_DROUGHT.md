@@ -95,7 +95,9 @@ ERA5 is the fifth-generation ECMWF atmospheric reanalysis, providing physically 
 
 Before examining drought teleconnections, we first characterize the DMI time series from three datasets (HadISST, ERSST, and ERA5) to assess inter-dataset agreement and identify canonical strong IOD events used in subsequent composite analyses.
 
-**Time series comparison (1980–2020)**: The SON-averaged DMI time series from all three datasets exhibit strong interannual variability with generally consistent timing of major events, though with notable differences in magnitude (Figure 1a). HadISST and ERSST DMI values track closely throughout the period, with correlation coefficient *r* = 0.794 (*p* < 10⁻¹⁰⁸), indicating excellent agreement on both the timing and magnitude of IOD variability (Figure 1d). In contrast, correlations involving ERA5 are weaker but still highly significant: HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴) and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵). The ERA5 DMI series shows larger amplitude variations, particularly for negative events, with values frequently dropping below −1.5°C and occasionally below −2.0°C, while HadISST and ERSST rarely exceed −1.0°C in magnitude. The scatter plot relationships (Figure 1d) confirm these correlation patterns, with HadISST–ERSST showing tight clustering around the 1:1 line, while ERA5 comparisons show greater scatter and systematic biases.
+**Monthly time series comparison (1980–2020)**: The full monthly DMI time series from all three datasets (HadISST, ERSST, and ERA5) reveal strong interannual variability with generally consistent timing of major events across the 492-month record, though with notable differences in magnitude (Figure 1a). All three series exhibit sharp peaks (positive DMI events) and deep troughs (negative DMI events) throughout the period, frequently crossing the ±0.5°C IOD threshold. HadISST and ERSST DMI values track very closely, showing similar magnitudes and timing for most events, with both series frequently exceeding the positive IOD threshold and occasionally dropping below the negative threshold. The ERA5 DMI series generally follows the same timing for major events as HadISST and ERSST but shows much larger amplitude variations, particularly for negative DMI events. ERA5's troughs are consistently much deeper, often falling below −1.5°C and sometimes below −2.0°C, while HadISST and ERSST rarely drop below −1.0°C. Prominent positive DMI events (exceeding +0.5°C) appear in all three series around 1982–1983, 1986–1987, 1994, 1997–1998 (a very strong event, with ERA5 exceeding 2°C), 2002–2003, 2007, 2011, 2015, and 2019 (another very strong event, with ERA5 exceeding 2°C and HadISST/ERSST reaching above 1.5°C). ERA5 shows numerous and very strong negative events, frequently dropping below −1.5°C (e.g., early 1980s, mid-1980s, early 1990s, late 1990s, mid-2000s, early 2010s, mid-2010s), while HadISST and ERSST show less frequent and less extreme negative excursions.
+
+**SON-averaged time series and correlations**: When focusing on the SON season (when IOD typically peaks), the correlation patterns become clearer. HadISST and ERSST SON-averaged DMI values track closely throughout the period, with correlation coefficient *r* = 0.794 (*p* < 10⁻¹⁰⁸), indicating excellent agreement on both the timing and magnitude of IOD variability (Figure 1d). In contrast, correlations involving ERA5 are weaker but still highly significant: HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴) and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵). The scatter plot relationships (Figure 1d) confirm these correlation patterns, with HadISST–ERSST showing tight clustering around the 1:1 line, while ERA5 comparisons show greater scatter and systematic biases.
 
 **Distribution characteristics**: Box plot analysis reveals systematic differences in DMI distributions across datasets (Figure 1b). HadISST DMI has a median near zero (−0.05°C) with an interquartile range (IQR) from approximately −0.2°C to 0.05°C, and whiskers extending from −0.7°C to 0.7°C. ERSST DMI shows a similar distribution with median at 0.0°C, IQR from −0.1°C to 0.2°C, and whiskers from −0.5°C to 0.7°C. ERA5 DMI exhibits a notably different distribution with a more negative median (−0.4°C), wider IQR (−0.8°C to −0.05°C), and much broader whiskers extending from approximately −2.2°C to 1.2°C. These differences reflect the reanalysis nature of ERA5, which may capture more extreme variability or incorporate different observational constraints compared to the observational SST products. Monthly box plots for HadISST (Figure 1c) show that DMI variability is relatively uniform across months, with medians near zero and similar IQRs, though some months (e.g., September–November) show slightly wider distributions consistent with IOD peak seasonality.
 
@@ -106,7 +108,7 @@ Before examining drought teleconnections, we first characterize the DMI time ser
 **Implications for analysis**: The inter-dataset differences highlight the importance of dataset choice in IOD studies. HadISST serves as the reference dataset for event identification in this study, as it is widely used in IOD research and shows good agreement with ERSST. ERA5's stronger amplitude variations may provide enhanced signal-to-noise for circulation composites, but may also introduce artifacts if the reanalysis over-amplifies extremes. The consistent timing of events across all three datasets provides confidence that the identified canonical years represent genuine IOD variability rather than dataset-specific artifacts.
 
 **Figure 1:** DMI dataset comparison and characterization  
-(a) SON-averaged DMI time series (1980–2020) from HadISST (blue), ERSST (red), and ERA5 (green), with ±0.5°C thresholds (dashed lines) and El Niño years (yellow triangles). (b) Box plots comparing DMI distributions across datasets. (c) Monthly box plots for HadISST DMI showing seasonal variability. (d) Scatter plots with correlation coefficients: HadISST vs ERSST (*r* = 0.794, *p* < 10⁻¹⁰⁸), HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴), and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵).  
+(a) Monthly DMI time series (1980–2020) from HadISST (blue), ERSST (red), and ERA5 (green), with ±0.5°C thresholds (dashed lines), showing the full 492-month record with prominent positive and negative events. (b) Box plots comparing DMI distributions across datasets (all monthly values). (c) Monthly box plots for HadISST DMI showing seasonal variability. (d) Scatter plots with correlation coefficients for SON-averaged values: HadISST vs ERSST (*r* = 0.794, *p* < 10⁻¹⁰⁸), HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴), and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵).  
 `dmi_timeseries_comparison.png`, `dmi_box_plots.png`, `dmi_single_panel_normalized_comparison.png` or correlation scatter plots
 
 **Figure 2:** Strong IOD events analysis  
@@ -114,11 +116,63 @@ Before examining drought teleconnections, we first characterize the DMI time ser
 `dmi_son_events_analysis.png`, `dmi_multipanel_normalized_comparison.png`
 
 ### 3.2 Drought composites by IOD phase
-Composite drought maps indicate that IOD phase is associated with regionally varying drought responses across Africa, with notable differences by index type (SPI vs SPEI) and accumulation window (3 vs 6 months). In general, SPI composites highlight precipitation-driven anomalies, while SPEI composites can show enhanced drying in regions where evaporative demand contributes substantially to water deficits. Differences between SPI3 and SPI6 suggest that some IOD-related signals manifest as shorter-lived anomalies, whereas others accumulate into more persistent deficits.
 
-Across Africa, the drought response exhibits spatial heterogeneity consistent with differing moisture source regions, topographic effects, and regional circulation regimes. In areas influenced by Indian Ocean moisture transport, IOD-related anomalies are expected to appear most directly in seasons aligned with IOD peak activity (SON), while in other regions lagged responses may reflect the propagation of circulation anomalies or persistence mechanisms.
+Composite drought maps reveal spatially heterogeneous responses across Africa that vary systematically by index type (SPI vs SPEI) and accumulation window (3 vs 6 months). The following subsections provide detailed annotations for each drought index, highlighting both commonalities and distinctions in how IOD phases manifest across different drought metrics.
+
+#### 3.2.1 SPI3 (3-month Standardized Precipitation Index)
+
+SPI3 composites capture short-term precipitation anomalies, reflecting moisture deficits that develop over a 3-month accumulation period. During positive IOD events, SPI3 shows [**INSERT SPECIFIC REGIONAL PATTERNS**], with the strongest anomalies typically appearing in regions directly influenced by Indian Ocean moisture transport, particularly East Africa and parts of Southern Africa. Negative IOD events are associated with [**INSERT SPECIFIC REGIONAL PATTERNS**], often showing opposite-signed anomalies relative to positive IOD conditions. The 3-month accumulation window makes SPI3 sensitive to seasonal rainfall variations and short-term moisture deficits, with anomalies that can develop and decay relatively quickly in response to IOD forcing. Regional differences in SPI3 response magnitude reflect variations in local rainfall regimes, with areas experiencing bimodal rainfall patterns (e.g., East Africa) showing distinct responses compared to unimodal regimes (e.g., Southern Africa).
+
+**Key features:**
+- Captures short-term (3-month) precipitation deficits
+- Most sensitive to seasonal rainfall variations
+- Strongest signals in regions with direct Indian Ocean moisture influence
+- Anomalies can develop and decay relatively quickly
+
+#### 3.2.2 SPI6 (6-month Standardized Precipitation Index)
+
+SPI6 composites integrate precipitation anomalies over a 6-month accumulation period, providing a measure of more persistent hydrological drought conditions. Compared to SPI3, SPI6 anomalies typically show [**INSERT COMPARISON WITH SPI3**], with generally [**stronger/weaker/more persistent**] signals in [**specific regions**]. The longer accumulation window means SPI6 reflects cumulative moisture deficits that may persist beyond the immediate IOD forcing period, incorporating lagged responses and soil moisture memory effects. During positive IOD events, SPI6 shows [**INSERT SPECIFIC REGIONAL PATTERNS**], with anomalies that may extend beyond the SON season due to the 6-month integration. Negative IOD events are associated with [**INSERT SPECIFIC REGIONAL PATTERNS**]. The persistence of SPI6 anomalies relative to SPI3 suggests that some IOD-related drought impacts accumulate over time, with the longer window capturing both direct forcing and subsequent persistence mechanisms.
+
+**Key features:**
+- Captures medium-term (6-month) precipitation deficits
+- Reflects cumulative and persistent hydrological drought
+- Incorporates lagged responses and soil moisture memory
+- Anomalies may persist beyond immediate IOD forcing period
+
+#### 3.2.3 SPEI3 (3-month Standardized Precipitation Evapotranspiration Index)
+
+SPEI3 composites incorporate both precipitation and evaporative demand, making this index sensitive to temperature-driven drying in addition to precipitation deficits. During positive IOD events, SPEI3 shows [**INSERT SPECIFIC REGIONAL PATTERNS**], with notable differences from SPI3 in regions where evaporative demand contributes substantially to water deficits. In semi-arid and arid zones, SPEI3 anomalies are often [**stronger/weaker**] than SPI3, reflecting the additional contribution of atmospheric evaporative demand to drought conditions. The 3-month accumulation window means SPEI3 captures short-term water balance anomalies, where increased temperature and evaporative demand during IOD events can intensify drought even in the absence of large precipitation deficits. During negative IOD events, SPEI3 shows [**INSERT SPECIFIC REGIONAL PATTERNS**], with patterns that may differ from SPI3 due to temperature and evaporative demand effects.
+
+**Key features:**
+- Captures short-term (3-month) water balance (precipitation minus PET)
+- Sensitive to both precipitation deficits and temperature-driven evaporative demand
+- Shows enhanced drying in semi-arid/arid regions relative to SPI3
+- Reflects combined effects of rainfall anomalies and atmospheric moisture demand
+
+#### 3.2.4 SPEI6 (6-month Standardized Precipitation Evapotranspiration Index)
+
+SPEI6 composites integrate water balance anomalies over a 6-month period, providing the most comprehensive measure of persistent drought conditions that account for both precipitation and evaporative demand. Compared to SPEI3, SPEI6 shows [**INSERT COMPARISON WITH SPEI3**], with generally [**stronger/weaker/more persistent**] signals in [**specific regions**]. The 6-month accumulation window means SPEI6 captures cumulative water balance deficits that incorporate both precipitation anomalies and sustained periods of elevated evaporative demand. During positive IOD events, SPEI6 shows [**INSERT SPECIFIC REGIONAL PATTERNS**], with anomalies that reflect the combined effects of reduced precipitation and increased atmospheric moisture demand over extended periods. Negative IOD events are associated with [**INSERT SPECIFIC REGIONAL PATTERNS**]. Differences between SPEI6 and SPI6 are most pronounced in regions where temperature anomalies and evaporative demand contribute substantially to drought development, with SPEI6 often showing [**stronger/weaker**] anomalies than SPI6 in [**specific regions/seasons**].
+
+**Key features:**
+- Captures medium-term (6-month) water balance deficits
+- Most comprehensive drought metric (precipitation and PET)
+- Reflects cumulative effects of both rainfall and evaporative demand
+- Shows strongest divergence from SPI6 in regions with high evaporative demand
+
+#### 3.2.5 Cross-index comparisons and synthesis
+
+**SPI3 vs SPI6:** The comparison reveals that [**INSERT SPECIFIC DIFFERENCES**]. SPI3 captures more immediate, short-lived responses to IOD forcing, while SPI6 shows more persistent anomalies that may reflect cumulative effects and soil moisture memory. Regions showing strong SPI3 but weak SPI6 signals suggest transient drought impacts, whereas regions with strong SPI6 relative to SPI3 indicate persistent hydrological drought conditions.
+
+**SPEI3 vs SPEI6:** Similar to the SPI comparison, SPEI6 shows [**INSERT SPECIFIC DIFFERENCES FROM SPEI3**], with the longer accumulation window capturing more persistent water balance deficits. The comparison highlights how temperature-driven evaporative demand effects accumulate over time, with SPEI6 often showing [**stronger/weaker**] anomalies than SPEI3 in [**specific regions**].
+
+**SPI vs SPEI (3-month):** Differences between SPI3 and SPEI3 are most pronounced in [**INSERT SPECIFIC REGIONS**], where evaporative demand contributes substantially to drought development. In these regions, SPEI3 typically shows [**stronger/weaker**] anomalies than SPI3, reflecting the additional contribution of temperature-driven drying. Regions where SPI3 and SPEI3 are similar suggest that precipitation deficits dominate drought development, with minimal contribution from evaporative demand.
+
+**SPI vs SPEI (6-month):** The comparison between SPI6 and SPEI6 reveals [**INSERT SPECIFIC DIFFERENCES**], with SPEI6 showing enhanced drought signals in regions where sustained evaporative demand contributes to water deficits. The 6-month accumulation window means that temperature anomalies and elevated PET can have substantial cumulative effects, leading to [**stronger/weaker**] SPEI6 anomalies relative to SPI6 in [**specific regions**].
+
+**Spatial heterogeneity:** Across Africa, the drought response exhibits spatial heterogeneity consistent with differing moisture source regions, topographic effects, and regional circulation regimes. In areas influenced by Indian Ocean moisture transport (e.g., East Africa, parts of Southern Africa), IOD-related anomalies appear most directly during seasons aligned with IOD peak activity (SON). In other regions (e.g., West Africa, Central Africa), responses may be weaker or show different patterns, reflecting the indirect nature of teleconnections or the dominance of other climate modes.
 
 **Figure 3:** Composite drought anomalies during IOD phases  
+(a) SPI3 composites for positive and negative IOD phases. (b) SPI6 composites for positive and negative IOD phases. (c) SPEI3 composites for positive and negative IOD phases. (d) SPEI6 composites for positive and negative IOD phases.  
 `composite_drought_SPI3.png`, `composite_drought_SPI6.png`, `composite_drought_SPEI3.png`, `composite_drought_SPEI6.png`
 
 ### 3.3 ENSO modulation of IOD–drought relationships
