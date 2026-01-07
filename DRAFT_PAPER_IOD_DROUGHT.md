@@ -91,54 +91,76 @@ ERA5 is the fifth-generation ECMWF atmospheric reanalysis, providing physically 
 ---
 
 ## 3. Results
-### 3.1 Drought composites by IOD phase
+### 3.1 DMI dataset characterization and strong IOD events
+
+Before examining drought teleconnections, we first characterize the DMI time series from three datasets (HadISST, ERSST, and ERA5) to assess inter-dataset agreement and identify canonical strong IOD events used in subsequent composite analyses.
+
+**Time series comparison (1980–2020)**: The SON-averaged DMI time series from all three datasets exhibit strong interannual variability with generally consistent timing of major events, though with notable differences in magnitude (Figure 1a). HadISST and ERSST DMI values track closely throughout the period, with correlation coefficient *r* = 0.794 (*p* < 10⁻¹⁰⁸), indicating excellent agreement on both the timing and magnitude of IOD variability (Figure 1d). In contrast, correlations involving ERA5 are weaker but still highly significant: HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴) and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵). The ERA5 DMI series shows larger amplitude variations, particularly for negative events, with values frequently dropping below −1.5°C and occasionally below −2.0°C, while HadISST and ERSST rarely exceed −1.0°C in magnitude. The scatter plot relationships (Figure 1d) confirm these correlation patterns, with HadISST–ERSST showing tight clustering around the 1:1 line, while ERA5 comparisons show greater scatter and systematic biases.
+
+**Distribution characteristics**: Box plot analysis reveals systematic differences in DMI distributions across datasets (Figure 1b). HadISST DMI has a median near zero (−0.05°C) with an interquartile range (IQR) from approximately −0.2°C to 0.05°C, and whiskers extending from −0.7°C to 0.7°C. ERSST DMI shows a similar distribution with median at 0.0°C, IQR from −0.1°C to 0.2°C, and whiskers from −0.5°C to 0.7°C. ERA5 DMI exhibits a notably different distribution with a more negative median (−0.4°C), wider IQR (−0.8°C to −0.05°C), and much broader whiskers extending from approximately −2.2°C to 1.2°C. These differences reflect the reanalysis nature of ERA5, which may capture more extreme variability or incorporate different observational constraints compared to the observational SST products. Monthly box plots for HadISST (Figure 1c) show that DMI variability is relatively uniform across months, with medians near zero and similar IQRs, though some months (e.g., September–November) show slightly wider distributions consistent with IOD peak seasonality.
+
+**Strong IOD events**: The top 5 positive IOD events identified from SON-averaged HadISST DMI are 1994, 1997, 2006, 2018, and 2019 (Figure 2a). The top 5 negative events are 1980, 1981, 1992, 1996, and 1998 (Figure 2b). These canonical events are used for circulation composite analysis (Section 3.8). Comparison across datasets reveals important inter-dataset differences in event magnitude. For positive events, ERA5 consistently shows higher DMI values than HadISST and ERSST, particularly in 1994 (ERA5 ~1.2°C vs HadISST ~0.5°C) and 1997 (ERA5 ~1.7°C vs HadISST ~1.0°C). ERSST often shows the weakest positive signals, with some events (1994, 2006, 2018) falling below the +0.5°C threshold or even negative. For negative events, ERA5 again shows stronger (more negative) values, particularly in 1996 (ERA5 ~−1.2°C vs HadISST ~−0.7°C) and 1992 (ERA5 ~−0.8°C vs HadISST ~−0.6°C). ERSST shows the weakest negative signals, with some events (1980, 1981, 1992) barely exceeding the −0.5°C threshold.
+
+**Inter-dataset scatter relationships**: Scatter plots comparing strong events across datasets (Figure 2c–d) reveal systematic biases. HadISST vs ERSST comparisons show that for positive events, ERSST values are generally lower than HadISST (points below the 1:1 line), while for negative events, ERSST values are less negative than HadISST (points above the 1:1 line). In contrast, HadISST vs ERA5 comparisons show the opposite pattern: ERA5 values are generally higher than HadISST for positive events (points above the 1:1 line) and more negative for negative events (points below the 1:1 line). These biases are consistent with ERA5's tendency to amplify IOD extremes, which may reflect the reanalysis's incorporation of atmospheric observations that respond to SST gradients, or differences in how SST anomalies are represented in reanalysis versus observational products.
+
+**Implications for analysis**: The inter-dataset differences highlight the importance of dataset choice in IOD studies. HadISST serves as the reference dataset for event identification in this study, as it is widely used in IOD research and shows good agreement with ERSST. ERA5's stronger amplitude variations may provide enhanced signal-to-noise for circulation composites, but may also introduce artifacts if the reanalysis over-amplifies extremes. The consistent timing of events across all three datasets provides confidence that the identified canonical years represent genuine IOD variability rather than dataset-specific artifacts.
+
+**Figure 1:** DMI dataset comparison and characterization  
+(a) SON-averaged DMI time series (1980–2020) from HadISST (blue), ERSST (red), and ERA5 (green), with ±0.5°C thresholds (dashed lines) and El Niño years (yellow triangles). (b) Box plots comparing DMI distributions across datasets. (c) Monthly box plots for HadISST DMI showing seasonal variability. (d) Scatter plots with correlation coefficients: HadISST vs ERSST (*r* = 0.794, *p* < 10⁻¹⁰⁸), HadISST vs ERA5 (*r* = 0.572, *p* < 10⁻⁴⁴), and ERSST vs ERA5 (*r* = 0.580, *p* < 10⁻⁴⁵).  
+`dmi_timeseries_comparison.png`, `dmi_box_plots.png`, `dmi_single_panel_normalized_comparison.png` or correlation scatter plots
+
+**Figure 2:** Strong IOD events analysis  
+(a) Top 5 positive IOD events (1994, 1997, 2006, 2018, 2019) compared across datasets. (b) Top 5 negative IOD events (1980, 1981, 1992, 1996, 1998) compared across datasets. (c) Scatter plot: HadISST vs ERSST for strong events. (d) Scatter plot: HadISST vs ERA5 for strong events.  
+`dmi_son_events_analysis.png`, `dmi_multipanel_normalized_comparison.png`
+
+### 3.2 Drought composites by IOD phase
 Composite drought maps indicate that IOD phase is associated with regionally varying drought responses across Africa, with notable differences by index type (SPI vs SPEI) and accumulation window (3 vs 6 months). In general, SPI composites highlight precipitation-driven anomalies, while SPEI composites can show enhanced drying in regions where evaporative demand contributes substantially to water deficits. Differences between SPI3 and SPI6 suggest that some IOD-related signals manifest as shorter-lived anomalies, whereas others accumulate into more persistent deficits.
 
 Across Africa, the drought response exhibits spatial heterogeneity consistent with differing moisture source regions, topographic effects, and regional circulation regimes. In areas influenced by Indian Ocean moisture transport, IOD-related anomalies are expected to appear most directly in seasons aligned with IOD peak activity (SON), while in other regions lagged responses may reflect the propagation of circulation anomalies or persistence mechanisms.
 
-**Figure 1:** Composite drought anomalies during IOD phases  
+**Figure 3:** Composite drought anomalies during IOD phases  
 `composite_drought_SPI3.png`, `composite_drought_SPI6.png`, `composite_drought_SPEI3.png`, `composite_drought_SPEI6.png`
 
-### 3.2 ENSO modulation of IOD–drought relationships
+### 3.3 ENSO modulation of IOD–drought relationships
 ENSO-stratified composites suggest that the IOD–drought relationship depends on background ENSO conditions. Under El Niño, IOD-related drought anomalies may be amplified or spatially reorganized as ENSO modifies Indo-Pacific convection and the Walker circulation. Under La Niña, IOD-associated anomalies may weaken or shift, and under Neutral ENSO conditions, the “pure” IOD signal may be more apparent in some regions. Because some combinations of ENSO×IOD phase are rare, interpretation focuses on patterns that are consistent across SPI/SPEI and across time scales and that align with circulation diagnostics.
 
-**Figure 2:** ENSO-stratified drought composites  
+**Figure 4:** ENSO-stratified drought composites  
 `enso_stratified_composite_SPI3.png`, `enso_stratified_composite_SPI6.png`, `enso_stratified_composite_SPEI3.png`, `enso_stratified_composite_SPEI6.png`
 
-### 3.3 Timing of associations (lag correlations)
+### 3.4 Timing of associations (lag correlations)
 Lag correlation analysis indicates that IOD–drought coupling occurs with variable timing across regions and indices. Regions showing peak correlations near zero lag are consistent with concurrent IOD forcing during SON, whereas positive lags (DMI leading drought) suggest delayed hydroclimate impacts consistent with soil-moisture memory, delayed seasonal rainfall responses, or persistence in evaporative demand anomalies (particularly for SPEI). Negative-lag peaks are interpreted cautiously as potential signatures of shared forcing or chance alignment.
 
-**Figure 3:** Lag correlations between DMI and drought indices  
+**Figure 5:** Lag correlations between DMI and drought indices  
 `lag_correlation_analysis.png`
 
-### 3.4 Robustness controlling for ENSO (partial correlations)
+### 3.5 Robustness controlling for ENSO (partial correlations)
 Partial correlation patterns indicate which drought teleconnections remain after removing ENSO variability. Where partial correlations remain strong and spatially coherent, the results support an independent IOD association; where partial correlations weaken substantially relative to simple correlations, the apparent IOD signal may reflect ENSO co-variability. This diagnostic provides a stronger basis for causal interpretation than correlations alone, particularly in regions where ENSO and IOD frequently co-occur.
 
-**Figure 4:** Partial correlation maps (IOD controlling for ENSO)  
+**Figure 6:** Partial correlation maps (IOD controlling for ENSO)  
 `partial_correlation_analysis.png`
 
-### 3.5 Seasonal dependence
+### 3.6 Seasonal dependence
 Seasonal analyses show that drought sensitivity to IOD is not confined strictly to SON. Some regions exhibit consistent anomalies across seasons, whereas others show sign or magnitude changes that likely reflect seasonal migration of convergence zones, regional rainfall regimes, and seasonal evolution of land–atmosphere feedbacks. Differences between SPI and SPEI seasonality provide additional evidence for temperature-driven modulation in some regions.
 
-**Figure 5:** Seasonal diagnostics  
+**Figure 7:** Seasonal diagnostics  
 `seasonal_analysis_SPI3.png`, `seasonal_analysis_SPI6.png`, `seasonal_analysis_SPEI3.png`, `seasonal_analysis_SPEI6.png`
 
-### 3.6 Time–frequency dependence (wavelet coherence)
+### 3.7 Time–frequency dependence (wavelet coherence)
 Wavelet coherence reveals intermittency in IOD–drought coupling. Periods of elevated coherence at interannual periodicities suggest that the teleconnection is stronger during epochs with stronger or more frequent IOD/ENSO events, while weaker coherence in other periods suggests non-stationarity. Coherence patterns differ across indices and time scales, indicating that precipitation-driven and evaporative-demand-driven drought responses may be expressed differently in the time–frequency domain.
 
-**Figure 6:** Wavelet coherence diagnostics  
+**Figure 8:** Wavelet coherence diagnostics  
 `wavelet_coherence_SPI3.png`, `wavelet_coherence_SPEI3.png`, etc.
 
-### 3.7 Physical consistency from ERA5 circulation composites
+### 3.8 Physical consistency from ERA5 circulation composites
 ERA5 composites provide mechanistic consistency for the drought teleconnections. MSLP anomalies during IOD events suggest reorganized surface pressure gradients and altered convergence patterns. At 850 hPa, wind anomalies indicate changes in low-level moisture transport into and across Africa, providing a direct pathway linking oceanic forcing to precipitation and drought anomalies. At 500 hPa, geopotential height anomalies reflect ridge/trough structures that influence vertical motion and synoptic-scale flow.
 
 To improve interpretability, geopotential height anomalies and wind vectors are plotted separately, reducing visual clutter compared to overlaid products. Hemispheric and polar-view geopotential height plots support interpretation of broader circulation structures beyond the African continent.
 
-**Figure 7:** Atmospheric circulation composites  
+**Figure 9:** Atmospheric circulation composites  
 `atmospheric_circulation_composites.png`  
-**Figure 8:** Geopotential height anomaly composites  
+**Figure 10:** Geopotential height anomaly composites  
 `atmospheric_circulation_geopotential_height_mercator.png`, `atmospheric_circulation_geopotential_height_polar_stereographic.png`  
-**Figure 9:** Wind vector composites  
+**Figure 11:** Wind vector composites  
 `atmospheric_circulation_wind_vectors.png`
 
 ---
