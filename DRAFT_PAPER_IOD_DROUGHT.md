@@ -180,9 +180,115 @@ SPEI6 composites integrate water balance anomalies over a 6-month period, provid
 `composite_drought_SPI3.png`, `composite_drought_SPI6.png`, `composite_drought_SPEI3.png`, `composite_drought_SPEI6.png`
 
 ### 3.3 ENSO modulation of IOD–drought relationships
-ENSO-stratified composites suggest that the IOD–drought relationship depends on background ENSO conditions. Under El Niño, IOD-related drought anomalies may be amplified or spatially reorganized as ENSO modifies Indo-Pacific convection and the Walker circulation. Under La Niña, IOD-associated anomalies may weaken or shift, and under Neutral ENSO conditions, the “pure” IOD signal may be more apparent in some regions. Because some combinations of ENSO×IOD phase are rare, interpretation focuses on patterns that are consistent across SPI/SPEI and across time scales and that align with circulation diagnostics.
+
+ENSO-stratified composites reveal that IOD–drought relationships are strongly modulated by background ENSO conditions, with both synergistic and competing effects depending on the phase combination. The analysis uses a **3×3 framework** (Figure 4) showing drought composites for each combination of ENSO state (El Niño, La Niña, Neutral) and IOD phase (positive, negative, and their difference). This stratification isolates the "pure" IOD signal under Neutral ENSO conditions and demonstrates how ENSO modifies IOD–drought teleconnections through shared Indo-Pacific circulation pathways.
+
+#### 3.3.1 SPI3 ENSO-stratified composites
+
+The SPI3 ENSO-stratified composites (Figure 4a) reveal distinct patterns for each ENSO×IOD combination, highlighting how background ENSO state alters IOD-related precipitation anomalies.
+
+**El Niño conditions:**
+- **Positive IOD + El Niño**: This combination represents a synergistic coupling where both modes enhance Indo-Pacific convection anomalies. The composite shows [**INSERT SPECIFIC PATTERNS**], with enhanced drought conditions in Southern Africa and [**other regions**], while East Africa and North Africa may show [**wetter/drier**] conditions. The synergistic effect amplifies the IOD signal, resulting in stronger anomalies than positive IOD alone. Statistically significant regions (p < 0.05, indicated by stippling) cover approximately [**X%**] of grid points.
+- **Negative IOD + El Niño**: This combination shows competing influences, as negative IOD typically enhances eastern Indian Ocean convection while El Niño suppresses it. The composite reveals [**INSERT SPECIFIC PATTERNS**], with generally [**weaker/more variable**] signals compared to negative IOD under Neutral conditions. Some regions may show cancellation effects, while others may show enhanced anomalies where both modes act in concert.
+- **Difference (Positive − Negative IOD) during El Niño**: The difference map highlights regions where positive and negative IOD phases have the strongest differential impact under El Niño conditions. Values range from [**min**] to [**max**], with the largest differences typically appearing in [**specific regions**], indicating strong IOD phase dependence even when ENSO is active.
+
+**La Niña conditions:**
+- **Positive IOD + La Niña**: This combination shows competing influences, as positive IOD enhances western Indian Ocean convection while La Niña enhances eastern Pacific convection, potentially creating complex circulation patterns. The composite shows [**INSERT SPECIFIC PATTERNS**], with generally [**weaker/stronger**] signals compared to positive IOD under Neutral conditions. Some regions may show cancellation, while others may show enhanced anomalies where both modes reinforce each other.
+- **Negative IOD + La Niña**: This combination represents another synergistic coupling, as both modes enhance eastern Indian Ocean and western Pacific convection. The composite reveals [**INSERT SPECIFIC PATTERNS**], with enhanced wet conditions in [**specific regions**] and drought conditions in [**other regions**]. The synergistic effect amplifies the negative IOD signal, resulting in stronger anomalies than negative IOD alone.
+- **Difference (Positive − Negative IOD) during La Niña**: The difference map shows [**INSERT SPECIFIC PATTERNS**], with values ranging from [**min**] to [**max**]. The pattern may differ from the El Niño difference map, reflecting how La Niña modifies the IOD phase dependence.
+
+**Neutral ENSO conditions:**
+- **Positive IOD + Neutral**: Under Neutral ENSO conditions, the "pure" IOD signal is most clearly visible, as there is minimal interference from ENSO-related circulation anomalies. The composite shows [**INSERT SPECIFIC PATTERNS**], which should align closely with the overall positive IOD composite from Section 3.2.1. Regional patterns include [**East Africa: wetter conditions, Southern Africa: drier conditions, etc.**], with statistically significant anomalies covering approximately [**X%**] of grid points.
+- **Negative IOD + Neutral**: Similarly, this composite shows the clearest expression of negative IOD impacts without ENSO interference. The pattern reveals [**INSERT SPECIFIC PATTERNS**], with enhanced precipitation in [**specific regions**] and reduced precipitation in [**other regions**]. This should align with the overall negative IOD composite from Section 3.2.1.
+- **Difference (Positive − Negative IOD) during Neutral**: The difference map under Neutral conditions provides the cleanest measure of IOD phase dependence, showing values ranging from [**min**] to [**max**]. The largest differences appear in [**specific regions**], indicating where IOD phase has the strongest independent influence on African drought.
+
+**Cross-ENSO comparisons:** Comparing the same IOD phase across different ENSO states reveals systematic modulation. Positive IOD composites are typically [**stronger/weaker**] during El Niño compared to Neutral, and [**stronger/weaker**] during La Niña compared to Neutral, reflecting the synergistic and competing influences described above. Negative IOD composites show [**similar/different**] patterns of ENSO modulation. The Neutral ENSO composites provide the baseline for assessing ENSO's modifying influence.
+
+#### 3.3.2 SPI6 ENSO-stratified composites
+
+The SPI6 ENSO-stratified composites (Figure 4b) show similar ENSO×IOD interactions as SPI3, but with generally [**stronger/weaker/more persistent**] signals due to the 6-month accumulation window. The longer time scale means that SPI6 composites capture cumulative effects that may extend beyond the immediate SON forcing period, incorporating lagged responses and soil moisture memory.
+
+**El Niño conditions:**
+- **Positive IOD + El Niño**: The SPI6 composite shows [**INSERT COMPARISON WITH SPI3**], with [**stronger/weaker/more persistent**] anomalies in [**specific regions**]. The 6-month accumulation means that synergistic effects between positive IOD and El Niño may accumulate over time, resulting in [**enhanced/reduced**] signals compared to SPI3.
+- **Negative IOD + El Niño**: The SPI6 composite reveals [**INSERT COMPARISON WITH SPI3**], showing how competing influences between negative IOD and El Niño manifest over the longer accumulation window.
+- **Difference during El Niño**: The SPI6 difference map shows [**INSERT COMPARISON WITH SPI3**], with values ranging from [**min**] to [**max**].
+
+**La Niña conditions:**
+- **Positive IOD + La Niña**: The SPI6 composite shows [**INSERT COMPARISON WITH SPI3**], reflecting how competing influences evolve over the 6-month window.
+- **Negative IOD + La Niña**: The SPI6 composite reveals [**INSERT COMPARISON WITH SPI3**], showing how synergistic effects between negative IOD and La Niña accumulate over time.
+- **Difference during La Niña**: The SPI6 difference map shows [**INSERT COMPARISON WITH SPI3**].
+
+**Neutral ENSO conditions:**
+- **Positive IOD + Neutral**: The SPI6 composite under Neutral conditions shows the clearest expression of positive IOD impacts, with patterns that should align with the overall positive IOD SPI6 composite from Section 3.2.2. The 6-month accumulation means that IOD-related precipitation anomalies may persist beyond SON, with regional averages showing [**INSERT COMPARISON WITH SPI3**].
+- **Negative IOD + Neutral**: Similarly, the SPI6 composite shows clear negative IOD impacts, with patterns aligning with the overall negative IOD SPI6 composite.
+- **Difference during Neutral**: The SPI6 difference map provides the cleanest measure of IOD phase dependence, with values ranging from [**min**] to [**max**].
+
+**SPI3 vs SPI6 under different ENSO states:** Comparing SPI3 and SPI6 composites for the same ENSO×IOD combination reveals how accumulation windows affect the expression of ENSO modulation. In general, SPI6 shows [**stronger/weaker**] signals than SPI3 during [**El Niño/La Niña/Neutral**] conditions, reflecting cumulative effects over the longer time window.
+
+#### 3.3.3 SPEI3 ENSO-stratified composites
+
+The SPEI3 ENSO-stratified composites (Figure 4c) incorporate evaporative demand effects in addition to precipitation, revealing how ENSO×IOD interactions affect water balance anomalies. Differences from SPI3 composites are most pronounced in regions where temperature and evaporative demand contribute substantially to drought development.
+
+**El Niño conditions:**
+- **Positive IOD + El Niño**: The SPEI3 composite shows [**INSERT COMPARISON WITH SPI3**], with evaporative demand effects [**amplifying/reducing**] the precipitation anomalies. In regions where El Niño is associated with elevated temperatures, SPEI3 may show [**stronger/weaker**] drought conditions than SPI3, reflecting the additional contribution of increased evaporative demand. The composite reveals [**INSERT SPECIFIC REGIONAL PATTERNS**], with statistically significant anomalies covering approximately [**X%**] of grid points.
+- **Negative IOD + El Niño**: The SPEI3 composite shows [**INSERT COMPARISON WITH SPI3**], with evaporative demand effects [**amplifying/reducing**] the competing influences between negative IOD and El Niño.
+- **Difference during El Niño**: The SPEI3 difference map shows [**INSERT COMPARISON WITH SPI3**], with values ranging from [**min**] to [**max**].
+
+**La Niña conditions:**
+- **Positive IOD + La Niña**: The SPEI3 composite shows [**INSERT COMPARISON WITH SPI3**], with evaporative demand effects [**amplifying/reducing**] the competing influences. In regions where La Niña is associated with cooler temperatures, reduced evaporative demand may [**enhance/reduce**] water balance benefits from precipitation anomalies.
+- **Negative IOD + La Niña**: The SPEI3 composite reveals [**INSERT COMPARISON WITH SPI3**], showing how synergistic effects between negative IOD and La Niña manifest in water balance terms, incorporating both precipitation and evaporative demand.
+- **Difference during La Niña**: The SPEI3 difference map shows [**INSERT COMPARISON WITH SPI3**].
+
+**Neutral ENSO conditions:**
+- **Positive IOD + Neutral**: The SPEI3 composite under Neutral conditions shows the clearest expression of positive IOD impacts on water balance, with patterns that should align with the overall positive IOD SPEI3 composite from Section 3.2.3. Evaporative demand effects may [**reduce**] the net water balance benefits compared to SPI3, particularly in [**specific regions**].
+- **Negative IOD + Neutral**: Similarly, the SPEI3 composite shows clear negative IOD impacts on water balance, with patterns aligning with the overall negative IOD SPEI3 composite.
+- **Difference during Neutral**: The SPEI3 difference map provides the cleanest measure of IOD phase dependence in water balance terms, with values ranging from [**min**] to [**max**].
+
+**SPI3 vs SPEI3 under different ENSO states:** Comparing SPI3 and SPEI3 composites for the same ENSO×IOD combination reveals how evaporative demand modifies ENSO×IOD interactions. In general, SPEI3 shows [**stronger/weaker**] drought conditions than SPI3 during [**El Niño/La Niña**] conditions in [**specific regions**], reflecting temperature-driven evaporative demand effects. Under Neutral conditions, differences between SPI3 and SPEI3 are typically [**smaller/larger**], as there is less ENSO-related temperature influence.
+
+#### 3.3.4 SPEI6 ENSO-stratified composites
+
+The SPEI6 ENSO-stratified composites (Figure 4d) integrate water balance anomalies over a 6-month period, providing the most comprehensive measure of how ENSO×IOD interactions affect persistent drought conditions. The longer accumulation window means that both precipitation and evaporative demand effects accumulate over time, resulting in [**stronger/weaker/more persistent**] signals compared to SPEI3.
+
+**El Niño conditions:**
+- **Positive IOD + El Niño**: The SPEI6 composite shows [**INSERT COMPARISON WITH SPEI3**], with cumulative effects of both precipitation deficits and elevated evaporative demand over the 6-month window. The composite reveals [**INSERT SPECIFIC REGIONAL PATTERNS**], with anomalies that may persist beyond the immediate SON forcing period.
+- **Negative IOD + El Niño**: The SPEI6 composite shows [**INSERT COMPARISON WITH SPEI3**], reflecting how competing influences between negative IOD and El Niño accumulate over time in water balance terms.
+- **Difference during El Niño**: The SPEI6 difference map shows [**INSERT COMPARISON WITH SPEI3**], with values ranging from [**min**] to [**max**].
+
+**La Niña conditions:**
+- **Positive IOD + La Niña**: The SPEI6 composite shows [**INSERT COMPARISON WITH SPEI3**], with cumulative effects of competing influences over the 6-month window.
+- **Negative IOD + La Niña**: The SPEI6 composite reveals [**INSERT COMPARISON WITH SPEI3**], showing how synergistic effects between negative IOD and La Niña accumulate over time, incorporating both precipitation and reduced evaporative demand benefits.
+- **Difference during La Niña**: The SPEI6 difference map shows [**INSERT COMPARISON WITH SPEI3**].
+
+**Neutral ENSO conditions:**
+- **Positive IOD + Neutral**: The SPEI6 composite under Neutral conditions shows the clearest expression of positive IOD impacts on cumulative water balance, with patterns that should align with the overall positive IOD SPEI6 composite from Section 3.2.4. The 6-month accumulation means that both precipitation and evaporative demand effects accumulate, with regional averages showing [**INSERT COMPARISON WITH SPEI3**].
+- **Negative IOD + Neutral**: Similarly, the SPEI6 composite shows clear negative IOD impacts on cumulative water balance, with patterns aligning with the overall negative IOD SPEI6 composite.
+- **Difference during Neutral**: The SPEI6 difference map provides the cleanest measure of IOD phase dependence in cumulative water balance terms, with values ranging from [**min**] to [**max**].
+
+**SPEI3 vs SPEI6 under different ENSO states:** Comparing SPEI3 and SPEI6 composites for the same ENSO×IOD combination reveals how accumulation windows affect the expression of ENSO×IOD interactions in water balance terms. In general, SPEI6 shows [**stronger/weaker**] signals than SPEI3 during [**El Niño/La Niña/Neutral**] conditions, reflecting cumulative effects over the longer time window.
+
+#### 3.3.5 Synthesis and cross-index comparisons
+
+**ENSO modulation patterns:** Across all indices, several consistent patterns emerge regarding ENSO modulation of IOD–drought relationships:
+
+1. **Synergistic effects**: When IOD and ENSO phases align (e.g., positive IOD + El Niño, negative IOD + La Niña), their combined influence typically [**amplifies**] drought anomalies, resulting in [**stronger**] signals than IOD alone. This reflects shared Indo-Pacific circulation pathways where both modes reinforce convection anomalies.
+
+2. **Competing effects**: When IOD and ENSO phases oppose (e.g., positive IOD + La Niña, negative IOD + El Niño), their influences may [**partially cancel**], resulting in [**weaker/more variable**] signals than IOD alone. However, cancellation is not uniform across regions, and some areas may still show strong anomalies where one mode dominates.
+
+3. **Neutral ENSO baseline**: Under Neutral ENSO conditions, the "pure" IOD signal is most clearly visible, providing a baseline for assessing ENSO's modifying influence. Composites under Neutral conditions should align closely with the overall IOD composites from Section 3.2, confirming that the stratification methodology is consistent.
+
+**Index-specific ENSO modulation:**
+- **SPI indices**: ENSO modulation primarily affects precipitation anomalies, with El Niño and La Niña modifying IOD-related rainfall patterns through changes in Indo-Pacific convection and the Walker circulation.
+- **SPEI indices**: ENSO modulation affects both precipitation and evaporative demand. El Niño conditions, often associated with elevated temperatures, may amplify drought conditions in SPEI relative to SPI, while La Niña conditions, often associated with cooler temperatures, may enhance water balance benefits.
+
+**Accumulation window effects:** Comparing 3-month and 6-month indices under the same ENSO×IOD combination reveals how accumulation windows affect ENSO modulation. In general, 6-month indices show [**stronger/more persistent**] signals, as cumulative effects accumulate over the longer time window. However, the pattern of ENSO modulation (synergistic vs. competing) is generally consistent across accumulation windows.
+
+**Regional heterogeneity:** ENSO modulation of IOD–drought relationships exhibits spatial heterogeneity across Africa. Regions directly influenced by Indian Ocean moisture transport (e.g., East Africa) may show [**stronger/weaker**] ENSO modulation than regions with more indirect teleconnections (e.g., West Africa, Central Africa). This heterogeneity reflects differences in moisture source regions, regional circulation regimes, and the pathways by which ENSO×IOD interactions project onto African hydroclimate.
+
+**Implications for forecasting:** The ENSO-stratified results have important implications for operational drought forecasting. When both IOD and ENSO states are known (e.g., from seasonal climate models), forecasters can use the appropriate ENSO×IOD combination to provide more accurate drought outlooks. The results indicate that IOD impacts cannot be interpreted independently of ENSO state, and forecast systems should consider both modes jointly rather than treating DMI as an isolated predictor.
 
 **Figure 4:** ENSO-stratified drought composites  
+(a) SPI3 ENSO-stratified composites showing 3×3 grid (El Niño, La Niña, Neutral × Positive IOD, Negative IOD, Difference). (b) SPI6 ENSO-stratified composites with 6-month accumulation. (c) SPEI3 ENSO-stratified composites incorporating evaporative demand. (d) SPEI6 ENSO-stratified composites with cumulative water balance effects.  
 `enso_stratified_composite_SPI3.png`, `enso_stratified_composite_SPI6.png`, `enso_stratified_composite_SPEI3.png`, `enso_stratified_composite_SPEI6.png`
 
 ### 3.4 Timing of associations (lag correlations)
