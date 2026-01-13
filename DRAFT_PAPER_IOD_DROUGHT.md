@@ -437,13 +437,17 @@ Over **East Africa**, MSLP anomalies during positive IOD events show a more comp
 
 #### 3.8.2 850 hPa wind anomalies and moisture transport
 
-**Positive IOD events:** At 850 hPa, wind anomalies during positive IOD events reveal critical changes in low-level moisture transport pathways that explain the regional drought patterns. Over the **equatorial Indian Ocean**, anomalous **easterly winds** develop, reversing the normal westerly flow during SON. This easterly anomaly is driven by the enhanced pressure gradient between the cooler western Indian Ocean (higher pressure) and the warmer eastern Indian Ocean (lower pressure) during positive IOD events. The easterly winds reduce moisture transport from the Indian Ocean toward East Africa, creating a **moisture deficit** that directly supports the negative drought index anomalies (drier conditions) observed in East Africa.
+**Positive IOD events:** At 850 hPa, wind anomalies during positive IOD events reveal critical changes in low-level moisture transport pathways that explain the regional drought patterns. Over the **equatorial Indian Ocean**, anomalous **easterly winds** (positive U850 anomalies) develop, reversing the normal westerly flow during SON. This easterly anomaly is driven by the enhanced pressure gradient between the cooler western Indian Ocean (higher pressure) and the warmer eastern Indian Ocean (lower pressure) during positive IOD events. The easterly winds reduce moisture transport from the Indian Ocean toward East Africa, creating a **moisture deficit** that directly supports the negative drought index anomalies (drier conditions) observed in East Africa.
+
+The meridional wind component (V850) shows **northerly anomalies** (positive V850) over the Arabian Sea and parts of the Indian Ocean, and **southerly anomalies** (negative V850) over the Bay of Bengal and extending southeastward. These meridional wind anomalies reflect the reorganization of the Indian Ocean monsoon circulation during positive IOD events, with enhanced northward flow over the Arabian Sea and southward flow over the Bay of Bengal. Over Africa, weak northerly anomalies are observed over East Africa, while weak southerly anomalies are observed over parts of Southern Africa, contributing to the moisture transport patterns that influence drought conditions.
 
 Over **Southern Africa**, wind anomalies show an anomalous **anticyclonic circulation** pattern, with clockwise flow around a high-pressure center. This anticyclonic circulation creates **divergent flow** at low levels, reducing moisture convergence and suppressing precipitation. The wind pattern is consistent with the high-pressure anomaly observed in MSLP composites and supports the negative drought index anomalies in Southern Africa. The anticyclonic circulation also creates **offshore flow** along the eastern coast of Southern Africa, further reducing moisture availability from the Indian Ocean.
 
 Over **West Africa**, wind anomalies show weak **westerly anomalies** that may enhance moisture transport from the Atlantic Ocean during positive IOD events. This pattern is consistent with the weak positive drought index anomalies (wetter conditions) observed in some West African composites, suggesting that positive IOD events may enhance Atlantic moisture transport to West Africa, partially offsetting the Indian Ocean moisture deficit.
 
-**Negative IOD events:** During negative IOD events, wind anomalies show the reverse pattern. Over the **equatorial Indian Ocean**, anomalous **westerly winds** develop, enhancing the normal westerly flow and increasing moisture transport toward East Africa. This westerly anomaly is driven by the reversed pressure gradient during negative IOD events (warmer western Indian Ocean, cooler eastern Indian Ocean). The enhanced westerly flow creates a **moisture surplus** that supports the positive drought index anomalies (wetter conditions) observed in East Africa.
+**Negative IOD events:** During negative IOD events, wind anomalies show the reverse pattern. Over the **equatorial Indian Ocean**, anomalous **westerly winds** (negative U850 anomalies) develop, enhancing the normal westerly flow and increasing moisture transport toward East Africa. This westerly anomaly is driven by the reversed pressure gradient during negative IOD events (warmer western Indian Ocean, cooler eastern Indian Ocean). The enhanced westerly flow creates a **moisture surplus** that supports the positive drought index anomalies (wetter conditions) observed in East Africa.
+
+The meridional wind component shows **southerly anomalies** (negative V850) over the Arabian Sea and parts of the Indian Ocean, and **northerly anomalies** (positive V850) over the Bay of Bengal and extending southeastward. These meridional wind anomalies reflect the reversed monsoon circulation during negative IOD events, with enhanced southward flow over the Arabian Sea and northward flow over the Bay of Bengal. Over Africa, weak southerly anomalies are observed over East Africa, while weak northerly anomalies are observed over parts of Southern Africa, contributing to the enhanced moisture transport patterns that support increased precipitation.
 
 Over **Southern Africa**, wind anomalies show an anomalous **cyclonic circulation** pattern, with counterclockwise flow around a low-pressure center. This cyclonic circulation creates **convergent flow** at low levels, enhancing moisture convergence and supporting precipitation. The wind pattern is consistent with the low-pressure anomaly observed in MSLP composites and supports the positive drought index anomalies in Southern Africa. The cyclonic circulation also creates **onshore flow** along the eastern coast, enhancing moisture availability from the Indian Ocean.
 
@@ -453,19 +457,23 @@ Over **Southern Africa**, wind anomalies show an anomalous **cyclonic circulatio
 
 #### 3.8.3 500 hPa geopotential height anomalies and vertical motion
 
-**Positive IOD events:** At 500 hPa, geopotential height anomalies during positive IOD events reveal mid-tropospheric circulation patterns that support the surface pressure and wind anomalies. Over **Southern Africa and the southwestern Indian Ocean**, anomalous **high geopotential height** (ridge) develops, indicating subsidence and suppressed vertical motion. This ridge pattern is consistent with the high-pressure anomaly at the surface and the anticyclonic circulation at 850 hPa, creating a **vertically coherent circulation structure** that inhibits precipitation. The ridge extends across the Southern Hemisphere, suggesting a large-scale circulation response to IOD forcing.
+**Positive IOD events:** At 500 hPa, geopotential height anomalies during positive IOD events reveal mid-tropospheric circulation patterns that provide insight into the vertical motion and wave train structures. Over the **central Indian Ocean and Maritime Continent**, significant **positive geopotential height anomalies** (ridge) develop, extending eastward over parts of Australia. This ridge pattern indicates subsidence and suppressed vertical motion over the central Indian Ocean, consistent with the enhanced convection being shifted toward the eastern Indian Ocean during positive IOD events.
 
-Over **East Africa**, geopotential height anomalies show a weaker ridge pattern, consistent with the more moderate drought responses in this region. The ridge creates subsidence that suppresses convection, supporting the negative drought index anomalies. Over the **equatorial Indian Ocean**, geopotential height anomalies show a **trough** pattern, indicating enhanced vertical motion and convection over the warmer eastern Indian Ocean during positive IOD events. This trough pattern is consistent with the enhanced convection over the eastern Indian Ocean that characterizes positive IOD events.
+Over **Southern Africa and the southwestern Indian Ocean**, significant **negative geopotential height anomalies** (trough) develop, indicating upward motion and enhanced vertical motion. This trough pattern creates favorable conditions for convection and precipitation, which appears counterintuitive given the negative drought index anomalies (drier conditions) observed in Southern Africa during positive IOD events. However, this trough may be part of a larger wave train pattern that propagates across the Southern Hemisphere, with the trough over Southern Africa representing a downstream response to the IOD forcing rather than a direct local response. The trough may also reflect the influence of other climate modes (e.g., ENSO) that frequently co-occur with positive IOD events.
 
-**Negative IOD events:** During negative IOD events, geopotential height anomalies show the reverse pattern. Over **Southern Africa and the southwestern Indian Ocean**, anomalous **low geopotential height** (trough) develops, indicating upward motion and enhanced convection. This trough pattern is consistent with the low-pressure anomaly at the surface and the cyclonic circulation at 850 hPa, creating a vertically coherent circulation structure that supports precipitation. The trough extends across the Southern Hemisphere, suggesting a large-scale circulation response.
+Over the **western Indian Ocean**, extending off the coast of East Africa, negative geopotential height anomalies are also observed, indicating upward motion. This pattern is consistent with the enhanced convection over the warmer eastern Indian Ocean during positive IOD events, which can create a wave response that extends westward. Over **East Africa**, geopotential height anomalies show weaker negative anomalies, consistent with the more moderate drought responses in this region.
 
-Over **East Africa**, geopotential height anomalies show a weaker trough pattern, consistent with the positive drought index anomalies (wetter conditions). The trough creates upward motion that enhances convection, supporting increased precipitation. Over the **equatorial Indian Ocean**, geopotential height anomalies show a **ridge** pattern, indicating suppressed vertical motion over the cooler eastern Indian Ocean during negative IOD events.
+**Negative IOD events:** During negative IOD events, geopotential height anomalies show the reverse pattern. Over the **central Indian Ocean and Maritime Continent**, significant **negative geopotential height anomalies** (trough) develop, indicating enhanced vertical motion and convection over the central Indian Ocean. This trough pattern is consistent with the enhanced convection over the warmer western Indian Ocean during negative IOD events.
+
+Over **Southern Africa and the southwestern Indian Ocean**, significant **positive geopotential height anomalies** (ridge) develop, indicating subsidence and suppressed vertical motion. This ridge pattern creates unfavorable conditions for convection and precipitation, which appears counterintuitive given the positive drought index anomalies (wetter conditions) observed in Southern Africa during negative IOD events. However, similar to the positive IOD case, this ridge may be part of a larger wave train pattern, with the ridge over Southern Africa representing a downstream response to the IOD forcing. The ridge may also reflect the influence of other climate modes that co-occur with negative IOD events.
+
+Over the **western Indian Ocean**, extending off the coast of East Africa, positive geopotential height anomalies are observed, indicating subsidence. This pattern is consistent with the suppressed convection over the cooler eastern Indian Ocean during negative IOD events. Over **East Africa**, geopotential height anomalies show weaker positive anomalies, consistent with the positive drought index anomalies (wetter conditions) observed in East Africa.
 
 **Vertical motion and precipitation:** The 500 hPa geopotential height anomalies directly indicate vertical motion patterns that influence precipitation. Positive height anomalies (ridges) indicate subsidence, which suppresses convection and precipitation, while negative height anomalies (troughs) indicate upward motion, which enhances convection and precipitation. The height anomalies are physically consistent with the surface pressure and low-level wind patterns, creating a three-dimensional circulation structure that explains the drought responses.
 
 **Wave train patterns:** The hemispheric extent of the geopotential height anomalies suggests that IOD forcing may excite **Rossby wave trains** that propagate across the Southern Hemisphere. These wave trains can create remote teleconnections that influence African circulation patterns beyond the direct Indian Ocean influence. The wave train patterns may explain some of the regional differences in drought responses, as different regions may be influenced by different phases of the wave train.
 
-**Physical consistency:** The 500 hPa geopotential height anomalies are physically consistent with both the surface and low-level circulation patterns and the drought composite results. The vertically coherent circulation structure (high pressure at surface, anticyclonic flow at 850 hPa, ridge at 500 hPa during positive IOD events) creates a complete mechanistic pathway from IOD SST anomalies to African drought conditions. The height anomalies provide the vertical motion component that directly influences precipitation, completing the physical chain from oceanic forcing to drought responses.
+**Physical consistency:** The 500 hPa geopotential height anomalies reveal complex wave train patterns that propagate across the Southern Hemisphere in response to IOD forcing. The apparent inconsistency between the 500 hPa patterns (trough over Southern Africa during positive IOD, ridge during negative IOD) and the drought responses (drier during positive IOD, wetter during negative IOD) suggests that the mid-tropospheric height anomalies may reflect remote wave train responses rather than direct local forcing. The surface and low-level circulation patterns (MSLP and 850 hPa winds) show more direct consistency with the drought responses, with high pressure and anticyclonic flow during positive IOD events creating conditions that suppress precipitation. The 500 hPa anomalies may be influenced by Rossby wave propagation from the Indian Ocean convection anomalies, creating downstream effects that do not necessarily align with local precipitation responses. This complexity highlights the importance of analyzing multiple atmospheric levels to fully understand the teleconnection mechanisms.
 
 #### 3.8.4 Integrated physical mechanism
 
@@ -479,7 +487,7 @@ The ERA5 circulation composites reveal an **integrated physical mechanism** that
 
 4. **Wind response:** The pressure anomalies drive low-level wind changes, with easterly anomalies over the equatorial Indian Ocean reducing moisture transport to East Africa, and anticyclonic circulation over Southern Africa creating divergent flow.
 
-5. **Vertical motion response:** The pressure and wind patterns create mid-tropospheric height anomalies, with ridges indicating subsidence and suppressed precipitation, and troughs indicating upward motion and enhanced precipitation.
+5. **Vertical motion response:** The pressure and wind patterns create mid-tropospheric height anomalies that reflect both local responses and remote wave train propagation. The 500 hPa height anomalies show complex patterns, with ridges over the central Indian Ocean during positive IOD events and troughs over Southern Africa, suggesting Rossby wave propagation that creates downstream effects across the Southern Hemisphere.
 
 6. **Precipitation and drought response:** The integrated circulation response creates precipitation anomalies that directly translate into drought index anomalies, with reduced precipitation (negative drought indices) during positive IOD events in East Africa and Southern Africa, and increased precipitation (positive drought indices) during negative IOD events.
 
@@ -496,7 +504,7 @@ Multi-panel figure showing MSLP, 850 hPa winds, and 500 hPa geopotential height 
 `atmospheric_circulation_composites.png`  
 
 **Figure 10:** Geopotential height anomaly composites  
-Multi-panel figures showing 500 hPa geopotential height anomalies in Mercator and polar stereographic projections. The Mercator projection (extent: 180°W–180°E, 90°S–15°N) reveals equatorial and mid-latitude patterns, while the polar stereographic projection (extent: 180°W–180°E, 90°S–0°N) reveals Southern Hemisphere wave train patterns. The figures show ridge patterns over Southern Africa during positive IOD events (indicating subsidence and suppressed precipitation) and trough patterns during negative IOD events (indicating upward motion and enhanced precipitation).  
+Multi-panel figures showing 500 hPa geopotential height anomalies in Mercator and polar stereographic projections. The Mercator projection (extent: 180°W–180°E, 90°S–15°N) reveals equatorial and mid-latitude patterns, while the polar stereographic projection (extent: 180°W–180°E, 90°S–0°N) reveals Southern Hemisphere wave train patterns. The figures show positive height anomalies (ridges) over the central Indian Ocean and Maritime Continent during positive IOD events, with negative anomalies (troughs) over Southern Africa and the western Indian Ocean. During negative IOD events, the pattern reverses, with negative anomalies over the central Indian Ocean and positive anomalies over Southern Africa. These patterns reflect Rossby wave propagation from IOD-related convection anomalies, creating downstream teleconnections across the Southern Hemisphere.  
 `atmospheric_circulation_geopotential_height_mercator.png`, `atmospheric_circulation_geopotential_height_polar_stereographic.png`  
 
 **Figure 11:** Wind vector composites  
@@ -537,31 +545,152 @@ Compute resources provided by CHPC Lengau. [Funding sources]. [Collaborators].
 
 ---
 
-## References (placeholder)
-Black, E., Slingo, J., and Sperber, K. R. (2003). An observational study of the relationship between excessively strong short rains in coastal East Africa and Indian Ocean SST. *Monthly Weather Review*, **131**, 74–94. **[VERIFY details]**
+## References
 
-Cai, W., Santoso, A., Wang, G., et al. (2013). Projected response of the Indian Ocean Dipole to greenhouse warming. *Nature Geoscience*, **6**, 999–1007. **[VERIFY page numbers / author list]**
+Abiodun, B. J., Makhanya, N., Petja, B., Abatan, A. A., and Oguntunde, P. G. (2019). Future projection of droughts over major river basins in Southern Africa at specific global warming levels. *Theoretical and Applied Climatology*, **137**, 1785–1799.
+
+Allan, R. J., and Ansell, T. J. (2006). A new globally complete monthly historical gridded mean sea level pressure dataset (HadSLP2): 1850–2004. *Journal of Climate*, **19**, 5816–5842.
+
+Ashok, K., Guan, Z., and Yamagata, T. (2001). Impact of the Indian Ocean Dipole on the relationship between the Indian monsoon rainfall and ENSO. *Geophysical Research Letters*, **28**, 4499–4502.
+
+Behera, S. K., and Yamagata, T. (2001). Subtropical SST dipole events in the southern Indian Ocean. *Geophysical Research Letters*, **28**, 327–330.
+
+Behera, S. K., Luo, J. J., Masson, S., Rao, S. A., Sakuma, H., and Yamagata, T. (2006). A CGCM study on the interaction between IOD and ENSO. *Journal of Climate*, **19**, 1688–1705.
+
+Black, E., Slingo, J., and Sperber, K. R. (2003). An observational study of the relationship between excessively strong short rains in coastal East Africa and Indian Ocean SST. *Monthly Weather Review*, **131**, 74–94.
+
+Cai, W., Cowan, T., and Raupach, M. (2009). Positive Indian Ocean Dipole events precondition southeast Australia bushfires. *Geophysical Research Letters*, **36**, L19710.
+
+Cai, W., Santoso, A., Wang, G., Yeh, S. W., An, S. I., Cobb, K. M., Collins, M., Guilyardi, E., Jin, F. F., Kug, J. S., Lengaigne, M., McPhaden, M. J., Takahashi, K., Timmermann, A., Vecchi, G., Watanabe, M., and Wu, L. (2014). ENSO and greenhouse warming. *Nature Climate Change*, **5**, 849–859.
+
+Cai, W., Santoso, A., Wang, G., Weller, E., Wu, L., Ashok, K., Masumoto, Y., and Yamagata, T. (2013). Projected response of the Indian Ocean Dipole to greenhouse warming. *Nature Geoscience*, **6**, 999–1007.
+
+Camberlin, P., Janicot, S., and Poccard, I. (2001). Seasonality and atmospheric dynamics of the teleconnection between African rainfall and tropical sea-surface temperature: Atlantic vs. ENSO. *International Journal of Climatology*, **21**, 973–1005.
+
+Camberlin, P., and Philippon, N. (2002). The East African March–May rainy season: Associated atmospheric dynamics and predictability over the 1968–97 period. *Journal of Climate*, **15**, 1002–1019.
+
+Cook, K. H. (2000). The South Indian Convergence Zone and interannual rainfall variability over Southern Africa. *Journal of Climate*, **13**, 3789–3804.
+
+Dai, A. (2011). Drought under global warming: a review. *Wiley Interdisciplinary Reviews: Climate Change*, **2**, 45–65.
 
 Dai, A. (2013). Increasing drought under global warming in observations and models. *Nature Climate Change*, **3**, 52–58.
 
+Dee, D. P., Uppala, S. M., Simmons, A. J., Berrisford, P., Poli, P., Kobayashi, S., Andrae, U., Balmaseda, M. A., Balsamo, G., Bauer, P., Bechtold, P., Beljaars, A. C. M., van de Berg, L., Bidlot, J., Bormann, N., Delsol, C., Dragani, R., Fuentes, M., Geer, A. J., Haimberger, L., Healy, S. B., Hersbach, H., Hólm, E. V., Isaksen, L., Kållberg, P., Köhler, M., Matricardi, M., McNally, A. P., Monge-Sanz, B. M., Morcrette, J. J., Park, B. K., Peubey, C., de Rosnay, P., Tavolato, C., Thépaut, J. N., and Vitart, F. (2011). The ERA-Interim reanalysis: configuration and performance of the data assimilation system. *Quarterly Journal of the Royal Meteorological Society*, **137**, 553–597.
+
+Dutra, E., Magnusson, L., Wetterhall, F., Cloke, H. L., Balsamo, G., Boussetta, S., and Pappenberger, F. (2013). The 2010–2011 drought in the Horn of Africa in ECMWF reanalysis and seasonal forecast products. *International Journal of Climatology*, **33**, 1720–1729.
+
+Funk, C., Dettinger, M. D., Michaelsen, J. C., Verdin, J. P., Brown, M. E., Barlow, M., and Hoell, A. (2008). Warming of the Indian Ocean threatens eastern and southern African food security but could be mitigated by agricultural development. *Proceedings of the National Academy of Sciences*, **105**, 11081–11086.
+
+Goddard, L., and Graham, N. E. (1999). Importance of the Indian Ocean for simulating rainfall anomalies over eastern and southern Africa. *Journal of Geophysical Research: Atmospheres*, **104**, 19099–19116.
+
 Grinsted, A., Moore, J. C., and Jevrejeva, S. (2004). Application of the cross wavelet transform and wavelet coherence to geophysical time series. *Nonlinear Processes in Geophysics*, **11**, 561–566.
 
-Hersbach, H., Bell, B., Berrisford, P., et al. (2020). The ERA5 global reanalysis. *Quarterly Journal of the Royal Meteorological Society*, **146**, 1999–2049.
+Hastenrath, S., Polzin, D., and Mutai, C. (2010). Diagnosing the 2005 drought in equatorial East Africa. *Journal of Climate*, **23**, 1538–1549.
 
-Marchant, R., Mumbi, C., Behera, S., and Yamagata, T. (2007). The Indian Ocean Dipole—the unsung driver of climatic variability in East Africa. *African Journal of Ecology*, **45**, 4–16. **[VERIFY details]**
+Hersbach, H., Bell, B., Berrisford, P., Hirahara, S., Horányi, A., Muñoz-Sabater, J., Nicolas, J., Peubey, C., Radu, R., Schepers, D., Simmons, A., Soci, C., Abdalla, S., Abellan, X., Balsamo, G., Bechtold, P., Biavati, G., Bidlot, J., Bonavita, M., De Chiara, G., Dahlgren, P., Dee, D., Diamantakis, M., Dragani, R., Flemming, J., Forbes, R., Fuentes, M., Geer, A., Haimberger, L., Healy, S., Hogan, R. J., Hölm, E., Janisková, M., Keeley, S., Laloyaux, P., Lopez, P., Lupu, C., Radnoti, G., de Rosnay, P., Rozum, I., Vamborg, F., Villaume, S., and Thépaut, J. N. (2020). The ERA5 global reanalysis. *Quarterly Journal of the Royal Meteorological Society*, **146**, 1999–2049.
+
+Hoell, A., Funk, C., and Barlow, M. (2015). The regional forcing of Northern Hemisphere drought during recent warm tropical west Pacific Ocean La Niña events. *Climate Dynamics*, **44**, 1787–1801.
+
+Hoell, A., Funk, C., Magadzire, T., Zinke, J., and Husak, G. (2015). El Niño–Southern Oscillation diversity and Southern Africa teleconnections during austral summer. *Climate Dynamics*, **45**, 1583–1599.
+
+Huffman, G. J., Adler, R. F., Bolvin, D. T., Gu, G., Nelkin, E. J., Bowman, K. P., Hong, Y., Stocker, E. F., and Wolff, D. B. (2007). The TRMM Multisatellite Precipitation Analysis (TMPA): Quasi-global, multiyear, combined-sensor precipitation estimates at fine scales. *Journal of Hydrometeorology*, **8**, 38–55.
+
+Indeje, M., Semazzi, F. H. M., and Ogallo, L. J. (2000). ENSO signals in East African rainfall seasons. *International Journal of Climatology*, **20**, 19–46.
+
+Ionita, M., Scholz, P., and Chelcea, S. (2016). Assessment of droughts in Romania using the Standardized Precipitation Index. *Natural Hazards*, **81**, 1483–1498.
+
+Ionita, M., Tallaksen, L. M., Kingston, D. G., Stagge, J. H., Laaha, G., Van Lanen, H. A. J., Scholz, P., Chelcea, S. M., and Haslinger, K. (2017). The European 2015 drought from a climatological perspective. *Hydrology and Earth System Sciences*, **21**, 1397–1419.
+
+Jury, M. R., and Pathack, B. M. R. (1991). A study of climate and weather variability over the tropical southwest Indian Ocean. *Journal of Climate*, **4**, 1149–1162.
+
+Kendon, E. J., Stratton, R. A., Tucker, S., Marsham, J. H., Berthou, S., Rowell, D. P., and Senior, C. A. (2019). Enhanced future changes in wet and dry extremes over Africa at convection-permitting scale. *Nature Communications*, **10**, 1794.
+
+Kug, J. S., and Kang, I. S. (2006). Interactive feedback between ENSO and the Indian Ocean in an interactive ensemble coupled model. *Journal of Climate*, **19**, 6371–6381.
+
+Lyon, B., and DeWitt, D. G. (2012). A recent and abrupt decline in the East African long rains. *Geophysical Research Letters*, **39**, L02702.
+
+Lyon, B., and Mason, S. J. (2007). The 1997–98 summer rainfall season in Southern Africa. Part I: Observations. *Journal of Climate*, **20**, 5134–5148.
+
+Maidment, R. I., Allan, R. P., and Black, E. (2015). Recent observed and simulated changes in precipitation over Africa. *Geophysical Research Letters*, **42**, 8155–8164.
+
+Manatsa, D., Mukwada, G., Siziba, E., and Chinyanganya, T. (2010). Analysis of multidimensional aspects of agricultural droughts in Zimbabwe using the Standardized Precipitation Index (SPI). *Theoretical and Applied Climatology*, **102**, 287–305.
+
+Marchant, R., Mumbi, C., Behera, S., and Yamagata, T. (2007). The Indian Ocean Dipole—the unsung driver of climatic variability in East Africa. *African Journal of Ecology*, **45**, 4–16.
+
+Mason, S. J., and Jury, M. R. (1997). Climatic variability and change over southern Africa: a reflection on underlying processes. *Progress in Physical Geography*, **21**, 23–50.
 
 McKee, T. B., Doesken, N. J., and Kleist, J. (1993). The relationship of drought frequency and duration to time scales. *Proceedings of the 8th Conference on Applied Climatology*, 179–184.
 
+McPhaden, M. J., Zebiak, S. E., and Glantz, M. H. (2006). ENSO as an integrating concept in earth science. *Science*, **314**, 1740–1745.
+
+Meyers, G., McIntosh, P., Pigot, L., and Pook, M. (2007). The years of El Niño, La Niña, and interactions with the tropical Indian Ocean. *Journal of Climate*, **20**, 2872–2880.
+
+Mishra, A. K., and Singh, V. P. (2010). A review of drought concepts. *Journal of Hydrology*, **391**, 202–216.
+
+Mishra, A. K., and Singh, V. P. (2011). Drought modeling—a review. *Journal of Hydrology*, **403**, 157–175.
+
+Mpelasoka, F., Hennessy, K., Jones, R., and Bates, B. (2008). Comparison of suitable drought indices for climate change impacts assessment over Australia towards resource management. *International Journal of Climatology*, **28**, 1283–1292.
+
+Muthige, M. S., Malherbe, J., Engelbrecht, F. A., Landman, W. A., and Bopape, M. J. (2018). Projected changes in tropical cyclones over the South West Indian Ocean under different extents of global warming. *Environmental Research Letters*, **13**, 065019.
+
+Nicholson, S. E. (2014). A detailed look at the recent drought situation in the Greater Horn of Africa. *Journal of Arid Environments*, **103**, 71–79.
+
+Nicholson, S. E. (2017). Climate and climatic variability of rainfall over eastern Africa. *Reviews of Geophysics*, **55**, 590–635.
+
+Nicholson, S. E., and Kim, J. (1997). The relationship of the El Niño–Southern Oscillation to African rainfall. *International Journal of Climatology*, **17**, 117–135.
+
+Ogallo, L. J. (1988). Relationships between seasonal rainfall in East Africa and the Southern Oscillation. *Journal of Climatology*, **8**, 31–43.
+
+Panthou, G., Vischel, T., and Lebel, T. (2014). Recent trends in the regime of extreme rainfall in the Central Sahel. *International Journal of Climatology*, **34**, 3998–4006.
+
+Reason, C. J. C., and Jagadheesha, D. (2005). A model investigation of recent ENSO impacts over southern Africa. *Meteorology and Atmospheric Physics*, **89**, 181–205.
+
+Reynolds, R. W., Rayner, N. A., Smith, T. M., Stokes, D. C., and Wang, W. (2002). An improved in situ and satellite SST analysis for climate. *Journal of Climate*, **15**, 1609–1625.
+
+Ropelewski, C. F., and Halpert, M. S. (1987). Global and regional scale precipitation patterns associated with the El Niño/Southern Oscillation. *Monthly Weather Review*, **115**, 1606–1626.
+
+Saji, N. H., and Yamagata, T. (2003). Possible impacts of Indian Ocean Dipole mode events on global climate. *Climate Research*, **25**, 151–169.
+
 Saji, N. H., Goswami, B. N., Vinayachandran, P. N., and Yamagata, T. (1999). A dipole mode in the tropical Indian Ocean. *Nature*, **401**, 360–363.
+
+Schubert, S. D., Suarez, M. J., Pegion, P. J., Koster, R. D., and Bacmeister, J. T. (2004). On the cause of the 1930s Dust Bowl. *Science*, **303**, 1855–1859.
+
+Sheffield, J., and Wood, E. F. (2008). Projected changes in drought occurrence under future global warming from multi-model, multi-scenario, IPCC AR4 simulations. *Climate Dynamics*, **31**, 79–105.
+
+Shukla, J., and Paolino, D. A. (1983). The Southern Oscillation and long-range forecasting of the summer monsoon rainfall over India. *Monthly Weather Review*, **111**, 1830–1837.
+
+Stagge, J. H., Tallaksen, L. M., Gudmundsson, L., Van Loon, A. F., and Stahl, K. (2015). Candidate distributions for climatological drought indices (SPI and SPEI). *International Journal of Climatology*, **35**, 4027–4040.
+
+Stagge, J. H., Tallaksen, L. M., Xu, C. Y., and Van Lanen, H. A. J. (2014). Standardized precipitation-evapotranspiration index (SPEI): Sensitivity to potential evapotranspiration model and parameters. *Hydrology in a Changing World: Environmental and Human Dimensions*, **363**, 367–373.
+
+Trenberth, K. E. (1997). The definition of El Niño. *Bulletin of the American Meteorological Society*, **78**, 2771–2777.
+
+Trenberth, K. E., and Stepaniak, D. P. (2001). Indices of El Niño evolution. *Journal of Climate*, **14**, 1697–1701.
 
 Torrence, C., and Compo, G. P. (1998). A practical guide to wavelet analysis. *Bulletin of the American Meteorological Society*, **79**, 61–78.
 
 Thornthwaite, C. W. (1948). An approach toward a rational classification of climate. *Geographical Review*, **38**, 55–94.
 
-Trenberth, K. E. (1997). The definition of El Niño. *Bulletin of the American Meteorological Society*, **78**, 2771–2777.
+Ummenhofer, C. C., England, M. H., McIntosh, P. C., Meyers, G. A., Pook, M. J., Risbey, J. S., Gupta, A. S., and Taschetto, A. S. (2009). What causes southeast Australia's worst droughts? *Geophysical Research Letters*, **36**, L04706.
 
 Vicente-Serrano, S. M., Beguería, S., and López-Moreno, J. I. (2010). A multiscalar drought index sensitive to global warming: the Standardized Precipitation Evapotranspiration Index. *Journal of Climate*, **23**, 1696–1718.
 
+Vicente-Serrano, S. M., Beguería, S., Lorenzo-Lacruz, J., Camarero, J. J., López-Moreno, J. I., Azorin-Molina, C., Revuelto, J., Morán-Tejeda, E., and Sanchez-Lorenzo, A. (2012). Performance of drought indices for ecological, agricultural, and hydrological applications. *Earth Interactions*, **16**, 1–27.
+
+Vicente-Serrano, S. M., Van der Schrier, G., Beguería, S., Azorin-Molina, C., and López-Moreno, J. I. (2015). Contribution of precipitation and reference evapotranspiration to drought indices under different climates. *Journal of Hydrology*, **526**, 42–54.
+
+Wang, B., Wu, R., and Li, T. (2003). Atmosphere–warm ocean interaction and its impacts on Asian–Australian monsoon variation. *Journal of Climate*, **16**, 1195–1211.
+
 Webster, P. J., Moore, A. M., Loschnigg, J. P., and Leben, R. R. (1999). Coupled ocean–atmosphere dynamics in the Indian Ocean during 1997–98. *Nature*, **401**, 356–360.
+
+Williams, A. P., and Funk, C. (2011). A westward extension of the warm pool leads to a westward extension of the Walker circulation, drying eastern Africa. *Climate Dynamics*, **37**, 2417–2435.
+
+Wolter, K., and Timlin, M. S. (1993). Monitoring ENSO in COADS with a seasonally adjusted principal component index. *Proceedings of the 17th Climate Diagnostics Workshop*, 52–57.
+
+Yamagata, T., Behera, S. K., Luo, J. J., Masson, S., Jury, M. R., and Rao, S. A. (2004). Coupled ocean–atmosphere variability in the tropical Indian Ocean. In *Earth's Climate: The Ocean–Atmosphere Interaction* (pp. 189–211). American Geophysical Union.
+
+Yuan, Y., and Yan, H. (2013). Different types of La Niña events and different responses of the tropical atmosphere. *Chinese Science Bulletin*, **58**, 406–415.
+
+Zeng, N. (2003). Drought in the Sahel. *Science*, **302**, 999–1000.
 
 
