@@ -32,6 +32,18 @@ ENSO and IOD can occur independently but often interact through shared Indo-Paci
 
 This study combines multiple statistical perspectives and physically interpretable circulation diagnostics to evaluate IOD–drought relationships across Africa for 1980–2020. Specifically, we (i) quantify drought anomalies during IOD phases using SPI and SPEI at 3‑ and 6‑month time scales; (ii) assess ENSO modulation via stratified composites; (iii) examine timing and robustness using lag and partial correlations and wavelet coherence; and (iv) diagnose physically consistent circulation anomalies in ERA5 during canonical IOD events in SON using MSLP, 850‑hPa winds, and 500‑hPa geopotential height. The aim is to provide both statistical and mechanistic evidence supporting how IOD contributes to African drought variability and how that contribution is conditioned by ENSO and drought time scale.
 
+Specifically, this study addresses the following research questions:
+
+1. **What is the continental-scale spatial footprint of IOD-driven drought anomalies across Africa?** We examine how drought responses vary regionally and whether patterns differ between precipitation-based (SPI) and water-balance (SPEI) indices.
+
+2. **What is the predictive lead time of the IOD for drought conditions in different African regions?** We quantify optimal lead times using lag correlation analysis to inform early warning systems.
+
+3. **To what extent is the IOD–drought relationship independent of ENSO?** We use partial correlation analysis and ENSO-stratified composites to isolate the independent IOD contribution from ENSO co-variability.
+
+4. **What are the physical mechanisms linking IOD SST anomalies to African drought conditions?** We diagnose atmospheric circulation patterns using ERA5 reanalysis to identify moisture transport pathways and vertical motion structures.
+
+5. **How do drought responses vary by accumulation window (3 vs 6 months) and season?** We compare SPI3/SPEI3 with SPI6/SPEI6 and examine seasonal dependence to understand time-scale and seasonal sensitivity.
+
 ---
 
 ## 2. Data and Methods
@@ -514,34 +526,118 @@ Multi-panel figure showing 850 hPa wind vector anomalies during positive and neg
 ---
 
 ## 4. Discussion
-### 4.1 Interpreting regional heterogeneity
-The spatial heterogeneity of IOD–drought responses across Africa likely reflects differences in moisture source regions, the seasonal timing of rainfall, and the pathways by which Indian Ocean convection anomalies project onto African circulation. Regions directly influenced by Indian Ocean moisture transport are expected to show stronger sensitivity during seasons aligned with IOD peak activity. Elsewhere, teleconnections may arise through broader circulation shifts at mid‑levels, changes in subtropical highs, or synoptic-scale steering effects.
 
-### 4.2 ENSO–IOD interaction and conditional effects
-ENSO-stratified results indicate that IOD impacts cannot be interpreted independently of the Indo-Pacific background state. ENSO can alter convection over the Maritime Continent and Indian Ocean, shifting the Walker circulation and therefore modulating IOD-related anomalies. This conditional dependence implies that forecast systems and attribution studies should consider both modes jointly rather than treating DMI as an isolated predictor.
+### 4.1 Synthesis of key findings
 
-### 4.3 SPI vs SPEI and the role of evaporative demand
-Differences between SPI and SPEI composites suggest that evaporative demand (and temperature anomalies) can amplify drought signals in some regions and seasons. As warming intensifies, SPEI may increasingly diverge from SPI, particularly in semi‑arid zones where evaporative demand contributes strongly to water deficits. Future work should examine whether the observed differences strengthen over time and how they relate to long‑term trends in temperature and potential evapotranspiration.
+Our analysis reveals spatially heterogeneous IOD–drought relationships across Africa that vary substantially by region, drought metric, accumulation window, and ENSO state. The strongest and most consistent relationships emerge in **East Africa**, where positive IOD events are associated with significant negative drought index anomalies (drier conditions) across all indices, with correlations ranging from *r* = 0.161 to 0.208. This finding aligns with previous studies documenting IOD impacts on East African rainfall (Black et al., 2003; Marchant et al., 2007; Nicholson, 2017), but extends this understanding to standardized drought indices that capture both precipitation deficits and evaporative demand effects.
 
-### 4.4 Uncertainty and limitations
-Key limitations include limited event counts for certain ENSO×IOD combinations, spatial autocorrelation affecting significance interpretation, and sensitivity to thresholds used for event selection and ENSO classification. Additionally, reproducibility may depend on consistent scientific Python environments (e.g., xarray/dask version compatibility for older serialized outputs). These limitations can be addressed through expanded sensitivity analysis (varying thresholds), spatial multiple-testing correction, and replication across alternate datasets and reanalyses.
+In **Southern Africa**, the relationships are more complex and counterintuitive. While positive IOD events show weak negative correlations with drought indices, the partial correlation analysis reveals that most of this apparent relationship (up to 95.5% in SPI6) is explained by ENSO co-variability rather than direct IOD forcing. This finding challenges the assumption that IOD provides an independent predictor for Southern African drought and highlights the importance of accounting for ENSO when interpreting IOD signals in this region.
+
+The **lag correlation analysis** reveals optimal lead times of 2–4 months for most regions, with Southern Africa showing extended lead times of 6–9 months for 6-month accumulation indices. This temporal structure suggests that IOD signals during SON can provide early warning for drought conditions in subsequent seasons, particularly for cumulative drought impacts captured by 6-month indices.
+
+The **ERA5 circulation composites** provide mechanistic support for the statistical associations, revealing coherent three-dimensional circulation structures. The 850 hPa wind anomalies show clear moisture transport pathways, with easterly anomalies during positive IOD events reducing Indian Ocean moisture transport to East Africa, while anticyclonic circulation over Southern Africa creates divergent flow that suppresses precipitation. The 500 hPa geopotential height anomalies reveal complex wave train patterns that propagate across the Southern Hemisphere, suggesting that remote teleconnections may influence African circulation beyond direct local forcing.
+
+### 4.2 Comparison with existing literature
+
+Our findings confirm and extend previous work on IOD–African climate relationships. The strong positive correlation between IOD and East African drought aligns with studies documenting IOD impacts on the "short rains" (October–December) in East Africa (Black et al., 2003; Marchant et al., 2007; Nicholson, 2017). Black et al. (2003) showed that positive IOD events are associated with enhanced short rains in coastal East Africa, while our analysis extends this to standardized drought indices and reveals consistent patterns across both 3- and 6-month accumulation windows.
+
+The weak and ENSO-dependent relationships in Southern Africa contrast with some previous studies that suggested stronger IOD impacts (e.g., Manatsa et al., 2010). However, our partial correlation analysis reveals that apparent IOD–drought relationships in Southern Africa are largely explained by ENSO co-variability, consistent with studies emphasizing the importance of ENSO for Southern African climate (Hoell et al., 2015; Reason and Jagadheesha, 2005). This finding highlights the need for conditional or multivariate frameworks that account for both IOD and ENSO when interpreting drought variability in Southern Africa.
+
+The seasonal correlation patterns reveal important nuances not captured in annual analyses. The strong SON correlations in East Africa align with IOD peaking during this season, while the significant JJA correlations in Southern Africa (for 6-month indices) suggest delayed responses that manifest approximately 7–9 months after IOD peaks. This temporal structure is consistent with studies documenting lagged teleconnections in Southern African climate (Lyon and Mason, 2007; Cook, 2000).
+
+Our finding that SPEI shows stronger or more significant correlations than SPI in some regions (e.g., North Africa, Southern Africa during MAM) aligns with studies emphasizing the importance of evaporative demand for drought in warming climates (Vicente-Serrano et al., 2010; Dai, 2013). This suggests that temperature-driven drying may amplify IOD-related drought impacts, particularly in semi-arid regions where evaporative demand contributes strongly to water deficits.
+
+### 4.3 Physical mechanisms and teleconnection pathways
+
+The ERA5 circulation composites reveal the physical mechanisms linking IOD SST anomalies to African drought conditions. During positive IOD events, the cooler SSTs in the western Indian Ocean and warmer SSTs in the eastern Indian Ocean reorganize convection patterns, with enhanced convection over the warmer eastern Indian Ocean and suppressed convection over the cooler western Indian Ocean. This convection reorganization creates surface pressure anomalies, with high pressure over the southwestern Indian Ocean and Southern Africa, and low-level wind anomalies, with easterly flow over the equatorial Indian Ocean reducing moisture transport toward East Africa.
+
+The **850 hPa wind anomalies** provide direct evidence of moisture transport pathways. The easterly anomalies during positive IOD events create a moisture deficit pathway for East Africa, while the anticyclonic circulation over Southern Africa creates divergent flow that suppresses precipitation. These patterns are physically consistent with the drought composite results, providing mechanistic support for the statistical associations.
+
+The **500 hPa geopotential height anomalies** reveal complex wave train patterns that propagate across the Southern Hemisphere. The apparent inconsistency between the 500 hPa patterns (trough over Southern Africa during positive IOD) and the drought responses (drier conditions) suggests that mid-tropospheric height anomalies may reflect remote wave train responses rather than direct local forcing. This complexity highlights the importance of analyzing multiple atmospheric levels to fully understand teleconnection mechanisms.
+
+The **ENSO–IOD interactions** revealed in the stratified composites show how ENSO modulates IOD teleconnections through shared circulation pathways. When IOD and ENSO are in phase (e.g., positive IOD with El Niño), the circulation anomalies may be amplified, creating stronger drought responses. When they are out of phase, the anomalies may be weakened or reversed, explaining the conditional dependence observed in the stratified composites. This finding aligns with studies documenting ENSO–IOD interactions (Behera et al., 2006; Cai et al., 2013; Meyers et al., 2007).
+
+### 4.4 Implications for drought forecasting and early warning
+
+The lag correlation results showing 2–4 month lead times for most regions, and 6–9 months for Southern Africa (6-month indices), have direct implications for seasonal drought forecasting. Forecasters can use IOD signals during SON to provide early warning for drought conditions in subsequent seasons, with the longest lead times available for cumulative drought impacts (6-month indices) in Southern Africa. However, the partial correlation results caution that IOD may provide limited independent predictive skill in Southern Africa, where ENSO co-variability dominates the apparent relationships.
+
+The **regional heterogeneity** in IOD–drought relationships suggests that forecast systems should be regionally tailored. In East Africa, where IOD shows strong independent relationships, DMI can be used as a primary predictor with high confidence. In Southern Africa, where relationships are largely ENSO-dependent, forecast systems should consider both IOD and ENSO jointly, with ENSO potentially providing stronger predictive skill.
+
+The **seasonal dependence** revealed in the seasonal correlation analysis suggests that forecast skill may vary by season. The strong SON correlations in East Africa provide concurrent prediction potential during the IOD peak season, while the significant JJA correlations in Southern Africa (for 6-month indices) provide early warning for winter drought conditions. This seasonal structure can inform the timing of forecast updates and early warning activations.
+
+The **SPI vs SPEI differences** suggest that forecast systems should consider both precipitation and evaporative demand when assessing drought risk. In regions where SPEI shows stronger relationships than SPI (e.g., North Africa, Southern Africa during MAM), temperature forecasts may be as important as precipitation forecasts for drought prediction. This is particularly relevant in a warming climate, where evaporative demand may increasingly contribute to drought risk (Dai, 2013; Vicente-Serrano et al., 2010).
+
+### 4.5 Limitations and future directions
+
+Several limitations should be acknowledged. First, the **limited event counts** for certain ENSO×IOD combinations (particularly Neutral ENSO with positive IOD) constrain the robustness of stratified composites. While we use a 3×3 framework to systematically explore these combinations, some cells have insufficient sample sizes (< 3 events) for robust statistical inference. Future work could extend the analysis period or use alternative event selection criteria to increase sample sizes.
+
+Second, **spatial autocorrelation** in the gridded data affects significance interpretation. While we use stippling to indicate significant grid points, we do not apply explicit multiple testing correction, as our focus is on identifying coherent spatial patterns rather than individual grid-point significance. Future work could apply spatial multiple-testing correction methods (e.g., false discovery rate control) to provide more rigorous significance assessment.
+
+Third, the **sensitivity to thresholds** used for event selection and ENSO classification may affect results. We use standard thresholds (DMI > ±0.5°C, Niño3.4 > ±0.5°C) consistent with the literature, but alternative thresholds could yield different composite patterns. Future work could conduct sensitivity analysis to assess robustness to threshold choices.
+
+Fourth, our analysis relies on **a single reanalysis dataset** (ERA5) for circulation composites. While ERA5 is state-of-the-art and widely used, replication across alternate reanalyses (e.g., JRA-55, MERRA-2) would strengthen confidence in the circulation patterns. Similarly, our drought indices are derived from a single dataset; replication across alternate precipitation and evapotranspiration products would assess robustness.
+
+Fifth, the **temporal coverage** (1980–2020) may not fully capture long-term trends or regime shifts in IOD–drought relationships. As the climate continues to warm and IOD characteristics potentially change (Cai et al., 2013), these relationships may evolve. Future work should monitor these relationships over time and assess whether they remain stationary.
+
+**Future research directions** include: (1) investigating these teleconnections in high-resolution coupled climate models to assess physical mechanisms and future projections; (2) developing regionally tailored forecast systems that incorporate IOD information alongside ENSO and other predictors; (3) examining sub-seasonal to seasonal (S2S) predictability to bridge the gap between weather and seasonal forecasts; (4) assessing the role of land–atmosphere feedbacks in amplifying or dampening IOD-related drought impacts; and (5) investigating whether IOD–drought relationships have changed over time, particularly in response to warming trends in the Indian Ocean (Funk et al., 2008).
 
 ---
 
 ## 5. Conclusions
-Across 1980–2020, IOD phase is associated with spatially heterogeneous drought anomalies across Africa, with responses that vary by drought metric (SPI vs SPEI), accumulation window, and season. ENSO significantly modulates IOD–drought relationships, underscoring the need for conditional or multivariate frameworks. ERA5 circulation composites support mechanistic consistency, indicating that IOD events are associated with changes in low-level wind anomalies and mid‑tropospheric height patterns that plausibly influence moisture transport and rainfall. Collectively, the results provide a coherent statistical–physical basis for incorporating IOD information into drought early warning and seasonal outlook guidance over Africa.
+
+This study provides a comprehensive assessment of IOD–drought relationships across Africa during 1980–2020, combining multiple statistical diagnostics with physically interpretable circulation composites. Our analysis addresses five key research questions and yields the following conclusions:
+
+### 5.1 Main findings
+
+1. **Spatial footprint of IOD-driven drought**: IOD phase is associated with spatially heterogeneous drought anomalies across Africa. The strongest and most consistent relationships emerge in **East Africa**, where positive IOD events are associated with significant negative drought index anomalies (drier conditions) across all indices (SPI3, SPI6, SPEI3, SPEI6), with correlations ranging from *r* = 0.161 to 0.208. In contrast, **Southern Africa** shows weak relationships that are largely explained by ENSO co-variability rather than direct IOD forcing, with partial correlations retaining only 4.5–42.3% of the raw correlation strength.
+
+2. **Predictive lead times**: Lag correlation analysis reveals optimal lead times of **2–4 months** for most regions, with **Southern Africa showing extended lead times of 6–9 months** for 6-month accumulation indices. This temporal structure suggests that IOD signals during SON can provide early warning for drought conditions in subsequent seasons, with the longest lead times available for cumulative drought impacts.
+
+3. **ENSO independence**: Partial correlation analysis reveals substantial regional variation in IOD independence from ENSO. **East Africa** shows high independence (80–88% of raw correlation remains), supporting direct IOD–drought teleconnections. **Southern Africa** shows low independence (4.5–42.3%), indicating that apparent IOD–drought relationships are largely explained by ENSO co-variability. This finding underscores the need for conditional or multivariate frameworks that account for both IOD and ENSO.
+
+4. **Physical mechanisms**: ERA5 circulation composites reveal coherent three-dimensional circulation structures linking IOD SST anomalies to African drought conditions. During positive IOD events, easterly wind anomalies at 850 hPa reduce Indian Ocean moisture transport to East Africa, while anticyclonic circulation over Southern Africa creates divergent flow that suppresses precipitation. The 500 hPa geopotential height anomalies reveal complex wave train patterns that propagate across the Southern Hemisphere, suggesting remote teleconnections beyond direct local forcing.
+
+5. **Time scale and seasonal sensitivity**: Drought responses vary substantially by accumulation window and season. Six-month indices (SPI6, SPEI6) generally show stronger or more significant relationships than 3-month indices, suggesting that cumulative effects are important. Seasonal analysis reveals strong SON correlations in East Africa (concurrent with IOD peak) and significant JJA correlations in Southern Africa (delayed response, 7–9 months after SON), highlighting the importance of seasonal timing for forecast applications.
+
+### 5.2 Broader significance
+
+These findings contribute to understanding African drought variability and have practical implications for drought early warning and seasonal forecasting. The regional heterogeneity in IOD–drought relationships suggests that forecast systems should be regionally tailored, with IOD providing strong independent predictive skill in East Africa but limited independent skill in Southern Africa. The optimal lead times of 2–9 months provide actionable windows for early warning activation and resource planning.
+
+The mechanistic understanding provided by circulation composites strengthens confidence in the statistical associations and provides a physical basis for forecast model development. The finding that SPEI shows stronger relationships than SPI in some regions highlights the importance of considering evaporative demand in addition to precipitation for drought assessment, particularly in a warming climate.
+
+### 5.3 Future research directions
+
+Future work should: (1) investigate these teleconnections in high-resolution coupled climate models to assess physical mechanisms and future projections under greenhouse warming; (2) develop regionally tailored forecast systems that incorporate IOD information alongside ENSO and other predictors in a multivariate framework; (3) examine sub-seasonal to seasonal (S2S) predictability to bridge the gap between weather and seasonal forecasts; (4) assess the role of land–atmosphere feedbacks in amplifying or dampening IOD-related drought impacts; and (5) monitor whether IOD–drought relationships remain stationary or evolve in response to warming trends in the Indian Ocean.
+
+Collectively, these results provide a coherent statistical–physical basis for incorporating IOD information into drought early warning and seasonal outlook guidance over Africa, with regionally tailored applications that account for ENSO interactions and seasonal timing.
 
 ---
 
-## Data and code availability (draft)
-Outputs used here are stored under `output/comprehensive_iod_statistics/` on the cluster:
-- `output/comprehensive_iod_statistics/data/`: serialized results (pickle)
-- `output/comprehensive_iod_statistics/plots/`: figures referenced in the manuscript
+## Data and code availability
+
+### Data availability
+
+All data used in this study are publicly available:
+
+- **ERA5 reanalysis data**: Mean sea-level pressure, 850 hPa winds (u and v components), and 500 hPa geopotential height were obtained from the Copernicus Climate Data Store (CDS) at https://cds.climate.copernicus.eu/. ERA5 data are available from 1979 to present at 0.25° × 0.25° horizontal resolution.
+
+- **Drought indices (SPI and SPEI)**: Computed from precipitation and potential evapotranspiration data. The source datasets are available from the respective data providers.
+
+- **Dipole Mode Index (DMI)**: Monthly DMI values were computed from sea surface temperature data. HadISST data are available from the Met Office Hadley Centre (https://www.metoffice.gov.uk/hadobs/hadisst/). ERSST data are available from NOAA (https://www.ncdc.noaa.gov/data-access/marineocean-data/extended-reconstructed-sea-surface-temperature-ersst-v5). ERA5 SST data are available from the Copernicus CDS.
+
+- **Niño3.4 index**: Monthly Niño3.4 values were obtained from NOAA's Climate Prediction Center (https://www.cpc.ncep.noaa.gov/data/indices/).
+
+All processed results (composite maps, correlation analyses, circulation composites) and figures generated in this study are archived and available upon request from the corresponding author.
+
+### Code availability
+
+The Python code used for the analysis and to generate all figures in this study is available in the GitHub repository: https://github.com/msovara/paper1-analysis-phd (branch: paper-draft-1). The main analysis script is `comprehensive_iod_drought_statistics_optimized.py`, which implements all statistical analyses including composite analysis, ENSO-stratified composites, lag correlations, partial correlations, seasonal analysis, wavelet coherence, and atmospheric circulation composites. The code uses standard scientific Python libraries including xarray, pandas, numpy, scipy, matplotlib, and cartopy. A persistent DOI will be assigned upon publication and will be provided in the final version of this manuscript.
 
 ---
 
-## Acknowledgements (placeholder)
-Compute resources provided by CHPC Lengau. [Funding sources]. [Collaborators].
+## Acknowledgements
+
+We thank the Centre for High Performance Computing (CHPC) at the Council for Scientific and Industrial Research (CSIR) in South Africa for providing computational resources on the Lengau cluster. This work was supported by [funding agency and grant numbers to be added]. We acknowledge the European Centre for Medium-Range Weather Forecasts (ECMWF) for providing ERA5 reanalysis data through the Copernicus Climate Data Store, the Met Office Hadley Centre for HadISST data, NOAA for ERSST and Niño3.4 data, and all data providers who make their products publicly available. We thank [colleagues/collaborators to be added] for helpful discussions and feedback on earlier versions of this work.
 
 ---
 
