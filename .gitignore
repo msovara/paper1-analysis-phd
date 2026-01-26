@@ -1,0 +1,143 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Virtual environments
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+conda-env/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# IDE/Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Large data files - DO NOT COMMIT
+*.nc
+*.nc4
+*.h5
+*.hdf5
+*.grib
+*.grib2
+*.zarr
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Output directories with large files
+output/
+results/
+plots/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
+*.svg
+
+# Exception: Keep small CSV files for examples
+!dmi_son_annual_averages.csv
+!dmi_son_top_events.csv
+!nino34.long.anom.csv
+
+# Data directories (may contain large files)
+data/
+lustre/
+/mnt/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+*.pkl
+*.pickle
+
+# Cluster-specific files
+*.pbs
+*.sh
+*.ps1
+*.sbatch
+
+# SSH keys and credentials
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+*.crt
+*.cer
+config
+.ssh/
+
+# Environment variables
+.env
+.env.local
+*.env
+
+# Model checkpoints and weights
+*.ckpt
+*.h5
+*.pth
+*.pt
+checkpoints/
+models/
+weights/
+
+# Anaconda
+.conda/
+
+# Test outputs
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Documentation builds
+docs/_build/
+site/
+
+# Personal notes
+notes.md
+TODO-personal.md
+personal-notes/
+
+# Large zip files (already tracked but should be removed)
+69cef5e5ead9657bebff9ed1ee573841.zip
+742bec7a55c5faa2f7611cdb40fcee28.zip
+
