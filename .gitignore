@@ -131,6 +131,7 @@ htmlcov/
 # Documentation builds
 docs/_build/
 site/
+manuscript/_output/
 
 # Personal notes
 notes.md
