@@ -24,6 +24,8 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
 # Page configuration
 st.set_page_config(
     page_title="Climate Data Visualizer",
@@ -217,7 +219,7 @@ def main():
         file_name = uploaded_file.name
         st.sidebar.success(f"✅ Loaded: {file_name}")
     elif selected_file != "None":
-        file_path = Path(selected_file)
+        file_path = REPO_ROOT / selected_file
         if file_path.exists():
             df = load_csv_file(file_path)
             file_name = selected_file

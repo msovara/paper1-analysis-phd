@@ -26,7 +26,7 @@ pip install streamlit pandas numpy plotly
 
 1. Run the Streamlit app:
 ```bash
-streamlit run streamlit_data_visualizer.py
+streamlit run dashboard/streamlit_data_visualizer.py
 ```
 
 2. The app will open in your default web browser (usually at `http://localhost:8501`)

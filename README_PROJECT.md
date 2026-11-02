@@ -1,3 +1,5 @@
+[![Open the dashboard](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=msovara/paper1-analysis-phd&branch=paper-draft-1&mainModule=dashboard/streamlit_data_visualizer.py&subdomain=paper1-iod-dashboard)
+
 # Indian Ocean Dipole (IOD) and African Drought Analysis
 
 Paper 1 lives in this repository. The working manuscript is `manuscript/paper.qmd`. The analysis entry point is `comprehensive_iod_drought_statistics_optimized.py`, run through `run_iod_analysis_closure.py`.
@@ -41,7 +43,7 @@ pip install -r requirements_anemoi.txt
 
 Launch the Streamlit dashboard:
 ```bash
-streamlit run streamlit_data_visualizer.py
+streamlit run dashboard/streamlit_data_visualizer.py
 ```
 
 Or use the provided scripts:
@@ -52,7 +54,7 @@ Or use the provided scripts:
 
 ```
 tiny-media-analysis/
-├── streamlit_data_visualizer.py    # Interactive data visualization dashboard
+├── dashboard/streamlit_data_visualizer.py    # Interactive data visualization dashboard
 ├── analysis_config.py              # Configuration for analysis workflows
 ├── comprehensive_iod_drought_statistics.py  # Main analysis script
 ├── composite_drought_iod_africa.py # Composite analysis

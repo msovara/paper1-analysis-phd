@@ -1,4 +1,6 @@
 
+[![Open the dashboard](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/deploy?repository=msovara/paper1-analysis-phd&branch=paper-draft-1&mainModule=dashboard/streamlit_data_visualizer.py&subdomain=paper1-iod-dashboard)
+
 # Full-text Draft Manuscript — Indian Ocean Dipole Teleconnections and African Drought
 
 **Project:** IOD–drought relationships in Africa (1980–2020)  
