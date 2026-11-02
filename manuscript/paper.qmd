@@ -1,0 +1,329 @@
+---
+title: "Indian Ocean Dipole modulation of African drought variability (1980–2020)"
+subtitle: "Evidence from drought indices and ERA5 circulation composites"
+author:
+  - name: M. Sovara
+    affiliations:
+      - name: Affiliation to be added
+    corresponding: true
+    email: email@to-be-added
+date: last-modified
+keywords:
+  - Indian Ocean Dipole
+  - drought
+  - Africa
+  - SPI
+  - SPEI
+  - ENSO
+  - ERA5
+abstract: |
+  African drought is shaped by more than one tropical mode, and the Indian Ocean Dipole (IOD) is not interchangeable with ENSO. We quantify IOD-related drought anomalies over Africa for 1980–2020 using the Standardized Precipitation Index (SPI) and the Standardized Precipitation Evapotranspiration Index (SPEI) at 3- and 6-month scales, then compare those anomalies with ERA5 circulation in September–November (SON) of seven positive and five negative IOD years. Positive IOD composites are wet over East Africa and the Sahel and dry over subtropical southern Africa. Negative IOD weakens or reverses parts of that pattern, with the largest wet anomalies in Central Africa. Significant land points (*p* < 0.05) cover 17–18% of the domain for SPI during positive IOD, and 7–9% for SPEI and for negative IOD. In East Africa the association is essentially concurrent (maximum *r* = 0.16–0.23) and remains after linear removal of Niño-3.4 (partial *r* = 0.13–0.18). Seasonal correlations there peak in SON (SPI3 *r* = 0.50). Southern Africa has little concurrent correlation; its largest correlations sit near lags of −8 to −9 months and are not a DMI lead. Land-masked ERA5 sections over 10°E–50°E show ascent over the Horn of Africa and subsidence over the southern subtropics during positive IOD, consistent with the composite wet–dry dipole. The IOD is a usable drought predictor where that dipole is coherent, and a joint predictor with ENSO elsewhere.
+bibliography: references.bib
+---
+
+::: {.callout-important}
+## Draft status — remove before submission
+
+This article is written from the July 2026 closure and from `analysis_config.py`. Four items are still open.
+
+1. **ENSO cell membership.** The stratified notes assign five positive-IOD years (1994, 1997, 2006, 2018, 2019). The composite list also includes 2012 and 2015. @tbl-enso is therefore provisional. Single-event cells are omitted on purpose.
+2. **Southern Africa sign.** The positive-IOD composite mean is slightly dry, and the ω section shows subsidence there. The full-series SON correlation for the same region is positive. Both are reported. They should be checked on the maps before one of them is treated as the regional result.
+3. **DMI *p*-values.** Correlations among HadISST, ERSST, and ERA5 are reported. *p*-values printed as 10^−108 on the diagnostic figures are not, because they are not credible for 41 SON seasons.
+4. **Figures.** Paths follow `PAPER_FIGURE_INVENTORY.md`. The PNG files are not in this working copy, so the figure blocks are captions until those files are placed and the image links are restored.
+:::
+
+# Introduction
+
+Drought is one of the costliest climate hazards in Africa. Rainfed agriculture, reservoir storage, and pastoral systems all respond to rainfall deficits, and warming adds an evaporative-demand contribution that precipitation-only indices miss [@dai2013; @vicente2010]. A useful seasonal outlook has to say which ocean mode is acting, where, and in which season. ENSO is the usual first predictor. The Indian Ocean Dipole is the second, and the two are not independent [@saji1999; @webster1999; @cai2013].
+
+The Dipole Mode Index (DMI) is the difference between sea-surface temperature anomalies in the western equatorial Indian Ocean and the eastern equatorial Indian Ocean [@saji1999]. Positive IOD events peak in SON, with warm anomalies and enhanced convection in the west and cool anomalies and suppressed convection in the east. That pattern strengthens the East African short rains [@black2003; @nicholson2017; @marchant2007]. Negative events reverse the sea-surface temperature gradient. ENSO can occur with or without an IOD event, but positive IOD years favour El Niño and negative IOD years favour La Niña, through the Walker circulation and Indonesian convection [@webster1999; @behera2006; @meyers2007]. A correlation between the DMI and an African drought index can therefore be an Indian Ocean signal, an ENSO signal, or both.
+
+Most of the African IOD literature is about East African rainfall. Continental drought indices, ENSO stratification, and a circulation check in the same event set are less often reported together. SPI measures precipitation anomalies only [@mckee1993]. SPEI measures a climatic water balance and is more sensitive to temperature [@vicente2010]. The two indices, at more than one accumulation window, show where evaporative demand changes the IOD footprint. Partial correlation and ENSO-stratified composites show where the footprint survives removal of Niño-3.4. ERA5 composites show whether the footprint has a circulation counterpart [@hersbach2020].
+
+This study asks four questions for 1980–2020. What is the spatial pattern of SPI and SPEI anomalies in canonical positive and negative IOD years? How much of the linear association remains after Niño-3.4 is controlled, and at what lag? In which seasons is the association strongest? Do ERA5 pressure, wind, and vertical-motion anomalies in the same years agree with the drought composites?
+
+# Data and methods
+
+## Domain, regions, and period
+
+The analysis covers Africa and the adjacent oceans that supply continental moisture, 35°S–37°N and 20°W–55°E, for January 1980–December 2020 (492 months). Regional means use five boxes already defined in the analysis code: East Africa (10°S–20°N, 30°E–50°E), Southern Africa (35°S–10°S, 10°E–40°E), West Africa (5°S–20°N, 20°W–20°E), Central Africa (10°S–15°N, 5°E–30°E), and North Africa (15°N–37°N, 20°W–55°E). These boxes overlap, so they are descriptive averages rather than a partition of the continent.
+
+## Indices
+
+IOD variability is the monthly DMI. Event identification for the dataset comparison uses HadISST [@rayner2003] as the reference, with ERSST version 5 [@huang2017] and ERA5 sea-surface temperature as checks. ENSO is the Niño-3.4 index. A SON season is El Niño when the SON-mean Niño-3.4 anomaly is at least +0.5°C, La Niña when it is at most −0.5°C, and neutral otherwise [@trenberth1997].
+
+SPI and SPEI are precomputed ERA5 fields, not recalculated in this study. SPI files were fitted with a gamma distribution. SPEI files were fitted with a generalized logistic distribution, the usual SPEI form [@vicente2010]. Both are used at 3-month (SPI3, SPEI3) and 6-month (SPI6, SPEI6) accumulation. Positive values are wetter than the local climatology. Negative values are drier. That sign is used throughout: a positive correlation with the DMI means that positive IOD tends to occur with wetter index values.
+
+## Canonical IOD years
+
+Literature often flags an IOD event when the DMI exceeds about ±0.5°C [@saji1999]. The composites in this paper use an explicit SON year list, stored in `analysis_config.py` and applied to the drought composites, the ENSO-stratified composites, and the ERA5 diagnostics (@tbl-years). The list is the operational definition. It is not rebuilt from a threshold at render time.
+
+| Phase | SON years | *n* |
+|-------|-----------|-----|
+| Positive | 1994, 1997, 2006, 2012, 2015, 2018, 2019 | 7 |
+| Negative | 1980, 1981, 1992, 1996, 1998 | 5 |
+
+: Canonical SON years used for composites and ERA5 diagnostics. {#tbl-years}
+
+## Composites and significance
+
+For each canonical year, the drought field is averaged over the months that enter that composite and compared with the 1980–2020 climatology of the same months, excluding the event years. The phase composite is the mean across years in @tbl-years. Grid-point significance is a two-sided Student *t* test of the event mean against the climatology, with *p* < 0.05 and degrees of freedom equal to the number of events minus one. No field significance or false-discovery-rate correction is applied. Stippling marks individually significant grid points, and the reported percentages are the fraction of land grid points that pass that test. Coherent spatial structure is the quantity of interest. The same test is used for the circulation composites.
+
+## ENSO stratification, lags, and partial correlation
+
+ENSO-stratified composites cross the three SON Niño-3.4 classes with positive IOD, negative IOD, and their difference. Cells with fewer than three years are not interpreted. In the closure notes, positive IOD with La Niña and negative IOD with El Niño do not occur.
+
+Lag correlations use Pearson's *r* between the monthly DMI and each regional index at lags from −12 to +12 months. In the analysis code, a positive lag shifts the DMI earlier, so the DMI leads the drought index. A negative lag aligns the DMI with an earlier value of the drought index, so the drought index leads. At least ten overlapping pairs are required. The lag reported in @tbl-lags is the lag of maximum |*r*| on that curve.
+
+Partial correlation removes the linear Niño-3.4 association from the contemporaneous DMI–index correlation:
+
+$$
+r_{DY\cdot N} = \frac{r_{DY}-r_{DN}r_{YN}}{\sqrt{(1-r_{DN}^{2})(1-r_{YN}^{2})}},
+$$
+
+where *D* is the DMI, *Y* is the drought index, and *N* is Niño-3.4. This is a zero-lag diagnostic. It does not partial out ENSO at the lag of maximum |*r*|. Seasonal correlations are the same Pearson coefficient computed inside DJF, MAM, JJA, and SON separately. Wavelet coherence between the DMI and the drought indices follows Torrence and Compo [-@torrence1998] and Grinsted et al. [-@grinsted2004]. Coherence is used only as a qualitative check on stationarity. No coherence magnitudes are extracted in this draft.
+
+## ERA5 circulation
+
+SON anomalies of mean sea-level pressure, 850 hPa wind, and 500 hPa geopotential height are composited for the years in @tbl-years. Anomalies are relative to the SON climatology with event years left out. Geopotential height is plotted on a Mercator domain and on a Southern Hemisphere polar-stereographic domain so that a hemispheric wave train can be seen separately from the African sector.
+
+Vertical structure is diagnosed from ERA5 pressure velocity ω (Pa s^−1^) and zonal wind, on the same years, averaged over African land grid points in the eastern sector 10°E–50°E, 35°S–37°N. Latitude–pressure sections are zonal means over that longitude band. Longitude–pressure sections are meridional means over that latitude band. Negative ω is ascent. The land mask is the Natural Earth outline. This sector is narrower than the continental map domain and should not be read as a continent-wide zonal mean.
+
+# Results
+
+## DMI series and event years
+
+HadISST and ERSST agree on the timing of the major DMI extrema over 1980–2020. ERA5 has the same timing and a larger amplitude, especially for negative excursions (@fig-dmi). For SON means, the HadISST–ERSST correlation is *r* = 0.79. HadISST–ERA5 and ERSST–ERA5 correlations are *r* = 0.57 and *r* = 0.58. All three are strong for a sample of 41 SON seasons. The extreme *p*-values printed on the diagnostic scatter plots are not repeated here.
+
+The strongest positive SON events in HadISST are 1994, 1997, 2006, 2018, and 2019. The strongest negative events are 1980, 1981, 1992, 1996, and 1998 (@fig-events). ERA5 magnitudes are larger than HadISST for both tails, and ERSST magnitudes are smaller. The composite list in @tbl-years keeps those ten years and adds 2012 and 2015 as further positive SON events. HadISST remains the reference for ranking. ERA5 is used for circulation, not for deciding the year list.
+
+::: {#fig-dmi fig-cap="Monthly and SON DMI from HadISST, ERSST, and ERA5, 1980–2020, including the distributional comparison and SON scatter plots."}
+
+`dmi_timeseries_comparison.png`, `dmi_box_plots.png`, and the SON correlation scatters. Not in the local closure bundle.
+
+:::
+
+::: {#fig-events fig-cap="Strongest positive and negative SON IOD events in HadISST, compared with ERSST and ERA5."}
+
+`dmi_son_events_analysis.png`. Not in the local closure bundle.
+
+:::
+
+## Drought composites
+
+Composite anomalies are spatially uneven, and the SPI and SPEI patterns are not the same map (@fig-composites, @tbl-composites). During positive IOD, East Africa, West Africa, and North Africa are wet on every index. Southern Africa is dry. The East African SPI means are +0.57 (SPI3) and +0.67 (SPI6). The Southern African SPI3 mean is −0.18. SPEI keeps the same signs in those two regions but with smaller wet anomalies in the north and east and a stronger dry anomaly in Southern Africa (SPEI3 −0.29), which is the clearest evaporative-demand amplification in the composites.
+
+During negative IOD the East African wet anomaly shrinks, and Central Africa becomes the wettest region (SPI6 +0.61, SPEI6 +0.70). North Africa is near zero or slightly dry on SPI. Significant land fractions are higher for positive-IOD SPI (17.8% for SPI3, 16.8% for SPI6) than for SPEI (7.5% and 6.6%) or for negative IOD (6.5–9.2%). The positive-IOD precipitation signal is the more spatially coherent of the two phases. Adding evaporative demand reduces that coherence.
+
+| Region | SPI3 + | SPI3 − | SPI6 + | SPI6 − | SPEI3 + | SPEI3 − | SPEI6 + | SPEI6 − |
+|--------|--------|--------|--------|--------|---------|---------|---------|---------|
+| East Africa | +0.57 | +0.16 | +0.67 | +0.30 | +0.39 | +0.32 | +0.52 | +0.42 |
+| Southern Africa | −0.18 | +0.11 | −0.14 | −0.17 | −0.29 | +0.23 | −0.25 | −0.02 |
+| West Africa | +0.49 | +0.19 | +0.37 | +0.33 | +0.44 | +0.28 | +0.35 | +0.46 |
+| Central Africa | +0.28 | +0.47 | +0.25 | +0.61 | +0.26 | +0.55 | +0.23 | +0.70 |
+| North Africa | +0.87 | −0.15 | +0.88 | −0.07 | +0.65 | +0.09 | +0.58 | +0.19 |
+
+: Regional-mean composite anomalies (standardized units) for positive (+) and negative (−) IOD. Rounded from the closure regional bars. {#tbl-composites}
+
+| Index | Positive IOD | Negative IOD |
+|-------|--------------|--------------|
+| SPI3 | 17.8% | 6.5% |
+| SPI6 | 16.8% | 7.9% |
+| SPEI3 | 7.5% | 7.6% |
+| SPEI6 | 6.6% | 9.2% |
+
+: Percentage of land grid points with *p* < 0.05. No multiple-testing correction. {#tbl-sig}
+
+::: {#fig-composites fig-cap="SPI and SPEI composite anomalies for positive IOD, negative IOD, and their difference, at 3- and 6-month accumulation, with regional means."}
+
+`output/comprehensive_iod_statistics/plots/composite_drought_SPI3_SPEI3_maps.png`, `composite_drought_SPI6_SPEI6_maps.png`, and the matching bar-chart files.
+
+:::
+
+## ENSO stratification
+
+Positive and negative IOD years do not mix freely with ENSO. In the closure annotation, positive IOD occurs with El Niño or neutral conditions, and negative IOD occurs with La Niña or neutral conditions. The opposing cells are empty. That phase locking is consistent with the known IOD–ENSO association [@behera2006; @meyers2007], and it limits what a 3×3 composite can estimate. There is no sample, in these notes, of positive IOD under La Niña or of negative IOD under El Niño.
+
+Two cells have four years and are the only ones reported (@tbl-enso, @fig-enso). Positive IOD under El Niño (1994, 1997, 2006, 2018 in the notes) is wet across East, West, and North Africa on SPI3, and near zero in Southern Africa. Negative IOD under neutral ENSO (1980, 1981, 1992, 1996) is a weaker, mostly Central African wet pattern. About 12% of land points are significant in each of those SPI3 cells. Positive IOD under neutral conditions is a single year (2019), and negative IOD under La Niña is a single year (1998). Those composites, and any difference that uses them, are not results.
+
+@tbl-enso does not yet include 2012 or 2015. Until those two positive-IOD years are classified with the same SON Niño-3.4 series and the cell means are recomputed, the table should not be cited as final.
+
+| Region | +IOD, El Niño (*n* = 4) | −IOD, neutral (*n* = 4) |
+|--------|-------------------------|-------------------------|
+| East Africa | +0.41 | +0.12 |
+| Southern Africa | +0.05 | +0.10 |
+| West Africa | +0.36 | −0.06 |
+| Central Africa | +0.17 | +0.32 |
+| North Africa | +0.92 | −0.36 |
+| Land points *p* < 0.05 | 12.2% | 12.1% |
+
+: Provisional SPI3 regional means for the only ENSO×IOD cells with four years in the working notes. Years as annotated: El Niño positive IOD 1994, 1997, 2006, 2018; neutral negative IOD 1980, 1981, 1992, 1996. 2012 and 2015 are not in this classification. {#tbl-enso}
+
+::: {#fig-enso fig-cap="ENSO-stratified SPI and SPEI composites for El Niño, La Niña, and neutral SON seasons."}
+
+`output/comprehensive_iod_statistics/plots/enso_stratified_composite_SPI3_SPEI3.png` and `enso_stratified_composite_SPI6_SPEI6.png`.
+
+:::
+
+## Lags and the ENSO control
+
+Maximum correlations are modest (@fig-lags, @tbl-lags). East Africa is the only region in which the maximum is concurrent or within one month, and the sign is positive: positive DMI with wetter SPI and SPEI. SPI6 reaches *r* = 0.23. Southern Africa peaks at *r* = 0.21–0.26, but at lags of −8 or −9 months. Under the sign convention in the code, those peaks are not a case of the DMI leading the drought index. West African maxima are negative and weak (|*r*| ≤ 0.19) at lags of −3 or −4 months, so the linear monthly association there is a weak dry tendency, not the wet event-composite mean in @tbl-composites. Central and North African SPI maxima are below |*r*| = 0.10. North African SPEI reaches *r* = 0.13 near lag zero, which is the only North African signal that is both concurrent and above the SPI values.
+
+| Region | SPI3 | SPI6 | SPEI3 | SPEI6 |
+|--------|------|------|-------|-------|
+| East Africa | 0.169 at −1 | 0.226 at −1 | 0.161 at 0 | 0.176 at 0 |
+| Southern Africa | 0.209 at −9 | 0.227 at −9 | 0.241 at −9 | 0.256 at −8 |
+| West Africa | −0.156 at −4 | −0.186 at −4 | −0.089 at −3 | −0.110 at −3 |
+| Central Africa | 0.054 at −12 | 0.095 at −12 | 0.053 at 0 | 0.071 at −12 |
+| North Africa | 0.053 at −7 | 0.049 at −10 | 0.125 at 0 | 0.125 at −2 |
+
+: Lag of maximum absolute correlation between monthly DMI and the regional index. Positive lag: DMI leads. Values are the figure-label maxima from the July 2026 closure. {#tbl-lags}
+
+Zero-lag partial correlations change the East African result only slightly (@fig-partial, @tbl-partial). Raw contemporaneous correlations of 0.16–0.21 fall to partial correlations of 0.13–0.18, and they stay significant. Roughly four-fifths of the East African contemporaneous correlation is not the linear Niño-3.4 term. The contemporaneous DMI–Niño-3.4 correlation in this record is *r* = 0.16.
+
+Elsewhere the raw contemporaneous correlations are already near zero, so the fraction that "survives" ENSO control is not a meaningful independence score. Southern African SPI6, for example, goes from *r* = −0.04 (*p* = 0.44) to a partial correlation of about zero. That is absence of a concurrent correlation, not evidence that ENSO explains 95% of an IOD signal. The Southern African signal in this study, such as it is, sits in the event composites and in the lagged correlations, which have not been partialled at their peak lag.
+
+| Region | Index | Raw *r* | Partial *r* |
+|--------|-------|---------|-------------|
+| East Africa | SPI3 | 0.17 | 0.13 |
+| East Africa | SPI6 | 0.21 | 0.18 |
+| East Africa | SPEI3 | 0.16 | 0.14 |
+| East Africa | SPEI6 | 0.18 | 0.15 |
+| North Africa | SPEI3 | 0.13 | 0.09 |
+| North Africa | SPEI6 | 0.13 | 0.09 |
+
+: Contemporaneous correlations and partial correlations controlling for Niño-3.4. Rows are limited to series with a raw correlation that was significant or marginally so. Partial *r* for North African SPEI is near *p* = 0.05. {#tbl-partial}
+
+::: {#fig-lags fig-cap="Lag correlations between the DMI and regional SPI and SPEI, lags −12 to +12 months."}
+
+`output/comprehensive_iod_statistics/plots/lag_correlation_analysis.png`
+
+:::
+
+::: {#fig-partial fig-cap="Contemporaneous DMI–drought correlations and partial correlations controlling for Niño-3.4."}
+
+`output/comprehensive_iod_statistics/plots/partial_correlation_analysis.png`
+
+:::
+
+## Seasonal correlations
+
+The association is seasonal (@fig-seasons, @tbl-seasons). East Africa is positive in DJF and SON and negative in MAM on the 3-month indices. The largest single coefficient in the study is East African SPI3 in SON (*r* = 0.50), which matches the season in which the IOD peaks and the short rains fall. West Africa is consistently negative in MAM (*r* = −0.23 to −0.28) and weak in the other seasons. Central Africa is negative in MAM and, for SPI3 and SPEI3, positive in SON. North African correlations are significant only for SPEI, in DJF and SON, at about *r* = 0.19–0.20. Precipitation alone does not carry a North African seasonal signal.
+
+Southern Africa is positive in SON on SPI3 (*r* = 0.29) and negative in JJA on the 6-month indices (*r* = −0.25 for SPI6, *r* = −0.24 for SPEI6). The SON sign matches a wetter linear association with the DMI. It does not match the negative Southern African means in the positive-IOD composites (@tbl-composites). The composite is an average over seven strong positive years and five strong negative years. The seasonal correlation uses every SON in the record. They can disagree, and here they do. The circulation sections below are tied to the composite years, not to the full-series correlation.
+
+| Region | Index | Season | *r* |
+|--------|-------|--------|-----|
+| East Africa | SPI3 | SON | 0.50 |
+| East Africa | SPI3 | DJF | 0.31 |
+| East Africa | SPI3 | MAM | −0.26 |
+| East Africa | SPI6 | DJF | 0.41 |
+| East Africa | SPEI3 | SON | 0.43 |
+| East Africa | SPEI3 | DJF | 0.38 |
+| East Africa | SPEI6 | DJF | 0.43 |
+| East Africa | SPEI6 | SON | 0.31 |
+| Southern Africa | SPI3 | SON | 0.29 |
+| Southern Africa | SPI6 | JJA | −0.25 |
+| Southern Africa | SPEI3 | SON | 0.28 |
+| Southern Africa | SPEI3 | MAM | −0.20 |
+| Southern Africa | SPEI6 | JJA | −0.24 |
+| West Africa | SPI6 | MAM | −0.28 |
+| West Africa | SPEI3 | MAM | −0.27 |
+| West Africa | SPEI6 | MAM | −0.26 |
+| West Africa | SPI3 | MAM | −0.23 |
+| Central Africa | SPI3 | MAM | −0.29 |
+| Central Africa | SPEI3 | MAM | −0.29 |
+| Central Africa | SPEI3 | SON | 0.24 |
+| Central Africa | SPI3 | SON | 0.23 |
+| North Africa | SPEI6 | SON | 0.20 |
+| North Africa | SPEI3 | DJF | 0.20 |
+| North Africa | SPEI3 | SON | 0.19 |
+| North Africa | SPEI6 | DJF | 0.19 |
+
+: Seasonal correlations with *p* < 0.05. Seasons that did not reach that level are omitted. Rounded to two decimals. {#tbl-seasons}
+
+::: {#fig-seasons fig-cap="Seasonal correlations between the DMI and SPI3, SPI6, SPEI3, and SPEI6."}
+
+`output/comprehensive_iod_statistics/plots/seasonal_analysis_SPI3.png`, `seasonal_analysis_SPI6.png`, `seasonal_analysis_SPEI3.png`, and `seasonal_analysis_SPEI6.png`.
+
+:::
+
+## Wavelet coherence
+
+Wavelet coherence between the DMI and the four drought indices is intermittent and concentrated at interannual periods, rather than uniform across 1980–2020 (@fig-wavelet). That is the expected signature if the coupling is carried by a modest number of strong IOD and ENSO events. Coherence differs by index. No numerical coherence thresholds are reported until they are read from the closure figures.
+
+::: {#fig-wavelet fig-cap="Wavelet coherence between the DMI and SPI and SPEI at 3- and 6-month scales."}
+
+`output/comprehensive_iod_statistics/plots/wavelet_coherence_SPI3.png`, `wavelet_coherence_SPI6.png`, `wavelet_coherence_SPEI3.png`, and `wavelet_coherence_SPEI6.png`.
+
+:::
+
+## Circulation and vertical motion
+
+ERA5 SON composites for the years in @tbl-years place the drought dipole in a recognizable positive-IOD circulation (@fig-mslp, @fig-wind, @fig-z500). Positive IOD has anomalous high pressure over the south-western Indian Ocean and southern Africa, easterly anomalies along the equatorial Indian Ocean, and anomalous anticyclonic, divergent flow over southern Africa. Those low-level features suppress rainfall on the subtropical side of the domain. Over the Horn, the low-level and vertical-motion fields favour ascent and rainfall, in line with the wet East African composites and with the classical short-rains response [@black2003]. Negative IOD tends to reverse the pressure and wind pattern. The 500 hPa maps show a hemispheric height anomaly; they are not used here to assign local ascent or descent, because a mid-tropospheric height anomaly and the column vertical motion need not tell the same local story.
+
+The land-masked sections remove that ambiguity for the eastern sector (@fig-xw, @fig-xu). During positive IOD, ω is negative (ascent) over the Horn, about 5–15°N, and positive (subsidence) over the southern subtropics, about 15–35°S. During negative IOD those vertical-motion anomalies weaken or reverse, including ascent over parts of Central Africa that matches the wet negative-IOD composites. The positive-minus-negative difference is an ascent anomaly over roughly 5–20°N and a subsidence anomaly over roughly 15–35°S. Zonal-wind contours on the same sections show low-level easterly anomalies in the equatorial portion of the positive-IOD section. This is the circulation result that lines up with @tbl-composites: wet Horn and Sahel, dry southern subtropics, in the positive phase.
+
+::: {#fig-mslp fig-cap="SON ERA5 mean-sea-level pressure and combined circulation anomalies for positive and negative IOD."}
+
+`output/comprehensive_iod_statistics/plots/atmospheric_circulation_composites.png`
+
+:::
+
+::: {#fig-wind fig-cap="SON 850 hPa wind-vector anomalies for positive and negative IOD."}
+
+`output/comprehensive_iod_statistics/plots/atmospheric_circulation_wind_vectors.png`
+
+:::
+
+::: {#fig-z500 fig-cap="SON 500 hPa geopotential-height anomalies in Mercator and Southern Hemisphere polar stereographic projections."}
+
+`output/comprehensive_iod_statistics/plots/atmospheric_circulation_geopotential_height_mercator.png` and `atmospheric_circulation_geopotential_height_polar_stereographic.png`.
+
+:::
+
+::: {#fig-xw fig-cap="Land-masked latitude–pressure sections of ω and zonal wind over 10°E–50°E for positive IOD, negative IOD, and their difference. Blue shading is ascent."}
+
+`output/iod_circulation/iod_circulation_cross_section_positive_negative_iod.png`
+
+:::
+
+::: {#fig-xu fig-cap="Land-masked longitude–pressure sections of ω and zonal wind, meridionally averaged over 35°S–37°N."}
+
+`output/iod_circulation/iod_circulation_lonpressure_positive_negative_iod.png`
+
+:::
+
+# Discussion
+
+The continental pattern is a dipole, not a uniform drying or wetting. Positive IOD years are wet in East Africa and the Sahel and dry in subtropical southern Africa. That East African sign agrees with the short-rains literature [@black2003; @marchant2007; @nicholson2017] and with the ascent over the Horn in @fig-xw. It is the opposite of reading a positive IOD as an East African drought. SPEI reduces the wet anomalies relative to SPI and deepens the Southern African dry anomaly during positive IOD, so evaporative demand modifies the amplitude without flipping the main dipole.
+
+East Africa is also the region where a linear, contemporaneous, ENSO-controlled association exists. Partial correlations of 0.13–0.18 are small in absolute terms. They are large enough, given the sample, to reject the idea that the East African correlation is only Niño-3.4. The practical lead time there is short. The seasonal peak is SON, the same season as the IOD peak, with a DJF extension on the 6-month indices that is consistent with accumulation across the short rains rather than with a multi-season forecast.
+
+Southern Africa should not be given that treatment. ENSO is already the better-documented driver of rainfall there [@reason2005; @cook2000; @hoell2015; @lyon2007]. In this analysis the concurrent IOD correlation is indistinguishable from zero, the lag of maximum correlation is not a DMI lead, and the full-series SON correlation is positive while the event composite is slightly negative. The composite and the subsidence in the ω section support drying during the canonical positive-IOD years. The seasonal correlation does not. Until those two calculations are reconciled on the maps, a Southern African IOD drought mechanism should be stated as an event-composite result, not as a correlation skill score. There is no basis in the partial correlations for a claim that ENSO removes 95% of a Southern African IOD signal, because that arithmetic was applied to a non-significant concurrent correlation.
+
+West Africa illustrates the same distinction between statistics. Canonical-year composites are wet during positive IOD. MAM correlations, and the weak negative lag correlations, have the opposite sign. MAM is not the composite season. A negative MAM coefficient means a drier index when the DMI is positive, because SPI and SPEI are wetness indices. It should not be described as reduced drought.
+
+Sample size binds the ENSO results more tightly than the wording of a 3×3 layout suggests. Seven positive and five negative years are a small composite. Splitting them by ENSO leaves at most four years in a cell, leaves two cells empty, and leaves two cells as single years. The empty cells are a finding about co-occurrence. They are not a test of what those phase combinations would do. Adding 2012 and 2015 to the stratified classification can move the El Niño and neutral means, so @tbl-enso stays provisional.
+
+Other limits are standard and still material. Grid-point *p*-values ignore spatial correlation, so the land-fraction percentages in @tbl-sig are descriptive. The year list is a choice; a pure ±0.5°C rule would not automatically reproduce @tbl-years. Circulation is diagnosed from ERA5 only. The drought indices are one ERA5-based SPI/SPEI product. Wavelet results are qualitative. None of these diagnostics is a forecast verification against an operational outlook.
+
+For early warning, the defensible use of the DMI is regional. In East Africa it is a concurrent SON indicator of wetter SPI and SPEI in the positive phase, only partly shared with Niño-3.4. In the Sahel and North Africa the positive-IOD composites are wet, but the linear correlations are weak except for North African SPEI, so the composite should not be sold as a correlation skill. In Southern Africa the DMI should be read with ENSO, and the sign of the IOD composite should be taken from the event maps and the ω section after the correlation discrepancy is closed. A single continental lead time does not exist in these results.
+
+# Conclusions
+
+Canonical positive IOD years from 1980 to 2020 are associated with wetter SPI and SPEI in East Africa and North Africa and with drier conditions in subtropical southern Africa. Negative IOD years are wettest in Central Africa. The pattern is stronger and more spatially significant in SPI than in SPEI during positive IOD.
+
+The only robust linear relationship is in East Africa: maximum correlations of 0.16–0.23 at lags of −1 to 0 months, a SON SPI3 correlation of 0.50, and partial correlations of 0.13–0.18 after Niño-3.4 is removed. Southern African maxima lie at lags of −8 to −9 months and are not a DMI lead.
+
+ERA5 sections over the eastern African sector show ascent over the Horn and subsidence over the southern subtropics during positive IOD, which matches the composite dipole. ENSO-stratified cell means remain provisional until 2012 and 2015 are classified with the rest of the positive-IOD list.
+
+# Data and code availability
+
+ERA5 pressure, wind, geopotential height, vertical velocity, and the sea-surface temperatures used for the ERA5 DMI are from the Copernicus Climate Data Store [@hersbach2020]. HadISST is from the Met Office Hadley Centre [@rayner2003]. ERSST version 5 and the Niño-3.4 index are from NOAA [@huang2017]. SPI and SPEI are the gamma and generalized-logistic ERA5 products consumed by `comprehensive_iod_drought_statistics_optimized.py`.
+
+Processed composites and figures from the 11 July 2026 Lengau closure are the source of the numbers in this draft. Analysis code is in the repository that contains this manuscript, with the year list and region boxes in `analysis_config.py`. A DOI will be added at submission.
+
+# Acknowledgements
+
+Computing was provided by the Centre for High Performance Computing (CHPC) Lengau system at the Council for Scientific and Industrial Research. Funding, co-authors, and the corresponding-author address are still to be added. ERA5 is produced by ECMWF and distributed by Copernicus. HadISST and the NOAA indices are acknowledged as cited above.

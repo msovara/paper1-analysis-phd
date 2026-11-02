@@ -1,6 +1,8 @@
 # Indian Ocean Dipole (IOD) and African Drought Analysis
 
-Comprehensive analysis of the relationship between the Indian Ocean Dipole (IOD) and drought patterns across Africa (1980-2020).
+Paper 1 lives in this repository. The working manuscript is `manuscript/paper.qmd`. The analysis entry point is `comprehensive_iod_drought_statistics_optimized.py`, run through `run_iod_analysis_closure.py`.
+
+Large inputs and figure files are **not** in git. See [DATA.md](DATA.md).
 
 ## 📋 Project Overview
 
@@ -22,8 +24,8 @@ This repository contains code, data, and analysis for investigating:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd tiny-media-analysis
+git clone https://github.com/msovara/paper1-analysis-phd.git
+cd paper1-analysis-phd
 ```
 
 2. Install dependencies:

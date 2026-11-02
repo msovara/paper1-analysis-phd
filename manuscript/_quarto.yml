@@ -1,0 +1,32 @@
+project:
+  type: default
+  output-dir: _output
+  render:
+    - paper.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    toc: true
+    number-sections: true
+    embed-resources: true
+    theme: cosmo
+    fig-cap-location: bottom
+    tbl-cap-location: top
+  docx:
+    toc: true
+    number-sections: true
+    fig-cap-location: bottom
+    tbl-cap-location: top
+  pdf:
+    documentclass: article
+    number-sections: true
+    geometry:
+      - margin=2.5cm
+    fig-cap-location: bottom
+    tbl-cap-location: top
+
+execute:
+  echo: false
+  warning: false
