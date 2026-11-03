@@ -1,0 +1,31 @@
+index,estimand,value,n,p_value,source
+SPI3,closure_monthly_SON_correlation,0.28600612537313563,,0.0013420309002929991,seasonal_analysis_results.pkl
+SPEI3,closure_monthly_SON_correlation,0.27498771088850515,,0.0020826020272697713,seasonal_analysis_results.pkl
+SPI3,recomputed_monthly_SON_correlation_HadISST,-0.02387109343325417,123,0.7932617423978234,monthly regional means correlated with HadISST
+SPI3,recomputed_monthly_SON_correlation_ERA5,0.28600612537313563,123,0.0013420309002929998,monthly regional means correlated with ERA5
+SPI3,recomputed_monthly_SON_correlation_ERA5_fixed,0.07032377799207346,123,0.43956818195791425,monthly regional means correlated with ERA5_fixed
+SPI3,recomputed_positive_IOD_anomaly,-0.18074864464615228,7,,SON mean of monthly regional means minus non-event SON mean
+SPI3,recomputed_negative_IOD_anomaly,0.046992275365377395,5,,SON mean of monthly regional means minus non-event SON mean
+SPI3,recomputed_annual_SON_correlation_all_years_HadISST,-0.02899613085250642,41,0.8571825877804747,annual SON regional means + DMI_HadISST_SON
+SPI3,recomputed_annual_SON_correlation_canonical_years_HadISST,-0.29282085376106337,12,0.35566832085559763,annual SON regional means + DMI_HadISST_SON
+SPI3,recomputed_annual_SON_correlation_other_years_HadISST,0.2827797128235868,29,0.1371837307559369,annual SON regional means + DMI_HadISST_SON
+SPI3,recomputed_annual_SON_correlation_all_years_ERSST,0.10572548882145923,41,0.5106116983181103,annual SON regional means + DMI_ERSST_SON
+SPI3,recomputed_annual_SON_correlation_canonical_years_ERSST,-0.3683330482333968,12,0.23876259597582328,annual SON regional means + DMI_ERSST_SON
+SPI3,recomputed_annual_SON_correlation_other_years_ERSST,0.5553102399537828,29,0.0017660973266077349,annual SON regional means + DMI_ERSST_SON
+SPI3,recomputed_annual_SON_correlation_all_years_ERA5,0.07324561459064374,41,0.6490308750906464,annual SON regional means + DMI_ERA5_SON
+SPI3,recomputed_annual_SON_correlation_canonical_years_ERA5,-0.2109629289033657,12,0.5104329426639503,annual SON regional means + DMI_ERA5_SON
+SPI3,recomputed_annual_SON_correlation_other_years_ERA5,0.4788452507623985,29,0.008591240498818724,annual SON regional means + DMI_ERA5_SON
+SPEI3,recomputed_monthly_SON_correlation_HadISST,-0.12634894987484052,123,0.16375362549965278,monthly regional means correlated with HadISST
+SPEI3,recomputed_monthly_SON_correlation_ERA5,0.2749877108885052,123,0.0020826020272697882,monthly regional means correlated with ERA5
+SPEI3,recomputed_monthly_SON_correlation_ERA5_fixed,0.0008251062411680603,123,0.9927733093853398,monthly regional means correlated with ERA5_fixed
+SPEI3,recomputed_positive_IOD_anomaly,-0.30280127373053656,7,,SON mean of monthly regional means minus non-event SON mean
+SPEI3,recomputed_negative_IOD_anomaly,0.12130071746798124,5,,SON mean of monthly regional means minus non-event SON mean
+SPEI3,recomputed_annual_SON_correlation_all_years_HadISST,-0.14153223083088537,41,0.3774105743314976,annual SON regional means + DMI_HadISST_SON
+SPEI3,recomputed_annual_SON_correlation_canonical_years_HadISST,-0.41698613357364067,12,0.17747713559720274,annual SON regional means + DMI_HadISST_SON
+SPEI3,recomputed_annual_SON_correlation_other_years_HadISST,0.21191503028816588,29,0.269770119861133,annual SON regional means + DMI_HadISST_SON
+SPEI3,recomputed_annual_SON_correlation_all_years_ERSST,0.0061732334059508565,41,0.9694437977569983,annual SON regional means + DMI_ERSST_SON
+SPEI3,recomputed_annual_SON_correlation_canonical_years_ERSST,-0.429585895524486,12,0.1634010384716078,annual SON regional means + DMI_ERSST_SON
+SPEI3,recomputed_annual_SON_correlation_other_years_ERSST,0.47947484314983085,29,0.008492007599070867,annual SON regional means + DMI_ERSST_SON
+SPEI3,recomputed_annual_SON_correlation_all_years_ERA5,-0.009899448526597826,41,0.9510179077158422,annual SON regional means + DMI_ERA5_SON
+SPEI3,recomputed_annual_SON_correlation_canonical_years_ERA5,-0.2862655155572441,12,0.3670337784507241,annual SON regional means + DMI_ERA5_SON
+SPEI3,recomputed_annual_SON_correlation_other_years_ERA5,0.4244876789241492,29,0.021725160465236208,annual SON regional means + DMI_ERA5_SON

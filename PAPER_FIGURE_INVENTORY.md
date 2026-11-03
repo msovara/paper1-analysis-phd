@@ -76,7 +76,6 @@
 
 ## Manuscript gaps to close
 
-1. **Figures 1–2:** DMI validation panels not in current local `output/` — SCP from Lengau or regenerate locally if DMI CSVs exist.
-2. **Discussion §4.1 / Conclusions §5.1:** East Africa **+IOD = wetter** (positive SPI/SPEI), not drier — corrected in draft update.
-3. **Methods §2.8:** Updated to 7 positive IOD years and separate circulation diagnostic domain.
-4. **References:** Placeholder author/email/funding still needed.
+1. **DMI *p*-values.** The SON series and the ranked events are drawn from the committed CSV files. The extreme *p*-values on the older diagnostic scatters are still omitted.
+2. **Southern Africa sign.** Resolved in `manuscript/tables/southern_africa_sign_check.md`. The dry composite is the canonical-year result. The closure SON correlation is the unfixed ERA5 monthly file.
+3. **References:** Placeholder author/email/funding still needed.

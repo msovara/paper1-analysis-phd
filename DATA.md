@@ -8,38 +8,46 @@ Copied into this clone (still ignored by git):
 
 | Path | What it is |
 | --- | --- |
-| `output/comprehensive_iod_statistics/` | Closure-run pickles and figures (~500 MB). This is enough to finish the manuscript and to regenerate plots from saved results. |
+| `data/drought_reanalysis/` | SPI3, SPI6, SPEI3, SPEI6 monthly ERA5 NetCDF, 492 files each (1,968 files, 15.3 GiB). Copied from Lengau on 2 November 2026. |
+| `data/dmi.had.long.csv`, `data/dmi_era5_1980_2020.csv`, `data/dmi_era5_1980_2020_fixed.csv` | Monthly DMI series |
+| `output/comprehensive_iod_statistics/` | Closure-run pickles and figures (~500 MB). |
 | `output/iod_circulation/` | Vertical cross-section figures |
-| `data/atmospheric/` | Junction to `tiny-media-analysis\data\atmospheric` (ERA5 GRIB/NetCDF, ~4.4 GB). Same files, no second copy. |
+| `data/atmospheric/data_stream-moda_stepType-avgua.nc` | Monthly ERA5 atmosphere file (4.3 GB), linked from `tiny-media-analysis` |
 
 Small index files that **are** in git: `dmi_son_annual_averages.csv`, `dmi_son_top_events.csv`, `nino34.long.anom.csv`.
 
+The full `DataDownloads` tree on Lengau is 51 GB. About 20 GB of that is zip archives of the same drought and atmosphere files. This PC has about 14 GB free after the drought copy, so those archives were left on the cluster.
+
 ## Still only on Lengau
 
-SPI/SPEI NetCDF grids are not on this PC. A full rerun of `run_iod_analysis_closure.py` needs them. Pull them before **27 November 2026**:
+Pressure-level GRIB used for a fresh vertical cross-section (about 2.5 GB inside `atmospheric/`, plus larger loose GRIB files). The cross-section figures already in `output/iod_circulation/` do not need them. Pull before **27 November 2026** only if you will recompute that figure from raw fields:
 
 ```powershell
 $KEY = "$env:USERPROFILE\.ssh\id_ed25519"
-$DEST = "C:\Users\MthethoSovara\paper1-analysis-phd"
-scp -i $KEY -r `
-  msovara@lengau.chpc.ac.za:/mnt/lustre/users/msovara/DataDownloads/data/output/comprehensive_iod_statistics `
-  "$DEST\output\"
-scp -i $KEY -r `
-  msovara@lengau.chpc.ac.za:/mnt/lustre/users/msovara/DataDownloads/ `
-  "$DEST\lengau_DataDownloads\"
+scp -i $KEY `
+  "msovara@lengau.chpc.ac.za:/mnt/lustre/users/msovara/DataDownloads/data/atmospheric/44b356f31168077a5ba0a07bcc0ab547.grib" `
+  "C:\Users\MthethoSovara\tiny-media-analysis\data\atmospheric\"
 ```
-
-Use the data-transfer node (`msovara@dtn.chpc.ac.za`) if the login node is slow. After the copy, point `analysis_config.py` paths at `lengau_DataDownloads` only if the scripts do not already find files under `data/`. The statistics script also searches `data/drought_reanalysis` and `data/spi_data`.
-
-`output/` on this PC is the July 2026 closure bundle. Copy the Lengau tree only if that cluster copy is newer than the local one.
 
 ## Day-to-day
 
-Write in `manuscript/paper.qmd`. Figures are under `output/comprehensive_iod_statistics/plots/` and `output/iod_circulation/`.
+Write in `manuscript/paper.qmd`. Render with Quarto from `manuscript/`:
 
 ```powershell
-python extract_paper_statistics.py
-python run_iod_analysis_closure.py --plots-only
+& "C:\Program Files\Quarto\bin\quarto.exe" render paper.qmd --to docx
 ```
 
-`--plots-only` rebuilds figures from the pickles. A full `--rerun-all` waits until the SPI/SPEI NetCDFs are in `data/`.
+The Word file is `manuscript/_output/paper.docx` and is not committed. The figures the article embeds are committed under `manuscript/figures/`. Refresh them with:
+
+```powershell
+python scripts/build_dmi_figures.py
+python scripts/stage_manuscript_figures.py
+```
+
+The Southern Africa composite-versus-correlation check is:
+
+```powershell
+python scripts/check_southern_africa_sign.py
+```
+
+It writes `manuscript/tables/southern_africa_sign_check.csv`. The drought NetCDF files have to be present for a fresh run. A later run reads the monthly cache in that same folder.

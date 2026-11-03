@@ -1,0 +1,4 @@
+index,estimand,value,n,p_value,source
+SPI3,east_africa_monthly_SON_correlation_HadISST,0.33035091576082465,123,0.00019020050183441608,"East Africa 10°S–20°N, 30°E–50°E, monthly SON, HadISST"
+SPI3,east_africa_monthly_SON_correlation_ERA5,0.5035057165082575,123,2.9205798714091174e-09,"East Africa 10°S–20°N, 30°E–50°E, monthly SON, ERA5"
+SPI3,east_africa_monthly_SON_correlation_ERA5_fixed,0.41714573903567925,123,1.5882226051254372e-06,"East Africa 10°S–20°N, 30°E–50°E, monthly SON, ERA5_fixed"

@@ -70,6 +70,9 @@ plots/
 *.pdf
 *.svg
 
+# The Quarto article embeds this small staged set. Raw output plots stay ignored.
+!manuscript/figures/*.png
+
 # Exception: Keep small CSV files for examples
 !dmi_son_annual_averages.csv
 !dmi_son_top_events.csv
